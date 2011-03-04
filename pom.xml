@@ -68,6 +68,13 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.3.152</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>5.14.2</version>
@@ -80,4 +87,11 @@
     <my.assembly.descriptor>src/main/config/assembly-descriptor.xml</my.assembly.descriptor>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  <developers>
+    <developer>
+      <id>mnicky</id>
+      <name>Marek Srank</name>
+      <email>xmnicky@gmail.com</email>
+    </developer>
+  </developers>
 </project>
