@@ -2,7 +2,7 @@
 <suite name="All tests">
   <test name="EngineTest">
     <classes>
-        <!--<class name="com.github.mnicky.bible4j.*"></class>-->
+        <class name="com.github.mnicky.bible4j.storage.H2DbBibleStorage_Test"></class>
     </classes>
   </test>
 </suite>
