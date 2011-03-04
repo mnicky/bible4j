@@ -1,7 +1,7 @@
 package com.github.mnicky.bible4j.data;
 
 /**
- * Class representing one Bible verse.
+ * Represents one Bible verse.
  */
 public final class Verse {
 
