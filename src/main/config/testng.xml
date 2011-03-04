@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All tests">
+  <test name="EngineTest">
+    <classes>
+        <!--<class name="com.github.mnicky.bible4j.*"></class>-->
+    </classes>
+  </test>
+</suite>
