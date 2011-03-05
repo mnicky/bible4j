@@ -1,7 +1,15 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="All tests">
-  <test name="EngineTest">
+  <test name="DataTest">
     <classes>
+        <class name="com.github.mnicky.bible4j.data.BibleBook_Test"></class>
+        <class name="com.github.mnicky.bible4j.data.BibleVersion_Test"></class>
+        <class name="com.github.mnicky.bible4j.data.Position_Test"></class>
+    </classes>
+  </test>
+  
+  <test name="StorageTest">
+    <classes> 
         <class name="com.github.mnicky.bible4j.storage.H2DbBibleStorage_Test"></class>
     </classes>
   </test>

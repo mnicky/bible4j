@@ -23,7 +23,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     
     /**
      * Closes this H2BibleStorage.
-     * @throws BibleStorageException when H2DbBibleStorage could not be closed
+     * @throws BibleStorageException when H2DbBibleStorage can't be closed
      */
     public void close() throws BibleStorageException {
 	try {
