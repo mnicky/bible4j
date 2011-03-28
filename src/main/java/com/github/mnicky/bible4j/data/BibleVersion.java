@@ -15,6 +15,8 @@ public final class BibleVersion {
      */
     private final String language;
     
+    //TODO add bible version abbreviation?
+    
     /**
      * Constructs new BibleVersion with specified name and language.
      * @param name name of the Bible version
@@ -65,6 +67,16 @@ public final class BibleVersion {
         result = 31 * result + (name == null ? 0 : name.hashCode());
         result = 31 * result + (language == null ? 0 : language.hashCode());
         return result;
+    }
+
+
+    public String getName() {
+	return name;
+    }
+
+
+    public String getLanguage() {
+	return language;
     }   
     
 }

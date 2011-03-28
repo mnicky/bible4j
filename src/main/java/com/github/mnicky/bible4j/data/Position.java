@@ -76,6 +76,21 @@ public final class Position {
         result = 31 * result + (Integer.valueOf(chapterNum).hashCode());
         result = 31 * result + (Integer.valueOf(verseNum).hashCode());
         return result;
+    }
+
+
+    public BibleBook getBook() {
+	return book;
+    }
+
+
+    public int getChapterNum() {
+	return chapterNum;
+    }
+
+
+    public int getVerseNum() {
+	return verseNum;
     }    
 
 }

@@ -9,12 +9,12 @@ public class BibleBook_Test {
     
     @Test
     public void testIsDeuterocaninicalForTrue() {
-	Assert.assertTrue(BibleBook.BARUCH.isDeuterocanonical());	
+	Assert.assertTrue(BibleBook.BARUCH.isDeutero());	
     }
     
     @Test
     public void testIsDeuterocaninicalForFalse() {
-	Assert.assertFalse(BibleBook.GALATIANS.isDeuterocanonical());
+	Assert.assertFalse(BibleBook.GALATIANS.isDeutero());
     }
     
     @Test

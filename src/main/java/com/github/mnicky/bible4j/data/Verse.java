@@ -32,5 +32,22 @@ public final class Verse {
 	this.position = position;
 	this.bibleVersion = bibleVersion;
     }
+
+
+    public String getText() {
+	return text;
+    }
+
+
+    public Position getPosition() {
+	return position;
+    }
+
+
+    public BibleVersion getBibleVersion() {
+	return bibleVersion;
+    }
+    
+    // TODO add Verse.hashcode(), equals(), tostring()
     
 }
