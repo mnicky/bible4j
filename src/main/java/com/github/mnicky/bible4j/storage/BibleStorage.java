@@ -23,16 +23,17 @@ public interface BibleStorage {
     int[] createStorage() throws BibleStorageException;
 
     void insertVerse(Verse verse) throws BibleStorageException;
+
     void insertBibleVersion(BibleVersion version) throws BibleStorageException;
+
     void insertPosition(Position position) throws BibleStorageException;
+
     void insertBibleBook(BibleBook book) throws BibleStorageException;
 
-    Verse getVerse(Position position);
-    //Verse getVerse(Position position, BibleVersion version);
+    Verse getVerse(Position position, BibleVersion version) throws BibleStorageException;
 
-    //List<Verse> getVerses(List<Position> position, BibleVersion version);
+    List<Verse> getVerses(List<Position> position, BibleVersion version) throws BibleStorageException;
 
-    //List<Verse> compareVerses(Position position);
-    //List<Verse> compareVerses(Position position, List<BibleVersion> version);
+    // List<Verse> compareVerses(Position position, List<BibleVersion> version);
 
 }

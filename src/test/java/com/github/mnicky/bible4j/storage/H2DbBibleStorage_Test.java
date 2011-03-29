@@ -2,11 +2,12 @@ package com.github.mnicky.bible4j.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -99,12 +100,12 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getBoolean("is_deutero");
 	    }
 
-	    Assert.assertTrue(Arrays.deepEquals(actual, exp));
-
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
+
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
 
     }
 
@@ -130,12 +131,12 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getInt("verse_num");
 	    }
 
-	    Assert.assertTrue(Arrays.deepEquals(actual, exp));
-
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
+
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
 
     }
 
@@ -159,12 +160,12 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getString("lang");
 	    }
 
-	    Assert.assertTrue(Arrays.deepEquals(actual, exp));
-
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
+
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
 
     }
 
@@ -180,13 +181,12 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertBibleVersion(new BibleVersion("English Standard Version", "en"));
 	    bible.insertBibleBook(BibleBook.JOHN);
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
-	    bible.insertVerse(new Verse("There was a man sent from God, whose name was John.",
-		    new Position(BibleBook.JOHN, 1, 6), new BibleVersion(
-			    "English Standard Version", "en")));
+	    bible.insertVerse(new Verse("There was a man sent from God, whose name was John.", new Position(
+		    BibleBook.JOHN, 1, 6), new BibleVersion("English Standard Version", "en")));
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT `text`, `bible_books`.`name` AS `book`, `coords`.`chapter_num`, `coords`.`verse_num`, `bible_versions`.`name` AS `version` "
+		    .executeQuery("SELECT `text`, `bible_books`.`name` AS `book`, `chapter_num`, `verse_num`, `bible_versions`.`name` AS `version` "
 			    + "FROM `bible_versions` "
 			    + "INNER JOIN `verses` ON `bible_versions`.`id` = `bible_version_id` "
 			    + "INNER JOIN `coords` ON `coord_id` = `coords`.`id` "
@@ -202,13 +202,71 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getString("version");
 	    }
 
-	    Assert.assertTrue(Arrays.deepEquals(actual, exp));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
+    }
+
+    @Test
+    public void testGetVerseWithOneVerse() {
+	Verse exp = new Verse("test text", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"));
+	Verse retrieved = null;
+
+	try {
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertVerse(new Verse("test text", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
+		    "KJV", "en")));
+
+	    retrieved = bible.getVerse(new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"));
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
+	Assert.assertEquals(retrieved, exp);
+    }
 
+    @Test
+    public void testGetVerseWithListOfVerses() {
+
+	List<Verse> exp = new ArrayList<Verse>();
+	exp.add(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en")));
+	exp.add(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV", "en")));
+	exp.add(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en")));
+
+	List<Verse> retrieved = null;
+
+	try {
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
+		    "KJV", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
+		    "KJV", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
+		    "KJV", "en")));
+
+	    List<Position> positions = new ArrayList<Position>();
+	    positions.add(new Position(BibleBook.ACTS, 1, 2));
+	    positions.add(new Position(BibleBook.ACTS, 1, 3));
+	    positions.add(new Position(BibleBook.ACTS, 1, 4));
+
+	    retrieved = bible.getVerses(positions, new BibleVersion("KJV", "en"));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	Assert.assertEquals(retrieved, exp);
     }
 
 }
