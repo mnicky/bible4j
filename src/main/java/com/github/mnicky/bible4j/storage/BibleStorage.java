@@ -24,7 +24,7 @@ public interface BibleStorage {
 
     void insertVerse(Verse verse) throws BibleStorageException;
     //void insertBibleVersion(BibleVersion version);
-    //void insertPosition(Position position);
+    void insertPosition(Position position) throws BibleStorageException;
     void insertBibleBook(BibleBook book) throws BibleStorageException;
 
     //Verse getVerse(Position position);

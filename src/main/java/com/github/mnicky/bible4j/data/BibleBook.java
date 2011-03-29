@@ -121,6 +121,10 @@ public enum BibleBook {
 	return this.testament;
     }
     
+    public String getName() {
+	return this.toString().toLowerCase();
+    }
+    
     /**
      * This inner enum represents Bible Testaments.
      */

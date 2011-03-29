@@ -14,6 +14,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.github.mnicky.bible4j.data.BibleBook;
+import com.github.mnicky.bible4j.data.Position;
 
 public final class H2DbBibleStorage_Test {
 
@@ -24,6 +25,7 @@ public final class H2DbBibleStorage_Test {
     public void setUpTest() {
 	try {
 	    conn = DriverManager.getConnection("jdbc:h2:mem:", "test", "");
+	    // conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
 	} catch (SQLException e) {
 	    e.printStackTrace();
 	    Assert.fail();
@@ -74,23 +76,55 @@ public final class H2DbBibleStorage_Test {
 
     @Test
     public void shouldInsertBibleBook() {
-	
+
 	Object[] exp = { "baruch", true };
 	Object[] actual = new Object[2];
-	
+
 	try {
 	    bible.createStorage();
 	    bible.insertBibleBook(BibleBook.BARUCH);
 
 	    Statement st = conn.createStatement();
-	    ResultSet rs = st.executeQuery("SELECT name, is_deutero FROM bible_books LIMIT 1");
-	    
+	    ResultSet rs = st
+		    .executeQuery("SELECT `name`, `is_deutero` FROM `bible_books` WHERE `name` = 'baruch' LIMIT 1");
+
 	    int i = 0;
-	    while(rs.next()) {
-		actual[i++] = rs.getString(1);
-		actual[i++] = rs.getBoolean(2);
+	    while (rs.next()) {
+		actual[i++] = rs.getString("name");
+		actual[i++] = rs.getBoolean("is_deutero");
 	    }
-	    
+
+	    Assert.assertTrue(Arrays.deepEquals(actual, exp));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+
+    }
+
+    @Test
+    public void shouldInsertPosition() {
+
+	Object[] exp = { "john", 3, 16 };
+	Object[] actual = new Object[3];
+
+	try {
+	    bible.createStorage();
+	    bible.insertBibleBook(BibleBook.JOHN);
+	    bible.insertPosition(new Position(BibleBook.JOHN, 3, 16));
+
+	    Statement st = conn.createStatement();
+	    ResultSet rs = st
+		    .executeQuery("SELECT `name`, `chapter_num`, `verse_num` FROM `coords`, `bible_books` WHERE `bible_book_id` = `bible_books`.`id` LIMIT 1");
+
+	    int i = 0;
+	    while (rs.next()) {
+		actual[i++] = rs.getString("name");
+		actual[i++] = rs.getInt("chapter_num");
+		actual[i++] = rs.getInt("verse_num");
+	    }
+
 	    Assert.assertTrue(Arrays.deepEquals(actual, exp));
 
 	} catch (Exception e) {

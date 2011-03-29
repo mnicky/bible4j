@@ -10,6 +10,7 @@ import java.util.Arrays;
 import org.testng.Assert;
 
 import com.github.mnicky.bible4j.data.BibleBook;
+import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 
 /**
@@ -135,8 +136,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    + "`name` VARCHAR_IGNORECASE(50)," + "`is_deutero` BOOLEAN)");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS `coords` (" + "`id` IDENTITY NOT NULL,"
-		    + "`verse_num` INT," + "`chapter_num INT,`"
-		    + "`bible_book_id` BIGINT NOT NULL REFERENCES bible_books(id))");
+		    + "`bible_book_id` BIGINT NOT NULL REFERENCES bible_books(id),"
+		    + "`chapter_num` INT," + "`verse_num` INT)");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS `verses` (" + "`id` IDENTITY NOT NULL,"
 		    + "`text` VARCHAR(500) NOT NULL,"
@@ -198,11 +199,26 @@ public final class H2DbBibleStorage implements BibleStorage {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement("INSERT INTO bible_books"
 		    + "(`name`, `is_deutero`) VALUES ( ?, ?)");
-	    st.setString(1, book.toString().toLowerCase());
+	    st.setString(1, book.getName());
 	    st.setBoolean(2, book.isDeutero());
 	    commitUpdate(st);
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Bible book could not be inserted", e);
+	}
+    }
+
+    @Override
+    public void insertPosition(Position position) throws BibleStorageException {
+	try {
+	    PreparedStatement st = dbConnection
+		    .prepareStatement("INSERT INTO coords"
+			    + "(`bible_book_id`, `chapter_num`, `verse_num`) VALUES ((SELECT `id` FROM `bible_books` WHERE `name` = ? LIMIT 1), ?, ?)");
+	    st.setString(1, position.getBook().getName());
+	    st.setInt(2, position.getChapterNum());
+	    st.setInt(3, position.getVerseNum());
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Position could not be inserted", e);
 	}
     }
 
