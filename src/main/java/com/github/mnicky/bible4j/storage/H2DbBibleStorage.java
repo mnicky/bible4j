@@ -10,6 +10,7 @@ import java.util.Arrays;
 import org.testng.Assert;
 
 import com.github.mnicky.bible4j.data.BibleBook;
+import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 
@@ -181,12 +182,17 @@ public final class H2DbBibleStorage implements BibleStorage {
     public void insertVerse(Verse verse) throws BibleStorageException {
 
 	try {
-	    PreparedStatement st = dbConnection.prepareStatement("INSERT INTO verses"
-		    + "(`text`, `bible_version_id`, `coord_id`) VALUES ( ?, ?, ?)");
+	    PreparedStatement st = dbConnection
+		    .prepareStatement("INSERT INTO verses (`text`, `bible_version_id`, `coord_id`) VALUES "
+			    + "( ?,"
+			    + "(SELECT DISTINCT `id` FROM `bible_versions` WHERE `name` = ?),"
+			    + "(SELECT DISTINCT `id` FROM `coords` WHERE `chapter_num` = ? AND `verse_num` = ? AND `bible_book_id` = (SELECT DISTINCT `id` FROM `bible_books` WHERE `name` = ?)))");
 	    st.setString(1, verse.getText());
-	    st.setLong(2, '0');// FIXME add real num
-	    st.setLong(3, '0');// FIXME add real num
-	    commitBatch(st);
+	    st.setString(2, verse.getBibleVersion().getName());
+	    st.setInt(3, verse.getPosition().getChapterNum());
+	    st.setInt(4, verse.getPosition().getVerseNum());
+	    st.setString(5, verse.getPosition().getBook().getName());
+	    commitUpdate(st);
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Verse could not be inserted", e);
 	}
@@ -212,7 +218,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	try {
 	    PreparedStatement st = dbConnection
 		    .prepareStatement("INSERT INTO coords"
-			    + "(`bible_book_id`, `chapter_num`, `verse_num`) VALUES ((SELECT `id` FROM `bible_books` WHERE `name` = ? LIMIT 1), ?, ?)");
+			    + "(`bible_book_id`, `chapter_num`, `verse_num`) VALUES ((SELECT DISTINCT `id` FROM `bible_books` WHERE `name` = ?), ?, ?)");
 	    st.setString(1, position.getBook().getName());
 	    st.setInt(2, position.getChapterNum());
 	    st.setInt(3, position.getVerseNum());
@@ -220,6 +226,26 @@ public final class H2DbBibleStorage implements BibleStorage {
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Position could not be inserted", e);
 	}
+    }
+
+    @Override
+    public void insertBibleVersion(BibleVersion version) throws BibleStorageException {
+
+	try {
+	    PreparedStatement st = dbConnection.prepareStatement("INSERT INTO bible_versions"
+		    + "(`name`, `lang`) VALUES ( ?, ?)");
+	    st.setString(1, version.getName());
+	    st.setString(2, version.getLanguage());
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Bible version could not be inserted", e);
+	}
+    }
+
+    @Override
+    public Verse getVerse(Position position) {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }
