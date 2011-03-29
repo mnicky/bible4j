@@ -20,12 +20,12 @@ public interface BibleStorage {
      */
     void close() throws BibleStorageException;
 
-    void createStorage() throws BibleStorageException;
+    int[] createStorage() throws BibleStorageException;
 
-    //void insertVerse(Verse verse);
+    void insertVerse(Verse verse) throws BibleStorageException;
     //void insertBibleVersion(BibleVersion version);
     //void insertPosition(Position position);
-    //void insertBibleBook(BibleBook book);
+    void insertBibleBook(BibleBook book) throws BibleStorageException;
 
     //Verse getVerse(Position position);
     //Verse getVerse(Position position, BibleVersion version);
