@@ -36,4 +36,6 @@ public interface BibleStorage {
 
     // List<Verse> compareVerses(Position position, List<BibleVersion> version);
 
+    // List<Verse> compareVerses(List<Position> , List<BibleVersion> version);
+
 }

@@ -133,4 +133,8 @@ public enum BibleBook {
 	NEW,
     }
     
+    public static BibleBook getBibleBookByName(String name) {
+	return BibleBook.valueOf((name.trim().toUpperCase()));
+    }
+    
 }

@@ -72,6 +72,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     // TODO needed?
+    // TODO use CachedRowSet instead of ResultSet ?
     private ResultSet commitQuery(PreparedStatement st) throws SQLException {
 
 	ResultSet result = null;
@@ -319,8 +320,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 		st.setInt(4, position.getVerseNum());
 		rs = commitQuery(st);
 		while (rs.next())
-		    verseList.add(new Verse(rs.getString("text"), new Position(BibleBook.valueOf((rs
-			    .getString("book").trim().toUpperCase())), rs.getInt("chapter_num"), rs
+		    verseList.add(new Verse(rs.getString("text"), new Position(BibleBook.getBibleBookByName(rs
+			    .getString("book")), rs.getInt("chapter_num"), rs
 			    .getInt("verse_num")), new BibleVersion(rs.getString("version"), rs
 			    .getString("lang"))));
 
@@ -328,8 +329,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 		throw new BibleStorageException("Verses could not be retrieved", e);
 	    } finally {
 		try {
-		    if (rs != null)
-			rs.close();
 		    if (st != null)
 			st.close();
 		} catch (SQLException e) {
