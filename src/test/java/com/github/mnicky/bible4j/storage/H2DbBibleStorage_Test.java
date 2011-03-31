@@ -170,7 +170,7 @@ public final class H2DbBibleStorage_Test {
     }
 
     @Test
-    public void shouldInsertVerse() {
+    public void insertVerseShouldInsertVerse() {
 
 	Object[] exp = { "There was a man sent from God, whose name was John.", "john", 1, 6,
 		"English Standard Version", };
@@ -232,7 +232,7 @@ public final class H2DbBibleStorage_Test {
     }
 
     @Test
-    public void testGetVerseWithListOfVerses() {
+    public void getVersesShouldRetrieveListOfAllRequestedVerses() {
 
 	List<Verse> exp = new ArrayList<Verse>();
 	exp.add(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en")));
@@ -261,6 +261,44 @@ public final class H2DbBibleStorage_Test {
 	    positions.add(new Position(BibleBook.ACTS, 1, 4));
 
 	    retrieved = bible.getVerses(positions, new BibleVersion("KJV", "en"));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	Assert.assertEquals(retrieved, exp);
+    }
+
+    @Test
+    public void compareVersesShouldRetrieveListOfAllRequestedVerses() {
+
+	List<Verse> exp = new ArrayList<Verse>();
+	exp.add(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV1", "en")));
+	exp.add(new Verse("test text2", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV2", "en")));
+	exp.add(new Verse("test text3", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV3", "en")));
+
+	List<Verse> retrieved = null;
+
+	try {
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV1", "en"));
+	    bible.insertBibleVersion(new BibleVersion("KJV2", "en"));
+	    bible.insertBibleVersion(new BibleVersion("KJV3", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
+		    "KJV1", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
+		    "KJV2", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
+		    "KJV3", "en")));
+
+	    List<BibleVersion> versions = new ArrayList<BibleVersion>();
+	    versions.add(new BibleVersion("KJV1", "en"));
+	    versions.add(new BibleVersion("KJV2", "en"));
+	    versions.add(new BibleVersion("KJV3", "en"));
+
+	    retrieved = bible.compareVerses(new Position(BibleBook.ACTS, 1, 2), versions);
 
 	} catch (Exception e) {
 	    e.printStackTrace();
