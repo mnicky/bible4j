@@ -36,6 +36,10 @@ public interface BibleStorage {
 
     List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException;
 
-    // List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions);
+    List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions)
+	    throws BibleStorageException;
+
+    // List<Verse> compareVersesOptimalized(Position position, List<BibleVersion> versions) throws
+    // BibleStorageException;
 
 }

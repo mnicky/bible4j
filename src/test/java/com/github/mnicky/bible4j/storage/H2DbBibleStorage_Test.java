@@ -30,13 +30,21 @@ public final class H2DbBibleStorage_Test {
 	    conn = DriverManager.getConnection("jdbc:h2:mem:", "test", "");
 
 	    // for debugging purposes:
-	    // conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
+	    //conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
 
 	} catch (SQLException e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
 	bible = new H2DbBibleStorage(conn);
+
+	try {
+	    bible.createStorage();
+
+	} catch (BibleStorageException e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
 
     }
 
@@ -270,12 +278,60 @@ public final class H2DbBibleStorage_Test {
     }
 
     @Test
-    public void compareVersesShouldRetrieveListOfAllRequestedVerses() {
+    public void compareVersesForOnePositionShouldRetrieveListOfAllRequestedVerses() {
+
+	int numOfVersionsToTest = 9;
+
+	List<Verse> exp = new ArrayList<Verse>();
+
+	for (int i = 0; i < numOfVersionsToTest; i++)
+	    exp.add(new Verse("test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
+		    "KJV" + (i + 1), "en")));
+
+	List<Verse> retrieved = null;
+
+	try {
+	    bible.createStorage();
+
+	    for (int i = 0; i < numOfVersionsToTest; i++)
+		bible.insertBibleVersion(new BibleVersion("KJV" + (i + 1), "en"));
+
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+
+	    for (int i = 0; i < numOfVersionsToTest; i++)
+		bible.insertVerse(new Verse("test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2),
+			new BibleVersion("KJV" + (i + 1), "en")));
+
+	    List<BibleVersion> versions = new ArrayList<BibleVersion>();
+
+	    for (int i = 0; i < numOfVersionsToTest; i++)
+		versions.add(new BibleVersion("KJV" + (i + 1), "en"));
+
+	    retrieved = bible.compareVerses(new Position(BibleBook.ACTS, 1, 2), versions);
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	Assert.assertEquals(retrieved, exp);
+    }
+
+    @Test
+    public void compareVersesForMorePositionsShouldRetrieveListOfAllRequestedVerses() {
 
 	List<Verse> exp = new ArrayList<Verse>();
 	exp.add(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV1", "en")));
+	exp.add(new Verse("test text1", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV1", "en")));
+	exp.add(new Verse("test text1", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV1", "en")));
+
 	exp.add(new Verse("test text2", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV2", "en")));
+	exp.add(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV2", "en")));
+	exp.add(new Verse("test text2", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV2", "en")));
+
 	exp.add(new Verse("test text3", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV3", "en")));
+	exp.add(new Verse("test text3", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV3", "en")));
+	exp.add(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV3", "en")));
 
 	List<Verse> retrieved = null;
 
@@ -286,25 +342,80 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertBibleVersion(new BibleVersion("KJV3", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
 	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
 		    "KJV1", "en")));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
+		    "KJV1", "en")));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
+		    "KJV1", "en")));
+
 	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
 		    "KJV2", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
+		    "KJV2", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
+		    "KJV2", "en")));
+
 	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
+		    "KJV3", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
+		    "KJV3", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
 		    "KJV3", "en")));
 
 	    List<BibleVersion> versions = new ArrayList<BibleVersion>();
 	    versions.add(new BibleVersion("KJV1", "en"));
 	    versions.add(new BibleVersion("KJV2", "en"));
 	    versions.add(new BibleVersion("KJV3", "en"));
+	    List<Position> positions = new ArrayList<Position>();
+	    positions.add(new Position(BibleBook.ACTS, 1, 2));
+	    positions.add(new Position(BibleBook.ACTS, 1, 3));
+	    positions.add(new Position(BibleBook.ACTS, 1, 4));
 
-	    retrieved = bible.compareVerses(new Position(BibleBook.ACTS, 1, 2), versions);
+	    retrieved = bible.compareVerses(positions, versions);
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
 	Assert.assertEquals(retrieved, exp);
+    }
+
+    private void insertSimulatedBibles(BibleStorage bible) throws BibleStorageException {
+
+	int BIBLE_VERSIONS = 61;
+	int CHAPTERS_IN_BOOK = 7;
+	int VERSES_IN_CHAPTER = 11;
+
+	BibleVersion[] bibles = new BibleVersion[BIBLE_VERSIONS];
+	for (int i = 0; i < BIBLE_VERSIONS; i++) {
+	    bibles[i] = new BibleVersion("Bible version " + i, "lang " + i);
+	    bible.insertBibleVersion(bibles[i]);
+	}
+
+	for (BibleBook book : BibleBook.values()) {
+	    System.out.println(book.getName());
+	    bible.insertBibleBook(book);
+
+	    for (int chpt = 0; chpt < CHAPTERS_IN_BOOK; chpt++)
+
+		for (int vrs = 0; vrs < VERSES_IN_CHAPTER; vrs++) {
+
+		    Position pos = new Position(book, chpt, vrs);
+		    bible.insertPosition(pos);
+
+		    for (BibleVersion version : bibles) {
+			bible.insertVerse(new Verse("this is the Bible verse text of position"
+				+ pos.toString()
+				+ "and version " + version.toString(), pos, version));
+		    }
+
+		}
+
+	}
+
     }
 
 }

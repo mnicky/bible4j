@@ -80,7 +80,7 @@ public enum BibleBook {
     JOHN_2		(Testament.NEW, false),
     JOHN_3		(Testament.NEW, false),
     JUDE		(Testament.NEW, false),
-    REVELATION		(Testament.NEW, false)
+    REVELATION		(Testament.NEW, false),
     ;
     
     /**
