@@ -62,7 +62,7 @@ public class BibleVersion_Test {
     
     @Test
     public void testEqualsWithAnotherType() {
-        String s = new String();
+        String s = "";
         boolean b = bv1.equals(s);
         Assert.assertEquals(b, false);
     }

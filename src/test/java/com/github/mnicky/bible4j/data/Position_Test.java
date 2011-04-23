@@ -62,7 +62,7 @@ public class Position_Test {
     
     @Test
     public void testEqualsWithAnotherType() {
-        String s = new String();
+        String s = "";
         boolean b = pos1.equals(s);
         Assert.assertEquals(b, false);
     }

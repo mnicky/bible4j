@@ -30,6 +30,7 @@ public interface BibleStorage {
 
     void insertBibleBook(BibleBook book) throws BibleStorageException;
 
+    //merge these four functionalities into the last one?
     Verse getVerse(Position position, BibleVersion version) throws BibleStorageException;
 
     List<Verse> getVerses(List<Position> position, BibleVersion version) throws BibleStorageException;

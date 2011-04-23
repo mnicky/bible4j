@@ -125,7 +125,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	try {
 	    Statement st = dbConnection.createStatement();
 
-	    // FIXME add CASCADE or RESTRICTED to f. keys etc?
+	    // FIXME add CASCADE or RESTRICTED to foreign keys etc?
 	    // TODO convert more VARCHARs to V_IGNORECASE?
 	    // TODO add more UNIQUE constraints, CHECK etc... ?
 
@@ -390,7 +390,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	return verseList;
     }
 
-    //seems to efficient
+    //seems to inefficient
 //    @Override
 //    public List<Verse> compareVersesOptimalized(Position position, List<BibleVersion> versions)
 //	    throws BibleStorageException {

@@ -3,10 +3,6 @@ About
 =======
 Bible4j is a simple Bible tool/library for Java
 
-It is being developped as my semestral project for
-'Development of Java programs' course at my university.
-
-
 
 Information
 =============
