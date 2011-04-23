@@ -390,86 +390,86 @@ public final class H2DbBibleStorage implements BibleStorage {
 	return verseList;
     }
 
-    //seems to inefficient
-//    @Override
-//    public List<Verse> compareVersesOptimalized(Position position, List<BibleVersion> versions)
-//	    throws BibleStorageException {
-//
-//	List<Verse> verseList = new ArrayList<Verse>();
-//
-//	// prepare batch select query part for IN statement
-//	final int SINGLE_BATCH = 1;
-//	final int SMALL_BATCH = 4;
-//	final int MEDIUM_BATCH = 11;
-//	final int LARGE_BATCH = 51;
-//
-//	int totalNumberOfValuesLeftToBatch = versions.size();
-//	int versionNameToInsert = 0;
-//
-//	while (totalNumberOfValuesLeftToBatch > 0) {
-//
-//	    PreparedStatement st = null;
-//
-//	    int batchSize = SINGLE_BATCH;
-//
-//	    if (totalNumberOfValuesLeftToBatch >= LARGE_BATCH)
-//		batchSize = LARGE_BATCH;
-//	    else if (totalNumberOfValuesLeftToBatch >= MEDIUM_BATCH)
-//		batchSize = MEDIUM_BATCH;
-//	    else if (totalNumberOfValuesLeftToBatch >= SMALL_BATCH)
-//		batchSize = SMALL_BATCH;
-//
-//	    totalNumberOfValuesLeftToBatch -= batchSize;
-//
-//	    StringBuilder inClause = new StringBuilder();
-//	    for (int i = 0; i < batchSize - 1; i++)
-//		inClause.append("?, ");
-//	    inClause.append('?');
-//
-//	    // run the query
-//
-//	    try {
-//		st = dbConnection
-//			.prepareStatement("SELECT `text`, `bible_versions`.`name` AS version, `lang`, `verse_num`, `chapter_num`, `bible_books`.`name` AS `book` "
-//				+ "FROM bible_versions "
-//				+ "INNER JOIN `verses` ON `bible_version_id` = `bible_versions`.`id` "
-//				+ "INNER JOIN `coords` ON `coord_id` = `coords`.`id` "
-//				+ "INNER JOIN `bible_books` ON `bible_book_id` = `bible_books`.`id` "
-//				+ "WHERE `chapter_num` = ? AND `bible_books`.`name` = ? AND `bible_versions`.`name` IN ("
-//				+ inClause.toString() + ") AND `verse_num` = ? ORDER BY `version`");
-//
-//		st.setInt(1, position.getChapterNum());
-//		st.setString(2, position.getBook().getName());
-//
-//		for (int i = 3; i < batchSize + 3; i++)
-//		    st.setString(i, versions.get(versionNameToInsert++).getName());
-//
-//		st.setInt(batchSize + 3, position.getVerseNum());
-//		
-//
-//		ResultSet rs = commitQuery(st);
-//
-//		while (rs.next())
-//		    verseList.add(new Verse(rs.getString("text"), new Position(BibleBook
-//			    .getBibleBookByName(rs
-//				    .getString("book")), rs.getInt("chapter_num"), rs
-//			    .getInt("verse_num")), new BibleVersion(rs.getString("version"), rs
-//			    .getString("lang"))));
-//
-//	    } catch (SQLException e) {
-//		throw new BibleStorageException("Verses could not be retrieved", e);
-//	    } finally {
-//		try {
-//		    if (st != null)
-//			st.close();
-//		} catch (SQLException e) {
-//		    e.printStackTrace();
-//		}
-//	    }
-//	}
-//
-//	return verseList;
-//    }
+    // seems to inefficient
+    // @Override
+    // public List<Verse> compareVersesOptimalized(Position position, List<BibleVersion> versions)
+    // throws BibleStorageException {
+    //
+    // List<Verse> verseList = new ArrayList<Verse>();
+    //
+    // // prepare batch select query part for IN statement
+    // final int SINGLE_BATCH = 1;
+    // final int SMALL_BATCH = 4;
+    // final int MEDIUM_BATCH = 11;
+    // final int LARGE_BATCH = 51;
+    //
+    // int totalNumberOfValuesLeftToBatch = versions.size();
+    // int versionNameToInsert = 0;
+    //
+    // while (totalNumberOfValuesLeftToBatch > 0) {
+    //
+    // PreparedStatement st = null;
+    //
+    // int batchSize = SINGLE_BATCH;
+    //
+    // if (totalNumberOfValuesLeftToBatch >= LARGE_BATCH)
+    // batchSize = LARGE_BATCH;
+    // else if (totalNumberOfValuesLeftToBatch >= MEDIUM_BATCH)
+    // batchSize = MEDIUM_BATCH;
+    // else if (totalNumberOfValuesLeftToBatch >= SMALL_BATCH)
+    // batchSize = SMALL_BATCH;
+    //
+    // totalNumberOfValuesLeftToBatch -= batchSize;
+    //
+    // StringBuilder inClause = new StringBuilder();
+    // for (int i = 0; i < batchSize - 1; i++)
+    // inClause.append("?, ");
+    // inClause.append('?');
+    //
+    // // run the query
+    //
+    // try {
+    // st = dbConnection
+    // .prepareStatement("SELECT `text`, `bible_versions`.`name` AS version, `lang`, `verse_num`, `chapter_num`, `bible_books`.`name` AS `book` "
+    // + "FROM bible_versions "
+    // + "INNER JOIN `verses` ON `bible_version_id` = `bible_versions`.`id` "
+    // + "INNER JOIN `coords` ON `coord_id` = `coords`.`id` "
+    // + "INNER JOIN `bible_books` ON `bible_book_id` = `bible_books`.`id` "
+    // + "WHERE `chapter_num` = ? AND `bible_books`.`name` = ? AND `bible_versions`.`name` IN ("
+    // + inClause.toString() + ") AND `verse_num` = ? ORDER BY `version`");
+    //
+    // st.setInt(1, position.getChapterNum());
+    // st.setString(2, position.getBook().getName());
+    //
+    // for (int i = 3; i < batchSize + 3; i++)
+    // st.setString(i, versions.get(versionNameToInsert++).getName());
+    //
+    // st.setInt(batchSize + 3, position.getVerseNum());
+    //
+    //
+    // ResultSet rs = commitQuery(st);
+    //
+    // while (rs.next())
+    // verseList.add(new Verse(rs.getString("text"), new Position(BibleBook
+    // .getBibleBookByName(rs
+    // .getString("book")), rs.getInt("chapter_num"), rs
+    // .getInt("verse_num")), new BibleVersion(rs.getString("version"), rs
+    // .getString("lang"))));
+    //
+    // } catch (SQLException e) {
+    // throw new BibleStorageException("Verses could not be retrieved", e);
+    // } finally {
+    // try {
+    // if (st != null)
+    // st.close();
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    // }
+    //
+    // return verseList;
+    // }
 
     @Override
     public List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions)

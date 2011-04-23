@@ -27,10 +27,10 @@ public final class H2DbBibleStorage_Test {
     @BeforeMethod
     public void setUpTest() {
 	try {
-	    //conn = DriverManager.getConnection("jdbc:h2:mem:", "test", "");
+	    conn = DriverManager.getConnection("jdbc:h2:mem:", "test", "");
 
 	    // for debugging purposes:
-	    conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
+	    //conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
 
 	} catch (SQLException e) {
 	    e.printStackTrace();
