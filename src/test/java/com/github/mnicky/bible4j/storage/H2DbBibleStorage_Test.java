@@ -20,6 +20,8 @@ import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 
 public final class H2DbBibleStorage_Test {
+    
+    //TODO convert old tests to use H2DbNaming class
 
     private Connection conn;
     private H2DbBibleStorage bible;
