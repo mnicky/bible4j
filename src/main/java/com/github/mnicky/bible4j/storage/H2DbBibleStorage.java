@@ -12,6 +12,7 @@ import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
+import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
 
 /**
  * {@link BibleStorage} backed by <a href="http://h2database.com">H2 database</a>.
@@ -129,65 +130,65 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    // TODO convert more VARCHARs to V_IGNORECASE?
 	    // TODO add more UNIQUE constraints, CHECK etc... ?
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `bible_versions` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`name` VARCHAR_IGNORECASE(50) NOT NULL UNIQUE,"
-		    + "`lang` VARCHAR(50) NOT NULL)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + VERSIONS + " ("
+		    + VERSION_ID + " INT IDENTITY NOT NULL,"
+		    + VERSION_NAME + " VARCHAR_IGNORECASE(50) NOT NULL UNIQUE,"
+		    + VERSION_LANG + " VARCHAR(50) NOT NULL)");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `bible_books` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`name` VARCHAR_IGNORECASE(50) NOT NULL UNIQUE,"
-		    + "`is_deutero` BOOLEAN NOT NULL)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + BOOKS + " ("
+		    + BOOK_ID + " INT IDENTITY NOT NULL,"
+		    + BOOK_NAME + " VARCHAR_IGNORECASE(50) NOT NULL UNIQUE,"
+		    + BOOK_DEUT + " BOOLEAN NOT NULL)");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `coords` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`bible_book_id` INT NOT NULL,"
-		    + "`chapter_num` INT NOT NULL,"
-		    + "`verse_num` INT NOT NULL,"
-		    + "FOREIGN KEY (`bible_book_id`) REFERENCES `bible_books`)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + COORDS + " ("
+		    + COORD_ID + " INT IDENTITY NOT NULL,"
+		    + COORD_BOOK + " INT NOT NULL,"
+		    + COORD_CHAPT + " INT NOT NULL,"
+		    + COORD_VERSE + " INT NOT NULL,"
+		    + "FOREIGN KEY (" + COORD_BOOK + ") REFERENCES " + BOOKS + ")");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `verses` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`text` VARCHAR(500) NOT NULL,"
-		    + "`bible_version_id` INT NOT NULL,"
-		    + "`coord_id` INT NOT NULL,"
-		    + "FOREIGN KEY (`bible_version_id`) REFERENCES `bible_versions`,"
-		    + "FOREIGN KEY (`coord_id`) REFERENCES `coords`)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + VERSES + " ("
+		    + VERSE_ID + " INT IDENTITY NOT NULL,"
+		    + VERSE_TEXT + " VARCHAR(500) NOT NULL,"
+		    + VERSE_VERSION + " INT NOT NULL,"
+		    + VERSE_COORD + " INT NOT NULL,"
+		    + "FOREIGN KEY (" + VERSE_VERSION + ") REFERENCES " + VERSIONS + ","
+		    + "FOREIGN KEY (" + VERSE_COORD + ") REFERENCES " + COORDS + ")");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `notes` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`type` VARCHAR(1) NOT NULL,"
-		    + "`text` VARCHAR(500) NOT NULL,"
-		    + "`coord_id` INT NOT NULL,"
-		    + "FOREIGN KEY (`coord_id`) REFERENCES `coords`)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + NOTES + " ("
+		    + NOTE_ID + " INT IDENTITY NOT NULL,"
+		    + NOTE_TYPE + " VARCHAR(1) NOT NULL,"
+		    + NOTE_TEXT + " VARCHAR(500) NOT NULL,"
+		    + NOTE_COORD + " INT NOT NULL,"
+		    + "FOREIGN KEY (" + NOTE_COORD + ") REFERENCES " + COORDS + ")");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `bookmarks` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`name` VARCHAR(50) NOT NULL,"
-		    + "`verse_id` INT NOT NULL,"
-		    + "FOREIGN KEY (`verse_id`) REFERENCES `verses`)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + BKMARKS + " ("
+		    + BKMARK_ID + " INT IDENTITY NOT NULL,"
+		    + BKMARK_NAME + " VARCHAR(50) NOT NULL,"
+		    + BKMARK_VERSE + " INT NOT NULL,"
+		    + "FOREIGN KEY (" + BKMARK_VERSE + ") REFERENCES " + VERSES + ")");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `daily_readings_lists` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`name` VARCHAR(50) NOT NULL UNIQUE)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + RLISTS + " ("
+		    + RLIST_ID + " INT IDENTITY NOT NULL,"
+		    + RLIST_NAME + " VARCHAR(50) NOT NULL UNIQUE)");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `daily_readings` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`date` DATE NOT NULL,"
-		    + "`daily_readings_list_id` INT NOT NULL,"
-		    + "FOREIGN KEY (`daily_readings_list_id`) REFERENCES `daily_readings_lists`)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + READS + " ("
+		    + READ_ID + " INT IDENTITY NOT NULL,"
+		    + READ_DATE + " DATE NOT NULL,"
+		    + READ_LIST + " INT NOT NULL,"
+		    + "FOREIGN KEY (" + READ_LIST + ") REFERENCES " + RLISTS + ")");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `readings_coords` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`coord_id` INT NOT NULL,"
-		    + "`reading_id` INT NOT NULL,"
-		    + "FOREIGN KEY (`coord_id`) REFERENCES `coords`,"
-		    + "FOREIGN KEY (`reading_id`) REFERENCES `daily_readings`)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + READxCOORDS + " ("
+		    + READxCOORD_ID + " INT IDENTITY NOT NULL,"
+		    + READxCOORD_COORD + " INT NOT NULL,"
+		    + READxCOORD_READ + " INT NOT NULL,"
+		    + "FOREIGN KEY (" + READxCOORD_COORD + ") REFERENCES " + COORDS + ","
+		    + "FOREIGN KEY (" + READxCOORD_READ + ") REFERENCES " + READS + ")");
 
-	    st.addBatch("CREATE TABLE IF NOT EXISTS `dict_terms` ("
-		    + "`id` INT IDENTITY NOT NULL,"
-		    + "`name` VARCHAR(50) NOT NULL UNIQUE,"
-		    + "`def` VARCHAR(500) NOT NULL)");
+	    st.addBatch("CREATE TABLE IF NOT EXISTS " + TERMS + " ("
+		    + TERM_ID + " INT IDENTITY NOT NULL,"
+		    + TERM_NAME + " VARCHAR(50) NOT NULL UNIQUE,"
+		    + TERM_DEF + " VARCHAR(500) NOT NULL)");
 
 	    columns = commitBatch(st);
 
