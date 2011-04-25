@@ -10,23 +10,23 @@ import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.Note.NoteType;
 import com.github.mnicky.bible4j.data.Position;
 
-public final class Note_Test {
+public final class DictTerm_Test {
 
-    private Note n1, n2, n3;
+    private DictTerm t1, t2, t3;
 
     @BeforeMethod
     public void beforeMethod() {
-	n1 = new Note("some note text", new Position(BibleBook.ACTS, 2, 8), NoteType.COMMENTARY);
-	n2 = new Note("some note text", new Position(BibleBook.ACTS, 2, 8), NoteType.USER_NOTE);
-	n3 = new Note("some note text", new Position(BibleBook.ACTS, 2, 8), NoteType.USER_NOTE);
+	t1 = new DictTerm("name1", "def1");
+	t2 = new DictTerm("name2", "def2");
+	t3 = new DictTerm("name2", "def2");
 
     }
 
     @Test
     public void testToString() {
-	String exp = "some note text - ACTS 2,8 (COMMENTARY)";
+	String exp = "name1 - def1";
 
-	String tested = n1.toString();
+	String tested = t1.toString();
 	assertEquals(tested, exp);
 
     }
@@ -37,7 +37,7 @@ public final class Note_Test {
     public void testEqualsForTrue() {
 	boolean exp = true;
 
-	boolean act = n3.equals(n2);
+	boolean act = t3.equals(t2);
 
 	assertEquals(act, exp);
     }
@@ -46,31 +46,31 @@ public final class Note_Test {
     public void testEqualsForFalse() {
 	boolean exp = false;
 
-	boolean act = n1.equals(n2);
+	boolean act = t1.equals(t2);
 
 	assertEquals(act, exp);
     }
     
     @Test
     public void testHashCodeForConsistency() {
-        int h2 = n2.hashCode();
-        int h3 = n3.hashCode();
+        int h2 = t2.hashCode();
+        int h3 = t3.hashCode();
         Assert.assertEquals(h2 == h3, true);
     }
 
     @Test
     public void testHashCodeForConsistencyWithEqualsForTrue() {
-	int h2 = n2.hashCode();
-	int h3 = n3.hashCode();
-	boolean b = n2.equals(n3);
+	int h2 = t2.hashCode();
+	int h3 = t3.hashCode();
+	boolean b = t2.equals(t3);
 	Assert.assertEquals(h2 == h3, b);
     }
 
     @Test
     public void testHashCodeForConsistencyWithEqualsForFalse() {
-	int h1 = n1.hashCode();
-	int h3 = n3.hashCode();
-	boolean b = n1.equals(n3);
+	int h1 = t1.hashCode();
+	int h3 = t3.hashCode();
+	boolean b = t1.equals(t3);
 	Assert.assertEquals(h1 == h3, b);
     }
 

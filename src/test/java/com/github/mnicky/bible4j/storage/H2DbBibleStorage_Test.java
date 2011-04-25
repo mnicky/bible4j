@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
+import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
@@ -682,6 +683,29 @@ public final class H2DbBibleStorage_Test {
 	    Assert.fail();
 	}
 	// then
+	Assert.assertEquals(retrieved, exp);
+    }
+    
+    @Test
+    public void getDictTermShouldRetrieveRequestedTerm() {
+	DictTerm exp = new DictTerm("term number one", "term text");
+	DictTerm retrieved = null;
+
+	try {
+	    //given
+	    bible.createStorage();
+	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
+	    bible.insertDictTerm(new DictTerm("term number two", "term text"));
+	    bible.insertDictTerm(new DictTerm("term number three", "term text"));
+
+	    //when
+	    retrieved = bible.getDictTerm("term number one");
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	//then
 	Assert.assertEquals(retrieved, exp);
     }
 

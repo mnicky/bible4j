@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
+import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
@@ -55,5 +56,9 @@ public interface BibleStorage {
     List<Bookmark> getBookmarks() throws BibleStorageException;
 
     List<Bookmark> getBookmarks(BibleVersion version) throws BibleStorageException;
+    
+    void insertDictTerm(DictTerm term) throws BibleStorageException;
+    
+    DictTerm getDictTerm(String name) throws BibleStorageException;
 
 }

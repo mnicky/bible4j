@@ -11,6 +11,7 @@ import java.util.List;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
+import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
@@ -742,6 +743,51 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
 
 	return noteList;
+    }
+
+    @Override
+    public void insertDictTerm(DictTerm term) throws BibleStorageException {
+	try {
+	    PreparedStatement st = dbConnection.prepareStatement(
+		    "INSERT INTO " + TERMS
+			    + "(" + TERM_NAME + ", " + TERM_DEF + ") VALUES (?, ?)");
+	    st.setString(1, term.getName());
+	    st.setString(2, term.getDefinition());
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    throw new BibleStorageException("DictTerm could not be inserted", e);
+	}
+    }
+
+    @Override
+    public DictTerm getDictTerm(String name) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	DictTerm term = null;
+
+	try {
+	    st = dbConnection
+		    .prepareStatement("SELECT " + TERM_NAME_F + ", " + TERM_DEF_F
+				      + "FROM " + TERMS
+				      + "WHERE " + TERM_NAME_F + " = ? LIMIT 1");
+	    st.setString(1, name);
+	    rs = commitQuery(st);
+	    while (rs.next())
+		term = new DictTerm(rs.getString(1), rs.getString(2));
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("DictTerm could not be retrieved", e);
+	} finally {
+	    try {
+		if (rs != null)
+		    rs.close();
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+	return term;
     }
 
 }
