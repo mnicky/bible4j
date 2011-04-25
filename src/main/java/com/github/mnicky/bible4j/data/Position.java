@@ -1,9 +1,11 @@
 package com.github.mnicky.bible4j.data;
 
+import java.util.Comparator;
+
 /**
  * Class representing position (coordinates) in the Bible.
  */
-public final class Position {
+public final class Position implements Comparable<Position>, Comparator<Position>{
     
     /**
      * Bible Book.
@@ -93,6 +95,54 @@ public final class Position {
 
     public int getVerseNum() {
 	return verseNum;
-    }    
+    }
+
+
+    @Override
+    public int compareTo(Position p) {
+	
+	if (this.book.ordinal() > p.book.ordinal())
+	    return 1;
+	
+	else if (this.book.ordinal() == p.book.ordinal()) {
+	    if (this.chapterNum > p.chapterNum)
+		return 1;
+	    else if (this.chapterNum == p.chapterNum) {
+		if (this.verseNum > p.verseNum)
+		    return 1;
+		else if (this.verseNum == p.verseNum)
+		    return 0;
+		else return -1;
+	    }
+	    else
+		return -1;
+	}
+	else
+	    return -1;
+    }
+
+
+    @Override
+    public int compare(Position p1, Position p2) {
+	
+	if (p1.book.ordinal() > p2.book.ordinal())
+	    return 1;
+	
+	else if (p1.book.ordinal() == p2.book.ordinal()) {
+	    if (p1.chapterNum > p2.chapterNum)
+		return 1;
+	    else if (p1.chapterNum == p2.chapterNum) {
+		if (p1.verseNum > p2.verseNum)
+		    return 1;
+		else if (p1.verseNum == p2.verseNum)
+		    return 0;
+		else return -1;
+	    }
+	    else
+		return -1;
+	}
+	else
+	    return -1;
+    }
 
 }
