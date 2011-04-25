@@ -78,8 +78,6 @@ public final class Position implements Comparable<Position> {
         result = 31 * result + (Integer.valueOf(verseNum).hashCode());
         return result;
     }
-    
-    //TODO implements comparable on Position 
 
 
     public BibleBook getBook() {
