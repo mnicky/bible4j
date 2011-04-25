@@ -20,6 +20,7 @@ public interface BibleStorage {
      */
     void close() throws BibleStorageException;
 
+    //TODO: change createStorage() to return void
     int[] createStorage() throws BibleStorageException;
 
     void insertVerse(Verse verse) throws BibleStorageException;
@@ -30,7 +31,7 @@ public interface BibleStorage {
 
     void insertBibleBook(BibleBook book) throws BibleStorageException;
 
-    //merge these four functionalities into the last one?
+    // merge these four functionalities into the last one (or the first one)?
     Verse getVerse(Position position, BibleVersion version) throws BibleStorageException;
 
     List<Verse> getVerses(List<Position> position, BibleVersion version) throws BibleStorageException;
@@ -42,5 +43,15 @@ public interface BibleStorage {
 
     // List<Verse> compareVersesOptimalized(Position position, List<BibleVersion> versions) throws
     // BibleStorageException;
+
+    // void insertNote(Note note);
+
+    // List<Note> getNotes(Position position);
+
+    // void insertBookmark(Bookmark bookmark);
+
+    // List<Bookmark> getBookmarks();
+
+    // List<Bookmark> getBookmarks(BibleVersion version); ???
 
 }
