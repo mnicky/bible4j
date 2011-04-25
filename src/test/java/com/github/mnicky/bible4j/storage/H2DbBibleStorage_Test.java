@@ -18,10 +18,9 @@ import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
+import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
 
 public final class H2DbBibleStorage_Test {
-    
-    //TODO convert old tests to use H2DbNaming class
 
     private Connection conn;
     private H2DbBibleStorage bible;
@@ -32,7 +31,7 @@ public final class H2DbBibleStorage_Test {
 	    conn = DriverManager.getConnection("jdbc:h2:mem:", "test", "");
 
 	    // for debugging purposes:
-	    //conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
+	    // conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
 
 	} catch (SQLException e) {
 	    e.printStackTrace();
@@ -102,12 +101,13 @@ public final class H2DbBibleStorage_Test {
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT `name`, `is_deutero` FROM `bible_books` WHERE `name` = 'baruch' LIMIT 1");
+		    .executeQuery("SELECT " + BOOK_NAME_F + ", " + BOOK_DEUT_F + " FROM " + BOOKS + " WHERE "
+			    + BOOK_NAME_F + " = 'baruch' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
-		actual[i++] = rs.getString("name");
-		actual[i++] = rs.getBoolean("is_deutero");
+		actual[i++] = rs.getString(1);
+		actual[i++] = rs.getBoolean(2);
 	    }
 
 	} catch (Exception e) {
@@ -132,13 +132,15 @@ public final class H2DbBibleStorage_Test {
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT `name`, `chapter_num`, `verse_num` FROM `coords`, `bible_books` WHERE `bible_book_id` = `bible_books`.`id` LIMIT 1");
+		    .executeQuery("SELECT " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F
+			    + " FROM " + COORDS + ", " + BOOKS + " WHERE " + BOOK_ID_F + " = " + COORD_BOOK_F
+			    + " LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
-		actual[i++] = rs.getString("name");
-		actual[i++] = rs.getInt("chapter_num");
-		actual[i++] = rs.getInt("verse_num");
+		actual[i++] = rs.getString(1);
+		actual[i++] = rs.getInt(2);
+		actual[i++] = rs.getInt(3);
 	    }
 
 	} catch (Exception e) {
@@ -162,12 +164,13 @@ public final class H2DbBibleStorage_Test {
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT `name`, `lang` FROM `bible_versions` WHERE `name` = 'Douay-Rheims' LIMIT 1");
+		    .executeQuery("SELECT " + VERSION_NAME_F + ", " + VERSION_LANG_F + " FROM " + VERSIONS
+			    + " WHERE " + VERSION_NAME_F + " = 'Douay-Rheims' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
-		actual[i++] = rs.getString("name");
-		actual[i++] = rs.getString("lang");
+		actual[i++] = rs.getString(1);
+		actual[i++] = rs.getString(2);
 	    }
 
 	} catch (Exception e) {
@@ -191,25 +194,27 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertBibleVersion(new BibleVersion("English Standard Version", "en"));
 	    bible.insertBibleBook(BibleBook.JOHN);
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
-	    bible.insertVerse(new Verse("There was a man sent from God, whose name was John.", new Position(
-		    BibleBook.JOHN, 1, 6), new BibleVersion("English Standard Version", "en")));
+	    bible.insertVerse(new Verse("There was a man sent from God, whose name was John.",
+					new Position(
+						     BibleBook.JOHN, 1, 6),
+					new BibleVersion("English Standard Version", "en")));
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT `text`, `bible_books`.`name` AS `book`, `chapter_num`, `verse_num`, `bible_versions`.`name` AS `version` "
-			    + "FROM `bible_versions` "
-			    + "INNER JOIN `verses` ON `bible_versions`.`id` = `bible_version_id` "
-			    + "INNER JOIN `coords` ON `coord_id` = `coords`.`id` "
-			    + "INNER JOIN `bible_books` ON `bible_book_id` = `bible_books`.`id` "
-			    + "WHERE `text` = 'There was a man sent from God, whose name was John.' LIMIT 1");
+		    .executeQuery("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", " + VERSION_NAME_F
+			    + " FROM " + VERSIONS
+			    + " INNER JOIN " + VERSES + " ON " + VERSION_ID_F + " = " + VERSE_VERSION_F
+			    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
+			    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+			    + " WHERE " + VERSE_TEXT_F + " = 'There was a man sent from God, whose name was John.' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
-		actual[i++] = rs.getString("text");
-		actual[i++] = rs.getString("book");
-		actual[i++] = rs.getInt("chapter_num");
-		actual[i++] = rs.getInt("verse_num");
-		actual[i++] = rs.getString("version");
+		actual[i++] = rs.getString(1);
+		actual[i++] = rs.getString(2);
+		actual[i++] = rs.getInt(3);
+		actual[i++] = rs.getInt(4);
+		actual[i++] = rs.getString(5);
 	    }
 
 	} catch (Exception e) {
@@ -229,8 +234,9 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
-	    bible.insertVerse(new Verse("test text", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
-		    "KJV", "en")));
+	    bible.insertVerse(new Verse("test text", new Position(BibleBook.ACTS, 1, 2),
+					new BibleVersion(
+							 "KJV", "en")));
 
 	    retrieved = bible.getVerse(new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"));
 
@@ -258,12 +264,15 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
-	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
-		    "KJV", "en")));
-	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
-		    "KJV", "en")));
-	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
-		    "KJV", "en")));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+					new BibleVersion(
+							 "KJV", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3),
+					new BibleVersion(
+							 "KJV", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "KJV", "en")));
 
 	    List<Position> positions = new ArrayList<Position>();
 	    positions.add(new Position(BibleBook.ACTS, 1, 2));
@@ -287,8 +296,9 @@ public final class H2DbBibleStorage_Test {
 	List<Verse> exp = new ArrayList<Verse>();
 
 	for (int i = 0; i < numOfVersionsToTest; i++)
-	    exp.add(new Verse("test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
-		    "KJV" + (i + 1), "en")));
+	    exp.add(new Verse("test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2),
+			      new BibleVersion(
+					       "KJV" + (i + 1), "en")));
 
 	List<Verse> retrieved = null;
 
@@ -303,7 +313,7 @@ public final class H2DbBibleStorage_Test {
 
 	    for (int i = 0; i < numOfVersionsToTest; i++)
 		bible.insertVerse(new Verse("test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2),
-			new BibleVersion("KJV" + (i + 1), "en")));
+					    new BibleVersion("KJV" + (i + 1), "en")));
 
 	    List<BibleVersion> versions = new ArrayList<BibleVersion>();
 
@@ -346,26 +356,35 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
-	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
-		    "KJV1", "en")));
-	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
-		    "KJV1", "en")));
-	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
-		    "KJV1", "en")));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+					new BibleVersion(
+							 "KJV1", "en")));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 3),
+					new BibleVersion(
+							 "KJV1", "en")));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "KJV1", "en")));
 
-	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
-		    "KJV2", "en")));
-	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
-		    "KJV2", "en")));
-	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
-		    "KJV2", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 2),
+					new BibleVersion(
+							 "KJV2", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3),
+					new BibleVersion(
+							 "KJV2", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "KJV2", "en")));
 
-	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 2), new BibleVersion(
-		    "KJV3", "en")));
-	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 3), new BibleVersion(
-		    "KJV3", "en")));
-	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion(
-		    "KJV3", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 2),
+					new BibleVersion(
+							 "KJV3", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 3),
+					new BibleVersion(
+							 "KJV3", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "KJV3", "en")));
 
 	    List<BibleVersion> versions = new ArrayList<BibleVersion>();
 	    versions.add(new BibleVersion("KJV1", "en"));
