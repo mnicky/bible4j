@@ -17,8 +17,11 @@ import org.testng.annotations.Test;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
+import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
+import com.github.mnicky.bible4j.data.Note.NoteType;
+
 import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
 
 public final class H2DbBibleStorage_Test {
@@ -490,25 +493,27 @@ public final class H2DbBibleStorage_Test {
 	Assert.assertTrue(Arrays.deepEquals(actual, exp));
 
     }
-    
+
     @Test
     public void getBookmarksShouldRetrieveAllBookmarks() {
 	List<Bookmark> exp = new ArrayList<Bookmark>();
-	exp.add(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
-	exp.add(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV", "en"))));
-	exp.add(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+						  new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS, 1, 3),
+						  new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+						  new BibleVersion("KJV", "en"))));
 
 	List<Bookmark> retrieved = null;
 
 	try {
-	    //given
+	    // given
 	    bible.createStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
-	    
 
 	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
 					new BibleVersion(
@@ -519,32 +524,40 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
 					new BibleVersion(
 							 "KJV", "en")));
-	    
-	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
 
-	    //when
+	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS,
+											      1, 2),
+								   new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS,
+											      1, 3),
+								   new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS,
+											      1, 4),
+								   new BibleVersion("KJV", "en"))));
+
+	    // when
 	    retrieved = bible.getBookmarks();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
-	//then
+	// then
 	Assert.assertEquals(retrieved, exp);
     }
-    
+
     @Test
     public void getBookmarksShouldRetrieveAllBookmarksForSpecifiedBibleVersion() {
 	List<Bookmark> exp = new ArrayList<Bookmark>();
-	exp.add(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
-	exp.add(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+						  new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+						  new BibleVersion("KJV", "en"))));
 
 	List<Bookmark> retrieved = null;
 
 	try {
-	    //given
+	    // given
 	    bible.createStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleVersion(new BibleVersion("ROH", "sk"));
@@ -554,7 +567,6 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
-	    
 
 	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
 					new BibleVersion(
@@ -571,22 +583,107 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertVerse(new Verse("test text5", new Position(BibleBook.ACTS, 1, 4),
 					new BibleVersion(
 							 "ECAV", "sk")));
-	    
-	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("NIV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark4", new Verse("test text4", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("ROH", "sk"))));
-	    bible.insertBookmark(new Bookmark("bkmark5", new Verse("test text5", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("ECAV", "sk"))));
 
-	    //when
+	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS,
+											      1, 2),
+								   new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS,
+											      1, 3),
+								   new BibleVersion("NIV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS,
+											      1, 4),
+								   new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark4", new Verse("test text4", new Position(BibleBook.ACTS,
+											      1, 4),
+								   new BibleVersion("ROH", "sk"))));
+	    bible.insertBookmark(new Bookmark("bkmark5", new Verse("test text5", new Position(BibleBook.ACTS,
+											      1, 4),
+								   new BibleVersion("ECAV", "sk"))));
+
+	    // when
 	    retrieved = bible.getBookmarks(new BibleVersion("KJV", "en"));
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
-	//then
+	// then
 	Assert.assertEquals(retrieved, exp);
     }
+
+    @Test
+    public void insertNoteShouldInsertNote() {
+	Object[] exp = { "note text", "acts", 2, 16, "u" };
+	Object[] actual = new Object[5];
+
+	try {
+	    // given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 2, 16));
+
+	    // when
+	    bible.insertNote(new Note("note text", new Position(BibleBook.ACTS, 2, 16), NoteType.USER_NOTE));
+
+	    Statement st = conn.createStatement();
+	    ResultSet rs = st
+		    .executeQuery("SELECT " + NOTE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", " + NOTE_TYPE_F
+			    + " FROM " + NOTES
+			    + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + NOTE_COORD_F
+			    + " INNER JOIN " + BOOKS  + " ON " + BOOK_ID_F  + " = " + COORD_BOOK_F
+			    + " WHERE " + NOTE_TEXT_F + " = 'note text' LIMIT 1");
+
+	    int i = 0;
+	    while (rs.next()) {
+		actual[i++] = rs.getString(1);
+		actual[i++] = rs.getString(2);
+		actual[i++] = rs.getInt(3);
+		actual[i++] = rs.getInt(4);
+		actual[i++] = rs.getString(5);
+	    }
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+
+	// then
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
+    }
+    
+    @Test
+    public void getNotesShouldRetrieveAllNotesForSpecifiedPosition() {
+	List<Note> exp = new ArrayList<Note>();
+	exp.add(new Note("note text2", new Position(BibleBook.ACTS, 1, 4), NoteType.USER_NOTE));
+	exp.add(new Note("note text3", new Position(BibleBook.ACTS, 1, 4), NoteType.USER_NOTE));
+	exp.add(new Note("note text4", new Position(BibleBook.ACTS, 1, 4), NoteType.COMMENTARY));
+
+	List<Note> retrieved = null;
+
+	try {
+	    // given
+	    bible.createStorage();
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
+
+	    bible.insertNote(new Note("note text1", new Position(BibleBook.ACTS, 1, 2), NoteType.USER_NOTE));
+	    bible.insertNote(new Note("note text2", new Position(BibleBook.ACTS, 1, 4), NoteType.USER_NOTE));
+	    bible.insertNote(new Note("note text3", new Position(BibleBook.ACTS, 1, 4), NoteType.USER_NOTE));
+	    bible.insertNote(new Note("note text4", new Position(BibleBook.ACTS, 1, 4), NoteType.COMMENTARY));
+	    
+	    
+	    // when
+	    retrieved = bible.getNotes(new Position(BibleBook.ACTS, 1, 4));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	// then
+	Assert.assertEquals(retrieved, exp);
+    }
+
 
 }
