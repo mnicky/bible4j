@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
+import com.github.mnicky.bible4j.data.Bookmark;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
@@ -201,12 +202,14 @@ public final class H2DbBibleStorage_Test {
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", " + VERSION_NAME_F
+		    .executeQuery("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", "
+			    + COORD_VERSE_F + ", " + VERSION_NAME_F
 			    + " FROM " + VERSIONS
 			    + " INNER JOIN " + VERSES + " ON " + VERSION_ID_F + " = " + VERSE_VERSION_F
 			    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
 			    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-			    + " WHERE " + VERSE_TEXT_F + " = 'There was a man sent from God, whose name was John.' LIMIT 1");
+			    + " WHERE " + VERSE_TEXT_F
+			    + " = 'There was a man sent from God, whose name was John.' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
@@ -437,6 +440,153 @@ public final class H2DbBibleStorage_Test {
 
 	}
 
+    }
+
+    @Test
+    public void insertBookmarkShouldInsertBookmark() {
+
+	Object[] exp = { "joel", "But this is that which was spoken by the prophet Joel;" };
+	Object[] actual = new Object[2];
+
+	try {
+	    // given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 2, 16));
+	    bible.insertVerse(new Verse("But this is that which was spoken by the prophet Joel;",
+					new Position(
+						     BibleBook.ACTS, 2, 16),
+					new BibleVersion("KJV", "en")));
+
+	    // when
+	    bible.insertBookmark(new Bookmark(
+					      "joel",
+					      new Verse(
+							"But this is that which was spoken by the prophet Joel;",
+							new Position(
+								     BibleBook.ACTS, 2, 16),
+							new BibleVersion("KJV", "en"))));
+
+	    Statement st = conn.createStatement();
+	    ResultSet rs = st
+		    .executeQuery("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F
+			    + " FROM " + BKMARKS
+			    + " INNER JOIN " + VERSES + " ON " + VERSE_ID_F + " = " + BKMARK_VERSE_F
+			    + " WHERE " + BKMARK_NAME_F + " = 'joel' LIMIT 1");
+
+	    int i = 0;
+	    while (rs.next()) {
+		actual[i++] = rs.getString(1);
+		actual[i++] = rs.getString(2);
+	    }
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+
+	// then
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
+
+    }
+    
+    @Test
+    public void getBookmarksShouldRetrieveAllBookmarks() {
+	List<Bookmark> exp = new ArrayList<Bookmark>();
+	exp.add(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
+
+	List<Bookmark> retrieved = null;
+
+	try {
+	    //given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
+	    
+
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+					new BibleVersion(
+							 "KJV", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3),
+					new BibleVersion(
+							 "KJV", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "KJV", "en")));
+	    
+	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
+
+	    //when
+	    retrieved = bible.getBookmarks();
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	//then
+	Assert.assertEquals(retrieved, exp);
+    }
+    
+    @Test
+    public void getBookmarksShouldRetrieveAllBookmarksForSpecifiedBibleVersion() {
+	List<Bookmark> exp = new ArrayList<Bookmark>();
+	exp.add(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
+	exp.add(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
+
+	List<Bookmark> retrieved = null;
+
+	try {
+	    //given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleVersion(new BibleVersion("ROH", "sk"));
+	    bible.insertBibleVersion(new BibleVersion("NIV", "en"));
+	    bible.insertBibleVersion(new BibleVersion("ECAV", "sk"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
+	    
+
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+					new BibleVersion(
+							 "KJV", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3),
+					new BibleVersion(
+							 "NIV", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "KJV", "en")));
+	    bible.insertVerse(new Verse("test text4", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "ROH", "sk")));
+	    bible.insertVerse(new Verse("test text5", new Position(BibleBook.ACTS, 1, 4),
+					new BibleVersion(
+							 "ECAV", "sk")));
+	    
+	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("NIV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en"))));
+	    bible.insertBookmark(new Bookmark("bkmark4", new Verse("test text4", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("ROH", "sk"))));
+	    bible.insertBookmark(new Bookmark("bkmark5", new Verse("test text5", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("ECAV", "sk"))));
+
+	    //when
+	    retrieved = bible.getBookmarks(new BibleVersion("KJV", "en"));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	//then
+	Assert.assertEquals(retrieved, exp);
     }
 
 }

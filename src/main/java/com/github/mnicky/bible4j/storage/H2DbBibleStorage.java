@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
+import com.github.mnicky.bible4j.data.Bookmark;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
@@ -242,8 +243,10 @@ public final class H2DbBibleStorage implements BibleStorage {
     public void insertPosition(Position position) throws BibleStorageException {
 	try {
 	    PreparedStatement st = dbConnection
-		    .prepareStatement("INSERT INTO " + COORDS + "("+ COORD_BOOK + ", " + COORD_CHAPT + ", " + COORD_VERSE + ")" +
-		    		"VALUES ((SELECT DISTINCT " + BOOK_ID_F + " FROM " + BOOKS + " WHERE " + BOOK_NAME_F + " = ?), ?, ?)");
+		    .prepareStatement("INSERT INTO " + COORDS + "(" + COORD_BOOK + ", " + COORD_CHAPT + ", "
+			    + COORD_VERSE + ")" +
+				"VALUES ((SELECT DISTINCT " + BOOK_ID_F + " FROM " + BOOKS + " WHERE "
+			    + BOOK_NAME_F + " = ?), ?, ?)");
 	    st.setString(1, position.getBook().getName());
 	    st.setInt(2, position.getChapterNum());
 	    st.setInt(3, position.getVerseNum());
@@ -256,7 +259,8 @@ public final class H2DbBibleStorage implements BibleStorage {
     @Override
     public void insertBibleVersion(BibleVersion version) throws BibleStorageException {
 	try {
-	    PreparedStatement st = dbConnection.prepareStatement("INSERT INTO " + VERSIONS + " (" + VERSION_NAME + ", " + VERSION_LANG + ") VALUES ( ?, ?)");
+	    PreparedStatement st = dbConnection.prepareStatement("INSERT INTO " + VERSIONS + " ("
+		    + VERSION_NAME + ", " + VERSION_LANG + ") VALUES ( ?, ?)");
 	    st.setString(1, version.getName());
 	    st.setString(2, version.getLanguage());
 	    commitUpdate(st);
@@ -273,12 +277,18 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-		    .prepareStatement("SELECT "+VERSE_TEXT_F+", "+VERSION_NAME_F+", "+VERSION_LANG_F+", "+COORD_VERSE_F+", "+COORD_CHAPT_F+", "+BOOK_NAME_F
-		                      + "FROM " + VERSIONS
-		                      + "INNER JOIN "+VERSES+" ON "+VERSE_VERSION_F+" = "+VERSION_ID_F+" "
-		                      + "INNER JOIN "+COORDS+" ON "+VERSE_COORD_F+" = "+COORD_ID_F+" "
-		                      + "INNER JOIN "+BOOKS+" ON "+COORD_BOOK_F+" = "+BOOK_ID_F+" "
-		                      + "WHERE "+COORD_CHAPT_F+" = ? AND "+BOOK_NAME_F+" = ? AND "+VERSION_NAME_F+" = ? AND "+COORD_VERSE_F+" = ? LIMIT 1");
+		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
+			    + BOOK_NAME_F
+				      + "FROM " + VERSIONS
+				      + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = "
+			    + VERSION_ID_F + " "
+				      + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
+			    + " "
+				      + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+			    + " "
+				      + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
+			    + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 	    st.setInt(1, position.getChapterNum());
 	    st.setString(2, position.getBook().getName());
 	    st.setString(3, version.getName());
@@ -287,7 +297,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    while (rs.next())
 		verse = new Verse(rs.getString(1), new Position(BibleBook.getBibleBookByName(rs
 			.getString(6)), rs.getInt(5), rs.getInt(4)),
-			new BibleVersion(rs.getString(2), rs.getString(3)));
+				  new BibleVersion(rs.getString(2), rs.getString(3)));
 
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Verse could not be retrieved", e);
@@ -314,12 +324,18 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    try {
 		st = dbConnection
-		    .prepareStatement("SELECT "+VERSE_TEXT_F+", "+VERSION_NAME_F+", "+VERSION_LANG_F+", "+COORD_VERSE_F+", "+COORD_CHAPT_F+", "+BOOK_NAME_F
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
+				+ BOOK_NAME_F
 					    + "FROM " + VERSIONS
-					    + "INNER JOIN "+VERSES+" ON "+VERSE_VERSION_F+" = "+VERSION_ID_F+" "
-					    + "INNER JOIN "+COORDS+" ON "+VERSE_COORD_F+" = "+COORD_ID_F+" "
-					    + "INNER JOIN "+BOOKS+" ON "+COORD_BOOK_F+" = "+BOOK_ID_F+" "
-					    + "WHERE "+COORD_CHAPT_F+" = ? AND "+BOOK_NAME_F+" = ? AND "+VERSION_NAME_F+" = ? AND "+COORD_VERSE_F+" = ? LIMIT 1");
+					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = "
+				+ VERSION_ID_F + " "
+					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = "
+				+ COORD_ID_F + " "
+					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = "
+				+ BOOK_ID_F + " "
+					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F
+				+ " = ? AND " + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 		st.setInt(1, position.getChapterNum());
 		st.setString(2, position.getBook().getName());
 		st.setString(3, version.getName());
@@ -355,12 +371,17 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-	    .prepareStatement("SELECT "+VERSE_TEXT_F+", "+VERSION_NAME_F+", "+VERSION_LANG_F+", "+COORD_VERSE_F+", "+COORD_CHAPT_F+", "+BOOK_NAME_F
+		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
+			    + BOOK_NAME_F
 				    + "FROM " + VERSIONS
-				    + "INNER JOIN "+VERSES+" ON "+VERSE_VERSION_F+" = "+VERSION_ID_F+" "
-				    + "INNER JOIN "+COORDS+" ON "+VERSE_COORD_F+" = "+COORD_ID_F+" "
-				    + "INNER JOIN "+BOOKS+" ON "+COORD_BOOK_F+" = "+BOOK_ID_F+" "
-				    + "WHERE "+COORD_CHAPT_F+" = ? AND "+BOOK_NAME_F+" = ? AND "+VERSION_NAME_F+" = ? AND "+COORD_VERSE_F+" = ? LIMIT 1");
+				    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = "
+			    + VERSION_ID_F + " "
+				    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
+			    + " "
+				    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+				    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
+			    + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 	    for (BibleVersion version : versions) {
 
 		st.setInt(1, position.getChapterNum());
@@ -487,12 +508,19 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    for (Position position : positions) {
 		try {
 		    st = dbConnection
-		    .prepareStatement("SELECT "+VERSE_TEXT_F+", "+VERSION_NAME_F+", "+VERSION_LANG_F+", "+COORD_VERSE_F+", "+COORD_CHAPT_F+", "+BOOK_NAME_F
+			    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+				    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
+				    + BOOK_NAME_F
 					    + "FROM " + VERSIONS
-					    + "INNER JOIN "+VERSES+" ON "+VERSE_VERSION_F+" = "+VERSION_ID_F+" "
-					    + "INNER JOIN "+COORDS+" ON "+VERSE_COORD_F+" = "+COORD_ID_F+" "
-					    + "INNER JOIN "+BOOKS+" ON "+COORD_BOOK_F+" = "+BOOK_ID_F+" "
-					    + "WHERE "+COORD_CHAPT_F+" = ? AND "+BOOK_NAME_F+" = ? AND "+VERSION_NAME_F+" = ? AND "+COORD_VERSE_F+" = ? LIMIT 1");
+					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = "
+				    + VERSION_ID_F + " "
+					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = "
+				    + COORD_ID_F + " "
+					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = "
+				    + BOOK_ID_F + " "
+					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F
+				    + " = ? AND " + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F
+				    + " = ? LIMIT 1");
 		    st.setInt(1, position.getChapterNum());
 		    st.setString(2, position.getBook().getName());
 		    st.setString(3, version.getName());
@@ -519,6 +547,125 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
 
 	return verseList;
+    }
+
+    @Override
+    public void insertBookmark(Bookmark bookmark) throws BibleStorageException {
+	try {
+	    PreparedStatement st = dbConnection.prepareStatement(
+		    "INSERT INTO " + BKMARKS
+		    + "(" + BKMARK_VERSE + ", " + BKMARK_NAME + ") VALUES"
+		    + "((SELECT DISTINCT " + VERSE_ID_F + " FROM " + VERSES + " WHERE "
+		    		+ VERSE_VERSION_F + " = (SELECT DISTINCT "+VERSION_ID_F+" FROM "+VERSIONS+" WHERE "
+		    						+VERSION_NAME_F+" = ? AND "
+		    						+VERSION_LANG_F+" = ?) AND "
+		    		+ VERSE_COORD_F +" = (SELECT DISTINCT "+COORD_ID_F+" FROM "+COORDS+" WHERE"
+		    						+COORD_BOOK_F+" = (SELECT DISTINCT "+BOOK_ID_F+" FROM "+BOOKS+" WHERE "
+		    									+BOOK_NAME_F+" = ?) AND "
+		    						+COORD_CHAPT_F+" = ? AND "
+		    						+COORD_VERSE_F+" = ?) AND "
+		    		+ VERSE_TEXT_F + " = ?)" 
+		    + ", ?)");
+	    
+	    st.setString(1, bookmark.getVerse().getBibleVersion().getName());
+	    st.setString(2, bookmark.getVerse().getBibleVersion().getLanguage());
+	    st.setString(3, bookmark.getVerse().getPosition().getBook().getName());
+	    st.setInt(4, bookmark.getVerse().getPosition().getChapterNum());
+	    st.setInt(5, bookmark.getVerse().getPosition().getVerseNum());
+	    st.setString(6, bookmark.getVerse().getText());
+	    st.setString(7, bookmark.getName());
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Bible book could not be inserted", e);
+	}
+
+    }
+
+    @Override
+    public List<Bookmark> getBookmarks() throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<Bookmark> bookmarkList = new ArrayList<Bookmark>();
+
+	    try {
+		st = dbConnection
+			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
+				+ BOOK_NAME_F
+					    + "FROM " + BKMARKS
+					    + "INNER JOIN " + VERSES + " ON " + BKMARK_VERSE_F + " = "
+				+ VERSE_ID_F + " "
+					    + "INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = "
+				+ VERSION_ID_F + " "
+					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = "
+				+ COORD_ID_F + " "
+					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = "
+				+ BOOK_ID_F);
+		rs = commitQuery(st);
+		while (rs.next())
+		    bookmarkList.add(new Bookmark(rs.getString(1), new Verse(rs.getString(2), new Position(BibleBook
+			    .getBibleBookByName(rs
+				    .getString(7)), rs.getInt(6), rs
+			    .getInt(5)), new BibleVersion(rs.getString(3), rs
+			    .getString(4)))));
+
+	    } catch (SQLException e) {
+		throw new BibleStorageException("Bookmarks could not be retrieved", e);
+	    } finally {
+		try {
+		    if (st != null)
+			st.close();
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		}
+	    }
+	
+
+	return bookmarkList;
+    }
+
+    @Override
+    public List<Bookmark> getBookmarks(BibleVersion version) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<Bookmark> bookmarkList = new ArrayList<Bookmark>();
+
+	    try {
+		st = dbConnection
+			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
+				+ BOOK_NAME_F
+					    + "FROM " + BKMARKS
+					    + "INNER JOIN " + VERSES + " ON " + BKMARK_VERSE_F + " = "
+				+ VERSE_ID_F + " "
+					    + "INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = "
+				+ VERSION_ID_F + " "
+					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = "
+				+ COORD_ID_F + " "
+					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = "
+				+ BOOK_ID_F + "WHERE " + VERSION_NAME_F + " = ?");
+		st.setString(1, version.getName());
+		rs = commitQuery(st);
+		while (rs.next())
+		    bookmarkList.add(new Bookmark(rs.getString(1), new Verse(rs.getString(2), new Position(BibleBook
+			    .getBibleBookByName(rs
+				    .getString(7)), rs.getInt(6), rs
+			    .getInt(5)), new BibleVersion(rs.getString(3), rs
+			    .getString(4)))));
+
+	    } catch (SQLException e) {
+		throw new BibleStorageException("Bookmarks could not be retrieved", e);
+	    } finally {
+		try {
+		    if (st != null)
+			st.close();
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		}
+	    }
+	
+
+	return bookmarkList;
     }
 
 }

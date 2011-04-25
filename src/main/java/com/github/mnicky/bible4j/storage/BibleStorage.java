@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
+import com.github.mnicky.bible4j.data.Bookmark;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 
@@ -48,10 +49,10 @@ public interface BibleStorage {
 
     // List<Note> getNotes(Position position);
 
-    // void insertBookmark(Bookmark bookmark);
+    void insertBookmark(Bookmark bookmark) throws BibleStorageException;
 
-    // List<Bookmark> getBookmarks();
+    List<Bookmark> getBookmarks() throws BibleStorageException;
 
-    // List<Bookmark> getBookmarks(BibleVersion version); ???
+    List<Bookmark> getBookmarks(BibleVersion version) throws BibleStorageException;
 
 }
