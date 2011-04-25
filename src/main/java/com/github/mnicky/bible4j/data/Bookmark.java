@@ -1,6 +1,6 @@
 package com.github.mnicky.bible4j.data;
 
-public final class Bookmark {
+public final class Bookmark implements Comparable<Bookmark> {
     
     private final String name;
     
@@ -40,6 +40,11 @@ public final class Bookmark {
         result = 31 * result + (name == null ? 0 : name.hashCode());
         result = 31 * result + (verse == null ? 0 : verse.hashCode());
         return result;
+    }
+
+    @Override
+    public int compareTo(Bookmark b) {
+	return this.verse.getPosition().compareTo(b.getVerse().getPosition());
     }
 
 }

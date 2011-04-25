@@ -1,6 +1,6 @@
 package com.github.mnicky.bible4j.data;
 
-public final class Note {
+public final class Note implements Comparable<Note> {
 
     public enum NoteType {
 	COMMENTARY,
@@ -84,6 +84,11 @@ public final class Note {
 	result = 31 * result + (position == null ? 0 : position.hashCode());
 	result = 31 * result + (type == null ? 0 : type.hashCode());
 	return result;
+    }
+
+    @Override
+    public int compareTo(Note n) {
+	return this.position.compareTo(n.getPosition());
     }
 
 }

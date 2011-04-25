@@ -107,19 +107,4 @@ public class Position_Test {
 	assertEquals(p1.compareTo(p2), exp, "call no. " + n + " failed");
     }
     
-    @Test
-    public void testCompare() {
-	compTestHelp(1, new Position(BibleBook.ACTS, 1, 2), new Position(BibleBook.ACTS, 1, 2), 0);
-	compTestHelp(2, new Position(BibleBook.ACTS, 1, 2), new Position(BibleBook.ACTS, 1, 1), 1);
-	compTestHelp(3, new Position(BibleBook.ACTS, 2, 2), new Position(BibleBook.ACTS, 1, 2), 1);
-	compTestHelp(4, new Position(BibleBook.ACTS, 1, 2), new Position(BibleBook.LUKE, 1, 2), 1);
-	compTestHelp(5, new Position(BibleBook.ACTS, 1, 1), new Position(BibleBook.ACTS, 1, 2), -1);
-	compTestHelp(6, new Position(BibleBook.ACTS, 1, 2), new Position(BibleBook.ACTS, 2, 2), -1);
-	compTestHelp(7, new Position(BibleBook.JOHN, 1, 2), new Position(BibleBook.ACTS, 1, 2), -1);
-    }
-    
-    public void comparatorTestHelp(int n, Position p1, Position p2, int exp) {
-	assertEquals(p1.compare(p1, p2), exp, "call no. " + n + " failed");
-    }
-    
 }

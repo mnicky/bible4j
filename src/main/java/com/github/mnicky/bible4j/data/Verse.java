@@ -3,7 +3,7 @@ package com.github.mnicky.bible4j.data;
 /**
  * Represents one Bible verse.
  */
-public final class Verse {
+public final class Verse implements Comparable<Verse> {
 
     /**
      * Text of this Verse.
@@ -91,6 +91,11 @@ public final class Verse {
 	result = 31 * result + (position == null ? 0 : position.hashCode());
 	result = 31 * result + (bibleVersion == null ? 0 : bibleVersion.hashCode());
 	return result;
+    }
+
+    @Override
+    public int compareTo(Verse v) {
+	return this.position.compareTo(v.getPosition());
     }
     
     //TODO add Verse unit test
