@@ -60,5 +60,13 @@ public interface BibleStorage {
     void insertDictTerm(DictTerm term) throws BibleStorageException;
     
     DictTerm getDictTerm(String name) throws BibleStorageException;
+    
+    // void insertReadingList(String name);
+    
+    // void insertDailyReading(DailyReading reading);
+    
+    // List<DailyReading> getDailyReadings(DateTime date);
+    
+    
 
 }
