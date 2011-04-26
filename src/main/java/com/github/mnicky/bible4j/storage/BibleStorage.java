@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
+import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
@@ -61,9 +62,9 @@ public interface BibleStorage {
     
     DictTerm getDictTerm(String name) throws BibleStorageException;
     
-    // void insertReadingList(String name);
+    void insertReadingList(String name) throws BibleStorageException;
     
-    // void insertDailyReading(DailyReading reading);
+    void insertDailyReading(DailyReading reading) throws BibleStorageException;
     
     // List<DailyReading> getDailyReadings(DateTime date);
     

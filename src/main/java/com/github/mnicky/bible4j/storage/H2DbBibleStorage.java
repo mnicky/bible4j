@@ -1,16 +1,19 @@
 package com.github.mnicky.bible4j.storage;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
+import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
@@ -788,6 +791,108 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    }
 	}
 	return term;
+    }
+
+    @Override
+    public void insertReadingList(String name) throws BibleStorageException {
+	try {
+	    PreparedStatement st = dbConnection.prepareStatement(
+		    "INSERT INTO " + RLISTS
+			    + "(" + RLIST_NAME + ") VALUES (?)");
+	    st.setString(1, name);
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Reading list could not be inserted", e);
+	}
+    }
+
+    //TODO refactor this method
+    @Override
+    public void insertDailyReading(DailyReading reading) throws BibleStorageException {
+	PreparedStatement st = null;
+	try {
+	    dbConnection.setAutoCommit(false);
+
+	    // insert reading
+	    st = dbConnection.prepareStatement(
+		    "INSERT INTO " + READS
+			    + "(" + READ_DATE + ", " + READ_LIST + ") VALUES (?, "
+			    + "(SELECT DISTINCT " + RLIST_ID_F + " FROM " + RLISTS
+			    + "WHERE " + RLIST_NAME_F + " = ?))");
+	    st.setDate(1, new Date(reading.getDate().getMilliseconds(TimeZone.getDefault())));
+	    st.setString(2, reading.getReadingListName());
+	    st.executeUpdate();
+
+	    // insert verses of this reading
+	    int readingId = getThisReadingId(reading);
+
+	    st = dbConnection.prepareStatement("INSERT INTO " + READxCOORDS
+					+ "(" + READxCOORD_COORD + ", " + READxCOORD_READ + ") VALUES ("
+					+ "(SELECT DISTINCT " + COORD_ID_F + " FROM " + COORDS + " WHERE"
+						+ COORD_BOOK_F + " = (SELECT DISTINCT "
+							+ BOOK_ID_F + " FROM " + BOOKS + " WHERE "
+							+ BOOK_NAME_F + " = ?) AND "
+						+ COORD_CHAPT_F + " = ? AND "
+						+ COORD_VERSE_F + " = ?), ?)");
+
+	    for (Verse v : reading.getVerses()) {
+		st.setString(1, v.getPosition().getBook().name());
+		st.setInt(2, v.getPosition().getChapterNum());
+		st.setInt(3, v.getPosition().getVerseNum());
+		st.setInt(4, readingId);
+		st.addBatch();
+	    }
+
+	    st.executeBatch();
+	    dbConnection.commit();
+
+	} catch (SQLException e) {
+	    try {
+		dbConnection.rollback();
+	    } catch (SQLException e1) {
+		e1.printStackTrace();
+	    }
+	    throw new BibleStorageException("DailyReading could not be inserted", e);
+	} finally {
+	    try {
+		dbConnection.setAutoCommit(true);
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e2) {
+		e2.printStackTrace();
+	    }
+	}
+    }
+
+    private int getThisReadingId(DailyReading reading) throws BibleStorageException, SQLException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	int readingId = 0;
+
+	try {
+	    st = dbConnection
+		    .prepareStatement("SELECT " + READ_ID_F + "FROM " + READS
+				      + "WHERE " + READ_DATE_F + " = ? AND "
+				      + READ_LIST_F + " = (SELECT DISTINCT " + RLIST_ID_F + " FROM " + RLISTS
+			    + " WHERE " + RLIST_NAME_F + " = ?) LIMIT 1");
+	    st.setDate(1, new Date(reading.getDate().getMilliseconds(TimeZone.getDefault())));
+	    st.setString(2, reading.getReadingListName());
+	    rs = commitQuery(st);
+	    while (rs.next())
+		readingId = rs.getInt(1);
+
+	} finally {
+	    try {
+		if (rs != null)
+		    rs.close();
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+	return readingId;
+
     }
 
 }

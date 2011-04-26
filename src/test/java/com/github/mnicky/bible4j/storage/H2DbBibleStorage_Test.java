@@ -1,5 +1,7 @@
 package com.github.mnicky.bible4j.storage;
 
+import hirondelle.date4j.DateTime;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,6 +19,7 @@ import org.testng.annotations.Test;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
+import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
@@ -687,6 +690,39 @@ public final class H2DbBibleStorage_Test {
     }
     
     @Test
+    public void insertDictTermShouldInsertDictTerm() {
+	Object[] exp = {"term number one", "term text"};
+	Object[] actual = new Object[2];
+	
+	try {
+	    // given
+	    bible.createStorage();
+
+	    // when
+	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
+	    
+	    Statement st = conn.createStatement();
+	    ResultSet rs = st
+		    .executeQuery("SELECT " + TERM_NAME_F + ", " + TERM_DEF_F
+			    + " FROM " + TERMS
+			    + " WHERE " + TERM_NAME_F + " = 'term number one' LIMIT 1");
+
+	    int i = 0;
+	    while (rs.next()) {
+		actual[i++] = rs.getString(1);
+		actual[i++] = rs.getString(2);
+	    }
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+
+	// then
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
+    }
+    
+    @Test
     public void getDictTermShouldRetrieveRequestedTerm() {
 	DictTerm exp = new DictTerm("term number one", "term text");
 	DictTerm retrieved = null;
@@ -709,5 +745,82 @@ public final class H2DbBibleStorage_Test {
 	Assert.assertEquals(retrieved, exp);
     }
 
+    @Test
+    public void insertReadingListShouldInsertReadingList() {
+	String exp = "reading list";
+	String actual = null;
+	
+	try {
+	    // given
+	    bible.createStorage();
+	    
+	    // when	    
+	    bible.insertReadingList("reading list");
+
+	    Statement st = conn.createStatement();
+	    ResultSet rs = st
+		    .executeQuery("SELECT " + RLIST_NAME_F
+			    + " FROM " + RLISTS
+			    + " WHERE " + RLIST_NAME_F + " = 'reading list' LIMIT 1");
+
+	    while (rs.next()) {
+		actual = rs.getString(1);
+	    }
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+
+	// then
+	Assert.assertEquals(actual, exp);
+    }
+    
+    @Test
+    public void insertDailyReadingShouldInsertDailyReading() {
+
+
+	Object[] exp = { "verse text 1", "verse text 2" };
+	Object[] actual = new Object[2];
+
+	try {
+	    //given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.JOHN);
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 7));
+	    bible.insertReadingList("reading list");
+	    bible.insertVerse(new Verse("verse text 1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("verse text 2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
+	    
+	    List<Verse> verses = new ArrayList<Verse>();
+	    verses.add(new Verse("verse text 1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
+	    verses.add(new Verse("verse text 2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
+	    
+	    // when
+	    bible.insertDailyReading(new DailyReading("reading list", new DateTime("2011-07-12"), verses));
+
+	    Statement st = conn.createStatement();
+	    ResultSet rs = st
+		    .executeQuery("SELECT " + VERSE_TEXT_F
+			    + " FROM " + VERSES
+			    + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + VERSE_COORD_F 
+			    + " INNER JOIN " + READxCOORDS + " ON " + READxCOORD_COORD_F + " = " + COORD_ID_F
+			    + " INNER JOIN " + READS + " ON " + READ_ID_F + " = " + READxCOORD_READ_F
+			    + " WHERE " + READ_DATE_F + " = " + "'2011-07-12'");
+
+	    int i = 0;
+	    while (rs.next()) {
+		actual[i++] = rs.getString(1);
+	    }
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	//then
+	Assert.assertTrue(Arrays.deepEquals(actual, exp));
+    }
 
 }
