@@ -1,5 +1,7 @@
 package com.github.mnicky.bible4j.storage;
 
+import hirondelle.date4j.DateTime;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -835,10 +837,10 @@ public final class H2DbBibleStorage implements BibleStorage {
 						+ COORD_CHAPT_F + " = ? AND "
 						+ COORD_VERSE_F + " = ?), ?)");
 
-	    for (Verse v : reading.getVerses()) {
-		st.setString(1, v.getPosition().getBook().name());
-		st.setInt(2, v.getPosition().getChapterNum());
-		st.setInt(3, v.getPosition().getVerseNum());
+	    for (Position p : reading.getPositions()) {
+		st.setString(1, p.getBook().name());
+		st.setInt(2, p.getChapterNum());
+		st.setInt(3, p.getVerseNum());
 		st.setInt(4, readingId);
 		st.addBatch();
 	    }
@@ -875,7 +877,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 				      + "WHERE " + READ_DATE_F + " = ? AND "
 				      + READ_LIST_F + " = (SELECT DISTINCT " + RLIST_ID_F + " FROM " + RLISTS
 			    + " WHERE " + RLIST_NAME_F + " = ?) LIMIT 1");
-	    st.setDate(1, new Date(reading.getDate().getMilliseconds(TimeZone.getDefault())));
+	    st.setDate(1, new Date(reading.getDate().getMilliseconds(TimeZone.getTimeZone("GMT"))));
 	    st.setString(2, reading.getReadingListName());
 	    rs = commitQuery(st);
 	    while (rs.next())
@@ -893,6 +895,72 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
 	return readingId;
 
+    }
+
+    @Override
+    public List<DailyReading> getDailyReadings(DateTime date) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<DailyReading> readings = new ArrayList<DailyReading>();
+
+	try {
+	    st = dbConnection
+		    .prepareStatement("SELECT " + RLIST_NAME_F + ", " + READ_DATE_F + ", " 
+		                      + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F
+				      + " FROM " + RLISTS
+				      + " INNER JOIN " + READS + " ON " + READ_LIST_F + " = " + RLIST_ID_F
+				      + " INNER JOIN " + READxCOORDS + " ON " + READxCOORD_READ_F + " = " + READ_ID_F
+				      + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + READxCOORD_COORD_F
+				      + " INNER JOIN " + BOOKS +  " ON " + BOOK_ID_F + " = " + COORD_BOOK_F
+				      + " WHERE " + READ_DATE_F + " = ? ORDER BY " + RLIST_NAME_F);
+	    
+	    st.setDate(1, new Date(date.getMilliseconds(TimeZone.getDefault())));
+	    rs = commitQuery(st);
+	    
+	    String lastReadingListName = "";
+	    DateTime lastRecDate = null;
+	    List<Position> positions = new ArrayList<Position>();
+	    
+	    while (rs.next()) {
+		
+		String readingListName = rs.getString(1);		
+		DateTime recDate = DateTime.forInstant(rs.getDate(2).getTime(), TimeZone.getDefault());
+		BibleBook book = BibleBook.getBibleBookByName(rs.getString(3));
+		int chapterNum = rs.getInt(4);
+		int verseNum = rs.getInt(5);
+		
+		if (lastReadingListName.equals("") || lastReadingListName.equals(readingListName)) {
+		    positions.add(new Position(book, chapterNum, verseNum));
+		}
+		else {
+		    readings.add(new DailyReading(lastReadingListName, lastRecDate, positions));
+		    positions = new ArrayList<Position>();
+		    positions.add(new Position(book, chapterNum, verseNum));
+		}
+		    
+		lastReadingListName = readingListName;
+		lastRecDate = recDate;
+		
+		if (rs.isLast())  {
+		    readings.add(new DailyReading(lastReadingListName, lastRecDate, positions));
+		}
+		    
+		
+	    }
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("DailyReadings could not be retrieved", e);
+	} finally {
+	    try {
+		if (rs != null)
+		    rs.close();
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+	return readings;
     }
 
 }

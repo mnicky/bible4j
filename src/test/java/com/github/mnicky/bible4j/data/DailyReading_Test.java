@@ -20,9 +20,9 @@ public final class DailyReading_Test {
 
     @BeforeMethod
     public void beforeMethod() {
-	r1 = new DailyReading("list1", new DateTime("2010-05-12"), new ArrayList<Verse>());
-	r2 = new DailyReading("list2", new DateTime("2010-05-06"), new ArrayList<Verse>());
-	r3 = new DailyReading("list2", new DateTime("2010-05-06"), new ArrayList<Verse>());
+	r1 = new DailyReading("list1", new DateTime("2010-05-12"), new ArrayList<Position>());
+	r2 = new DailyReading("list2", new DateTime("2010-05-06"), new ArrayList<Position>());
+	r3 = new DailyReading("list2", new DateTime("2010-05-06"), new ArrayList<Position>());
 
     }
 

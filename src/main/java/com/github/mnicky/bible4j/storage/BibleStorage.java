@@ -1,5 +1,7 @@
 package com.github.mnicky.bible4j.storage;
 
+import hirondelle.date4j.DateTime;
+
 import java.util.List;
 
 import com.github.mnicky.bible4j.data.BibleBook;
@@ -66,7 +68,7 @@ public interface BibleStorage {
     
     void insertDailyReading(DailyReading reading) throws BibleStorageException;
     
-    // List<DailyReading> getDailyReadings(DateTime date);
+    List<DailyReading> getDailyReadings(DateTime date) throws BibleStorageException;
     
     
 

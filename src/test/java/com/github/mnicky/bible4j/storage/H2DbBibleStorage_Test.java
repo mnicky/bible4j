@@ -794,12 +794,12 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertVerse(new Verse("verse text 1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
 	    bible.insertVerse(new Verse("verse text 2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
 	    
-	    List<Verse> verses = new ArrayList<Verse>();
-	    verses.add(new Verse("verse text 1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
-	    verses.add(new Verse("verse text 2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
+	    List<Position> positions = new ArrayList<Position>();
+	    positions.add(new Position(BibleBook.JOHN, 1, 6));
+	    positions.add(new Position(BibleBook.JOHN, 1, 7));
 	    
 	    // when
-	    bible.insertDailyReading(new DailyReading("reading list", new DateTime("2011-07-12"), verses));
+	    bible.insertDailyReading(new DailyReading("reading list", new DateTime("2011-07-12"), positions));
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
@@ -821,6 +821,56 @@ public final class H2DbBibleStorage_Test {
 	}
 	//then
 	Assert.assertTrue(Arrays.deepEquals(actual, exp));
+    }
+    
+    @Test
+    public void getDailyReadingsShouldRetrieveAllDailyReadingsForSpecifiedDate() {
+	List<DailyReading> exp = new ArrayList<DailyReading>();
+
+	List<Position> positions1 = new ArrayList<Position>();
+	positions1.add(new Position(BibleBook.JOHN, 1, 1));
+	positions1.add(new Position(BibleBook.JOHN, 1, 2));
+	
+	List<Position> positions2 = new ArrayList<Position>();
+	positions2.add(new Position(BibleBook.JOHN, 1, 5));
+	positions2.add(new Position(BibleBook.JOHN, 1, 6));
+	
+	List<Position> positions3 = new ArrayList<Position>();
+	positions3.add(new Position(BibleBook.JOHN, 1, 5));
+	positions3.add(new Position(BibleBook.JOHN, 1, 6));
+	
+	exp.add(new DailyReading("reading list1", new DateTime(2011, 7, 12, 0, 0, 0, 0), positions1));
+	exp.add(new DailyReading("reading list3", new DateTime(2011, 7, 12, 0, 0, 0, 0), positions3));
+
+	List<DailyReading> retrieved = null;
+
+	try {
+	    // given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.JOHN);
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 1));
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 2));
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 5));
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
+	    
+	    bible.insertReadingList("reading list1");
+	    bible.insertReadingList("reading list2");
+	    bible.insertReadingList("reading list3");
+
+	    bible.insertDailyReading(new DailyReading("reading list1", new DateTime("2011-07-12"), positions1));
+	    bible.insertDailyReading(new DailyReading("reading list2", new DateTime("2011-08-12"), positions2));
+	    bible.insertDailyReading(new DailyReading("reading list3", new DateTime("2011-07-12"), positions3));
+
+	    // when
+	    retrieved = bible.getDailyReadings(new DateTime("2011-07-12"));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	// then
+	Assert.assertEquals(retrieved, exp);
     }
 
 }

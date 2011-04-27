@@ -11,12 +11,12 @@ public final class DailyReading {
     
     private final DateTime date;
     
-    private final List<Verse> verses;
+    private final List<Position> positions;
     
-    public DailyReading(String readingListName, DateTime date, List<Verse> verses) {
+    public DailyReading(String readingListName, DateTime date, List<Position> positions) {
 	this.readingListName = readingListName;
 	this.date = date;
-	this.verses = Collections.unmodifiableList(verses);
+	this.positions = Collections.unmodifiableList(positions);
     }
 
     public String getReadingListName() {
@@ -27,8 +27,8 @@ public final class DailyReading {
 	return date;
     }
 
-    public List<Verse> getVerses() {
-	return verses;
+    public List<Position> getPositions() {
+	return positions;
     }
     
     @Override
@@ -44,7 +44,7 @@ public final class DailyReading {
 	    return false;
 	DailyReading dr = (DailyReading) obj;
 	return dr.readingListName.equals(this.readingListName) && dr.date.equals(this.date) &&
-	dr.verses.equals(this.verses);
+	dr.positions.equals(this.positions);
     }
 
     @Override
@@ -52,7 +52,7 @@ public final class DailyReading {
 	int result = 17;
 	result = 31 * result + (readingListName == null ? 0 : readingListName.hashCode());
 	result = 31 * result + (date == null ? 0 : date.hashCode());
-	result = 31 * result + (verses == null ? 0 : verses.hashCode());
+	result = 31 * result + (positions == null ? 0 : positions.hashCode());
 	return result;
     }
 
