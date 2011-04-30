@@ -130,15 +130,14 @@ public final class H2DbBibleStorage implements BibleStorage {
     public int[] createStorage() throws BibleStorageException {
 
 	int[] columns;
-	Statement st = null;
+
 	try {
-	    dbConnection.setAutoCommit(false);
-	    st = dbConnection.createStatement();
+	    Statement st = dbConnection.createStatement();
 
 	    // FIXME add CASCADE or RESTRICTED to foreign keys etc?
 	    // TODO convert more VARCHARs to V_IGNORECASE?
 	    // TODO add more UNIQUE constraints, CHECK etc... ?
-	    
+
 	    st.addBatch("CREATE ALIAS IF NOT EXISTS FT_INIT FOR \"org.h2.fulltext.FullText.init\";CALL FT_INIT();");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + VERSIONS + " ("
@@ -200,28 +199,13 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    + TERM_ID + " INT IDENTITY NOT NULL,"
 		    + TERM_NAME + " VARCHAR(50) NOT NULL UNIQUE,"
 		    + TERM_DEF + " VARCHAR(500) NOT NULL)");
+	    
+	    st.addBatch("CALL FT_CREATE_INDEX('PUBLIC', 'VERSES', 'TEXT');");
 
-	    columns = st.executeBatch();
-	    
-	    st.executeUpdate("CALL FT_CREATE_INDEX('PUBLIC', 'VERSES', 'TEXT');");
-	    
-	    dbConnection.commit();
+	    columns = commitBatch(st);
 
 	} catch (SQLException e) {
-	    try {
-		dbConnection.rollback();
-	    } catch (SQLException e1) {
-		e1.printStackTrace();
-	    }
-	    throw new BibleStorageException("BibleStorage could not be inserted", e);
-	} finally {
-	    try {
-		dbConnection.setAutoCommit(true);
-		if (st != null)
-		    st.close();
-	    } catch (SQLException e2) {
-		e2.printStackTrace();
-	    }
+	    throw new BibleStorageException("BibleStorage could not be created", e);
 	}
 
 	return columns;

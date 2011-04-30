@@ -64,7 +64,7 @@ public final class H2DbBibleStorage_Test {
 
 	// expected numbers of column updates
 	// see Statement.executeBatch() javadoc for more info
-	int[] exp = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	int[] exp = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	int[] columns = null;
 
