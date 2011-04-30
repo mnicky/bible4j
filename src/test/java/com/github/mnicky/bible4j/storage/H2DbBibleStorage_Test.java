@@ -36,7 +36,7 @@ public final class H2DbBibleStorage_Test {
     @BeforeMethod
     public void setUpTest() {
 	try {
-	    conn = DriverManager.getConnection("jdbc:h2:mem:", "test", "");
+	    conn = DriverManager.getConnection("jdbc:h2:mem:test", "test", "");
 
 	    // for debugging purposes:
 	    // conn = DriverManager.getConnection("jdbc:h2:tcp://localhost/mem:test", "test", "");
@@ -46,14 +46,6 @@ public final class H2DbBibleStorage_Test {
 	    Assert.fail();
 	}
 	bible = new H2DbBibleStorage(conn);
-
-	try {
-	    bible.createStorage();
-
-	} catch (BibleStorageException e) {
-	    e.printStackTrace();
-	    Assert.fail();
-	}
 
     }
 
@@ -72,7 +64,7 @@ public final class H2DbBibleStorage_Test {
 
 	// expected numbers of column updates
 	// see Statement.executeBatch() javadoc for more info
-	int[] exp = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	int[] exp = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	int[] columns = null;
 
@@ -306,7 +298,7 @@ public final class H2DbBibleStorage_Test {
 	List<Verse> exp = new ArrayList<Verse>();
 
 	for (int i = 0; i < numOfVersionsToTest; i++)
-	    exp.add(new Verse("test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2),
+	    exp.add(new Verse("x2test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2),
 			      new BibleVersion(
 					       "KJV" + (i + 1), "en")));
 
@@ -322,7 +314,7 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
 
 	    for (int i = 0; i < numOfVersionsToTest; i++)
-		bible.insertVerse(new Verse("test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2),
+		bible.insertVerse(new Verse("x2test text" + (i + 1), new Position(BibleBook.ACTS, 1, 2),
 					    new BibleVersion("KJV" + (i + 1), "en")));
 
 	    List<BibleVersion> versions = new ArrayList<BibleVersion>();
@@ -553,9 +545,9 @@ public final class H2DbBibleStorage_Test {
     @Test
     public void getBookmarksShouldRetrieveAllBookmarksForSpecifiedBibleVersion() {
 	List<Bookmark> exp = new ArrayList<Bookmark>();
-	exp.add(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+	exp.add(new Bookmark("bkmark1", new Verse("x1test text1", new Position(BibleBook.ACTS, 1, 2),
 						  new BibleVersion("KJV", "en"))));
-	exp.add(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+	exp.add(new Bookmark("bkmark3", new Verse("x1test text3", new Position(BibleBook.ACTS, 1, 4),
 						  new BibleVersion("KJV", "en"))));
 
 	List<Bookmark> retrieved = null;
@@ -572,35 +564,35 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
 
-	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2),
+	    bible.insertVerse(new Verse("x1test text1", new Position(BibleBook.ACTS, 1, 2),
 					new BibleVersion(
 							 "KJV", "en")));
-	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3),
+	    bible.insertVerse(new Verse("x1test text2", new Position(BibleBook.ACTS, 1, 3),
 					new BibleVersion(
 							 "NIV", "en")));
-	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4),
+	    bible.insertVerse(new Verse("x1test text3", new Position(BibleBook.ACTS, 1, 4),
 					new BibleVersion(
 							 "KJV", "en")));
-	    bible.insertVerse(new Verse("test text4", new Position(BibleBook.ACTS, 1, 4),
+	    bible.insertVerse(new Verse("x1test text4", new Position(BibleBook.ACTS, 1, 4),
 					new BibleVersion(
 							 "ROH", "sk")));
-	    bible.insertVerse(new Verse("test text5", new Position(BibleBook.ACTS, 1, 4),
+	    bible.insertVerse(new Verse("x1test text5", new Position(BibleBook.ACTS, 1, 4),
 					new BibleVersion(
 							 "ECAV", "sk")));
 
-	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("test text1", new Position(BibleBook.ACTS,
+	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("x1test text1", new Position(BibleBook.ACTS,
 											      1, 2),
 								   new BibleVersion("KJV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("test text2", new Position(BibleBook.ACTS,
+	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("x1test text2", new Position(BibleBook.ACTS,
 											      1, 3),
 								   new BibleVersion("NIV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("test text3", new Position(BibleBook.ACTS,
+	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("x1test text3", new Position(BibleBook.ACTS,
 											      1, 4),
 								   new BibleVersion("KJV", "en"))));
-	    bible.insertBookmark(new Bookmark("bkmark4", new Verse("test text4", new Position(BibleBook.ACTS,
+	    bible.insertBookmark(new Bookmark("bkmark4", new Verse("x1test text4", new Position(BibleBook.ACTS,
 											      1, 4),
 								   new BibleVersion("ROH", "sk"))));
-	    bible.insertBookmark(new Bookmark("bkmark5", new Verse("test text5", new Position(BibleBook.ACTS,
+	    bible.insertBookmark(new Bookmark("bkmark5", new Verse("x1test text5", new Position(BibleBook.ACTS,
 											      1, 4),
 								   new BibleVersion("ECAV", "sk"))));
 
