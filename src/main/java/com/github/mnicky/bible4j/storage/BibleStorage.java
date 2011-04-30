@@ -70,6 +70,6 @@ public interface BibleStorage {
     
     List<DailyReading> getDailyReadings(DateTime date) throws BibleStorageException;
     
-    
+    List<Verse> searchVersesForText(String text) throws BibleStorageException;
 
 }

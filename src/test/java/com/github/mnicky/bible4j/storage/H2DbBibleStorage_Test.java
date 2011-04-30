@@ -101,8 +101,7 @@ public final class H2DbBibleStorage_Test {
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT " + BOOK_NAME_F + ", " + BOOK_DEUT_F + " FROM " + BOOKS + " WHERE "
-			    + BOOK_NAME_F + " = 'baruch' LIMIT 1");
+		    .executeQuery("SELECT " + BOOK_NAME_F + ", " + BOOK_DEUT_F + " FROM " + BOOKS + " WHERE " + BOOK_NAME_F + " = 'baruch' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
@@ -133,8 +132,7 @@ public final class H2DbBibleStorage_Test {
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
 		    .executeQuery("SELECT " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F
-			    + " FROM " + COORDS + ", " + BOOKS + " WHERE " + BOOK_ID_F + " = " + COORD_BOOK_F
-			    + " LIMIT 1");
+			    + " FROM " + COORDS + ", " + BOOKS + " WHERE " + BOOK_ID_F + " = " + COORD_BOOK_F+ " LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
@@ -202,13 +200,11 @@ public final class H2DbBibleStorage_Test {
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
 		    .executeQuery("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", "
-			    + COORD_VERSE_F + ", " + VERSION_NAME_F
-			    + " FROM " + VERSIONS
+		                  	+ COORD_VERSE_F + ", " + VERSION_NAME_F + " FROM " + VERSIONS
 			    + " INNER JOIN " + VERSES + " ON " + VERSION_ID_F + " = " + VERSE_VERSION_F
 			    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
 			    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-			    + " WHERE " + VERSE_TEXT_F
-			    + " = 'There was a man sent from God, whose name was John.' LIMIT 1");
+			    + " WHERE " + VERSE_TEXT_F + " = 'There was a man sent from God, whose name was John.' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
@@ -469,8 +465,7 @@ public final class H2DbBibleStorage_Test {
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F
-			    + " FROM " + BKMARKS
+		    .executeQuery("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + " FROM " + BKMARKS
 			    + " INNER JOIN " + VERSES + " ON " + VERSE_ID_F + " = " + BKMARK_VERSE_F
 			    + " WHERE " + BKMARK_NAME_F + " = 'joel' LIMIT 1");
 
@@ -581,19 +576,19 @@ public final class H2DbBibleStorage_Test {
 							 "ECAV", "sk")));
 
 	    bible.insertBookmark(new Bookmark("bkmark1", new Verse("x1test text1", new Position(BibleBook.ACTS,
-											      1, 2),
+												1, 2),
 								   new BibleVersion("KJV", "en"))));
 	    bible.insertBookmark(new Bookmark("bkmark2", new Verse("x1test text2", new Position(BibleBook.ACTS,
-											      1, 3),
+												1, 3),
 								   new BibleVersion("NIV", "en"))));
 	    bible.insertBookmark(new Bookmark("bkmark3", new Verse("x1test text3", new Position(BibleBook.ACTS,
-											      1, 4),
+												1, 4),
 								   new BibleVersion("KJV", "en"))));
 	    bible.insertBookmark(new Bookmark("bkmark4", new Verse("x1test text4", new Position(BibleBook.ACTS,
-											      1, 4),
+												1, 4),
 								   new BibleVersion("ROH", "sk"))));
 	    bible.insertBookmark(new Bookmark("bkmark5", new Verse("x1test text5", new Position(BibleBook.ACTS,
-											      1, 4),
+												1, 4),
 								   new BibleVersion("ECAV", "sk"))));
 
 	    // when
@@ -627,7 +622,7 @@ public final class H2DbBibleStorage_Test {
 		    .executeQuery("SELECT " + NOTE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", " + NOTE_TYPE_F
 			    + " FROM " + NOTES
 			    + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + NOTE_COORD_F
-			    + " INNER JOIN " + BOOKS  + " ON " + BOOK_ID_F  + " = " + COORD_BOOK_F
+			    + " INNER JOIN " + BOOKS + " ON " + BOOK_ID_F + " = " + COORD_BOOK_F
 			    + " WHERE " + NOTE_TEXT_F + " = 'note text' LIMIT 1");
 
 	    int i = 0;
@@ -647,7 +642,7 @@ public final class H2DbBibleStorage_Test {
 	// then
 	Assert.assertTrue(Arrays.deepEquals(actual, exp));
     }
-    
+
     @Test
     public void getNotesShouldRetrieveAllNotesForSpecifiedPosition() {
 	List<Note> exp = new ArrayList<Note>();
@@ -668,8 +663,7 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertNote(new Note("note text2", new Position(BibleBook.ACTS, 1, 4), NoteType.USER_NOTE));
 	    bible.insertNote(new Note("note text3", new Position(BibleBook.ACTS, 1, 4), NoteType.USER_NOTE));
 	    bible.insertNote(new Note("note text4", new Position(BibleBook.ACTS, 1, 4), NoteType.COMMENTARY));
-	    
-	    
+
 	    // when
 	    retrieved = bible.getNotes(new Position(BibleBook.ACTS, 1, 4));
 
@@ -680,24 +674,23 @@ public final class H2DbBibleStorage_Test {
 	// then
 	Assert.assertEquals(retrieved, exp);
     }
-    
+
     @Test
     public void insertDictTermShouldInsertDictTerm() {
-	Object[] exp = {"term number one", "term text"};
+	Object[] exp = { "term number one", "term text" };
 	Object[] actual = new Object[2];
-	
+
 	try {
 	    // given
 	    bible.createStorage();
 
 	    // when
 	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
-	    
+
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT " + TERM_NAME_F + ", " + TERM_DEF_F
-			    + " FROM " + TERMS
-			    + " WHERE " + TERM_NAME_F + " = 'term number one' LIMIT 1");
+		    .executeQuery("SELECT " + TERM_NAME_F + ", " + TERM_DEF_F + " FROM " + TERMS
+				  + " WHERE " + TERM_NAME_F + " = 'term number one' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
@@ -713,27 +706,27 @@ public final class H2DbBibleStorage_Test {
 	// then
 	Assert.assertTrue(Arrays.deepEquals(actual, exp));
     }
-    
+
     @Test
     public void getDictTermShouldRetrieveRequestedTerm() {
 	DictTerm exp = new DictTerm("term number one", "term text");
 	DictTerm retrieved = null;
 
 	try {
-	    //given
+	    // given
 	    bible.createStorage();
 	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
 	    bible.insertDictTerm(new DictTerm("term number two", "term text"));
 	    bible.insertDictTerm(new DictTerm("term number three", "term text"));
 
-	    //when
+	    // when
 	    retrieved = bible.getDictTerm("term number one");
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
-	//then
+	// then
 	Assert.assertEquals(retrieved, exp);
     }
 
@@ -741,19 +734,17 @@ public final class H2DbBibleStorage_Test {
     public void insertReadingListShouldInsertReadingList() {
 	String exp = "reading list";
 	String actual = null;
-	
+
 	try {
 	    // given
 	    bible.createStorage();
-	    
-	    // when	    
+
+	    // when
 	    bible.insertReadingList("reading list");
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT " + RLIST_NAME_F
-			    + " FROM " + RLISTS
-			    + " WHERE " + RLIST_NAME_F + " = 'reading list' LIMIT 1");
+		    .executeQuery("SELECT " + RLIST_NAME_F + " FROM " + RLISTS + " WHERE " + RLIST_NAME_F + " = 'reading list' LIMIT 1");
 
 	    while (rs.next()) {
 		actual = rs.getString(1);
@@ -767,16 +758,15 @@ public final class H2DbBibleStorage_Test {
 	// then
 	Assert.assertEquals(actual, exp);
     }
-    
+
     @Test
     public void insertDailyReadingShouldInsertDailyReading() {
-
 
 	Object[] exp = { "verse text 1", "verse text 2" };
 	Object[] actual = new Object[2];
 
 	try {
-	    //given
+	    // given
 	    bible.createStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.JOHN);
@@ -785,11 +775,11 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertReadingList("reading list");
 	    bible.insertVerse(new Verse("verse text 1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
 	    bible.insertVerse(new Verse("verse text 2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
-	    
+
 	    List<Position> positions = new ArrayList<Position>();
 	    positions.add(new Position(BibleBook.JOHN, 1, 6));
 	    positions.add(new Position(BibleBook.JOHN, 1, 7));
-	    
+
 	    // when
 	    bible.insertDailyReading(new DailyReading("reading list", new DateTime("2011-07-12"), positions));
 
@@ -797,7 +787,7 @@ public final class H2DbBibleStorage_Test {
 	    ResultSet rs = st
 		    .executeQuery("SELECT " + VERSE_TEXT_F
 			    + " FROM " + VERSES
-			    + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + VERSE_COORD_F 
+			    + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + VERSE_COORD_F
 			    + " INNER JOIN " + READxCOORDS + " ON " + READxCOORD_COORD_F + " = " + COORD_ID_F
 			    + " INNER JOIN " + READS + " ON " + READ_ID_F + " = " + READxCOORD_READ_F
 			    + " WHERE " + READ_DATE_F + " = " + "'2011-07-12'");
@@ -811,10 +801,10 @@ public final class H2DbBibleStorage_Test {
 	    e.printStackTrace();
 	    Assert.fail();
 	}
-	//then
+	// then
 	Assert.assertTrue(Arrays.deepEquals(actual, exp));
     }
-    
+
     @Test
     public void getDailyReadingsShouldRetrieveAllDailyReadingsForSpecifiedDate() {
 	List<DailyReading> exp = new ArrayList<DailyReading>();
@@ -822,15 +812,15 @@ public final class H2DbBibleStorage_Test {
 	List<Position> positions1 = new ArrayList<Position>();
 	positions1.add(new Position(BibleBook.JOHN, 1, 1));
 	positions1.add(new Position(BibleBook.JOHN, 1, 2));
-	
+
 	List<Position> positions2 = new ArrayList<Position>();
 	positions2.add(new Position(BibleBook.JOHN, 1, 5));
 	positions2.add(new Position(BibleBook.JOHN, 1, 6));
-	
+
 	List<Position> positions3 = new ArrayList<Position>();
 	positions3.add(new Position(BibleBook.JOHN, 1, 5));
 	positions3.add(new Position(BibleBook.JOHN, 1, 6));
-	
+
 	exp.add(new DailyReading("reading list1", new DateTime(2011, 7, 12, 0, 0, 0, 0), positions1));
 	exp.add(new DailyReading("reading list3", new DateTime(2011, 7, 12, 0, 0, 0, 0), positions3));
 
@@ -845,7 +835,7 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 2));
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 5));
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
-	    
+
 	    bible.insertReadingList("reading list1");
 	    bible.insertReadingList("reading list2");
 	    bible.insertReadingList("reading list3");
@@ -863,6 +853,38 @@ public final class H2DbBibleStorage_Test {
 	}
 	// then
 	Assert.assertEquals(retrieved, exp);
+    }
+
+    @Test
+    public void searchVersesForTextShouldReturnAllVersesFound() {
+	List<Verse> exp = new ArrayList<Verse>();
+	exp.add(new Verse("search2 textik1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
+	exp.add(new Verse("search2 textik2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
+	List<Verse> actual = null;
+
+	try {
+	    // given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.JOHN);
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
+	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 7));
+	    bible.insertVerse(new Verse("search1 textik1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("search1 textik2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("search2 textik1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("search2 textik2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("search3 textik1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("search3 textik2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("KJV", "en")));
+
+	    // when
+	    actual = bible.searchVersesForText("search2");
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	// then
+	Assert.assertEquals(actual, exp);
     }
 
 }
