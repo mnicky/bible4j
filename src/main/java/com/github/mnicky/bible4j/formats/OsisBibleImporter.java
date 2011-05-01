@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -20,9 +19,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public final class OsisBibleImporter implements BibleImporter {
+//TODO add unit tests for this class
 
-    private final BibleStorage storage;
+public final class OsisBibleImporter implements BibleImporter {
 
     private String currentVerseText = "";
 
@@ -30,36 +29,36 @@ public final class OsisBibleImporter implements BibleImporter {
 
     private Position currentPosition = null;
 
-    public OsisBibleImporter(BibleStorage storage) {
-	this.storage = storage;
-    }
-
     @Override
-    public void importBible(InputStream input) throws XMLStreamException, FactoryConfigurationError, BibleStorageException {
+    public void importBible(InputStream input, BibleStorage storage) throws BibleImporterException, BibleStorageException {
 
-	XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
+	try {
+	    XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
 
-	while (reader.hasNext()) {
+	    while (reader.hasNext()) {
 
-	    if (reader.getEventType() == XMLEvent.START_ELEMENT) {
+		if (reader.getEventType() == XMLEvent.START_ELEMENT) {
 
-		if (reader.getLocalName().equals("osisText")) {
-		    parseOsisText(reader);
-		    storage.insertBibleVersion(currentBibleVersion);
+		    if (reader.getLocalName().equals("osisText")) {
+			parseOsisText(reader);
+			storage.insertBibleVersion(currentBibleVersion);
+		    }
+		    else if (reader.getLocalName().equals("verse")) {
+			parseVerse(reader);
+			storage.insertBibleBook(currentPosition.getBook());
+			storage.insertPosition(currentPosition);
+			storage.insertVerse(new Verse(currentVerseText, currentPosition, currentBibleVersion));
+		    }
+
 		}
-		else if (reader.getLocalName().equals("verse")) {
-		    parseVerse(reader);
 
-		    storage.insertBibleBook(currentPosition.getBook());
-		    storage.insertPosition(currentPosition);
-		    storage.insertVerse(new Verse(currentVerseText, currentPosition, currentBibleVersion));
-		}
-
+		reader.next();
 	    }
-
-	    reader.next();
+	    reader.close();
+	    
+	} catch (XMLStreamException e) {
+	    throw new BibleImporterException("Parsing error", e);
 	}
-	reader.close();
 
     }
 
@@ -247,13 +246,13 @@ public final class OsisBibleImporter implements BibleImporter {
 	    throw new IllegalArgumentException();
 
     }
-				 
-    public static void main(String[] args) throws XMLStreamException, FactoryConfigurationError, BibleStorageException, SQLException, FileNotFoundException {
 	
-	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;TRACE_LEVEL_FILE=2;MVCC=TRUE", "test", ""));
-	//storage.createStorage();
-	BibleImporter importer = new OsisBibleImporter(storage);
-	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-bkr_osis.xml"));
+    //for testing purpose
+    public static void main(String[] args) throws FileNotFoundException, BibleImporterException, BibleStorageException, SQLException  {
+	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test2", "test", ""));
+	storage.createStorage();
+	BibleImporter importer = new OsisBibleImporter();
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-kjv_osis.xml"), storage);
 	System.out.println("finished");
     }
 
