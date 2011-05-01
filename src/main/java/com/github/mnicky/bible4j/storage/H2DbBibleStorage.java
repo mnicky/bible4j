@@ -155,11 +155,12 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    + COORD_BOOK + " INT NOT NULL,"
 		    + COORD_CHAPT + " INT NOT NULL,"
 		    + COORD_VERSE + " INT NOT NULL,"
+		    + "CONSTRAINT `coords_unique` UNIQUE ( " + COORD_BOOK + ", " + COORD_CHAPT + ", " + COORD_VERSE + ")," 
 		    + "FOREIGN KEY (" + COORD_BOOK + ") REFERENCES " + BOOKS + ")");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + VERSES + " ("
 		    + VERSE_ID + " INT IDENTITY NOT NULL,"
-		    + VERSE_TEXT + " VARCHAR(500) NOT NULL,"
+		    + VERSE_TEXT + " VARCHAR(4096) NOT NULL,"
 		    + VERSE_VERSION + " INT NOT NULL,"
 		    + VERSE_COORD + " INT NOT NULL,"
 		    + "FOREIGN KEY (" + VERSE_VERSION + ") REFERENCES " + VERSIONS + ","
@@ -241,8 +242,8 @@ public final class H2DbBibleStorage implements BibleStorage {
     @Override
     public void insertBibleBook(BibleBook book) throws BibleStorageException {
 	try {
-	    PreparedStatement st = dbConnection.prepareStatement("INSERT INTO " + BOOKS
-		    + "(" + BOOK_NAME + ", " + BOOK_DEUT + ") VALUES ( ?, ?)");
+	    PreparedStatement st = dbConnection.prepareStatement("MERGE INTO " + BOOKS
+		    + "(" + BOOK_NAME + ", " + BOOK_DEUT + ") KEY (" + BOOK_NAME + ") VALUES ( ?, ?)");
 	    st.setString(1, book.getName());
 	    st.setBoolean(2, book.isDeutero());
 	    commitUpdate(st);
@@ -255,9 +256,10 @@ public final class H2DbBibleStorage implements BibleStorage {
     public void insertPosition(Position position) throws BibleStorageException {
 	try {
 	    PreparedStatement st = dbConnection
-		    .prepareStatement("INSERT INTO " + COORDS + "(" + COORD_BOOK + ", " + COORD_CHAPT + ", " + COORD_VERSE + ")" +
-				"VALUES ((SELECT DISTINCT " + BOOK_ID_F + " FROM " + BOOKS + " WHERE " + BOOK_NAME_F
-			    + " = ?), ?, ?)");
+		    .prepareStatement("MERGE INTO " + COORDS + "(" + COORD_BOOK + ", " + COORD_CHAPT + ", " + COORD_VERSE + ")"
+		                      + " KEY ( " + COORD_BOOK + ", " + COORD_CHAPT + ", " + COORD_VERSE + ")"
+		                      + " VALUES ((SELECT DISTINCT " + BOOK_ID_F + " FROM " + BOOKS + " WHERE " + BOOK_NAME_F
+		                      + " = ?), ?, ?)");
 	    st.setString(1, position.getBook().getName());
 	    st.setInt(2, position.getChapterNum());
 	    st.setInt(3, position.getVerseNum());
@@ -270,8 +272,8 @@ public final class H2DbBibleStorage implements BibleStorage {
     @Override
     public void insertBibleVersion(BibleVersion version) throws BibleStorageException {
 	try {
-	    PreparedStatement st = dbConnection.prepareStatement("INSERT INTO " + VERSIONS + " ("
-		    + VERSION_NAME + ", " + VERSION_LANG + ") VALUES ( ?, ?)");
+	    PreparedStatement st = dbConnection.prepareStatement("MERGE INTO " + VERSIONS + " ("
+		    + VERSION_NAME + ", " + VERSION_LANG + ") KEY ( " + VERSION_NAME + " ) VALUES ( ?, ?)");
 	    st.setString(1, version.getName());
 	    st.setString(2, version.getLanguage());
 	    commitUpdate(st);
@@ -643,8 +645,8 @@ public final class H2DbBibleStorage implements BibleStorage {
     public void insertDictTerm(DictTerm term) throws BibleStorageException {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement(
-		    "INSERT INTO " + TERMS
-			    + "(" + TERM_NAME + ", " + TERM_DEF + ") VALUES (?, ?)");
+		    "MERGE INTO " + TERMS
+			    + "(" + TERM_NAME + ", " + TERM_DEF + ") KEY (" + TERM_NAME + ") VALUES (?, ?)");
 	    st.setString(1, term.getName());
 	    st.setString(2, term.getDefinition());
 	    commitUpdate(st);
@@ -686,7 +688,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     public void insertReadingList(String name) throws BibleStorageException {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement(
-		    "INSERT INTO " + RLISTS + "(" + RLIST_NAME + ") VALUES (?)");
+		    "MERGE INTO " + RLISTS + "(" + RLIST_NAME + ") KEY (" + RLIST_NAME + ") VALUES (?)");
 	    st.setString(1, name);
 	    commitUpdate(st);
 	} catch (SQLException e) {
