@@ -42,13 +42,17 @@ public interface BibleStorage {
 
     List<Verse> getVerses(List<Position> position, BibleVersion version) throws BibleStorageException;
 
+    //TODO replace fake chapter (which is a Position in fact) with real Chapter object
+    
+    //chapter is represented by Position object with ignored verse number information
+    List<Verse> getChapter(Position chapter, BibleVersion version) throws BibleStorageException;
+    
+    List<Position> getChapterList(BibleVersion version) throws BibleStorageException;
+
     List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException;
 
     List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions)
 	    throws BibleStorageException;
-
-    // List<Verse> compareVersesOptimalized(Position position, List<BibleVersion> versions) throws
-    // BibleStorageException;
 
     void insertNote(Note note) throws BibleStorageException;
 

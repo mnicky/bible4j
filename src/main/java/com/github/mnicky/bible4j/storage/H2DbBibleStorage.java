@@ -368,10 +368,88 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	return verseList;
     }
+    
+    //chapter is represented by Position object with ignored verse number information
+    @Override
+    public List<Verse> getChapter(Position chapter, BibleVersion version) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<Verse> verseList = new ArrayList<Verse>();
+
+	    try {
+		st = dbConnection
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+					    + "FROM " + VERSIONS
+					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_NAME_F
+					    + " = ?");
+		st.setInt(1, chapter.getChapterNum());
+		st.setString(2, chapter.getBook().getName());
+		st.setString(3, version.getName());
+		rs = commitQuery(st);
+		while (rs.next())
+		    verseList.add(new Verse(rs.getString(1), new Position(BibleBook
+			    .getBibleBookByName(rs
+				    .getString(6)), rs.getInt(5), rs
+			    .getInt(4)), new BibleVersion(rs.getString(2), rs
+			    .getString(3))));
+
+	    } catch (SQLException e) {
+		throw new BibleStorageException("Verses could not be retrieved", e);
+	    } finally {
+		try {
+		    if (st != null)
+			st.close();
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		}
+	    }
+
+	return verseList;
+    }
 
     @Override
-    public List<Verse> compareVerses(Position position, List<BibleVersion> versions)
-	    throws BibleStorageException {
+    public List<Position> getChapterList(BibleVersion version) throws BibleStorageException {
+	PreparedStatement st = null;
+	List<Position> chapterList = new ArrayList<Position>();
+
+	try {
+	    st = dbConnection
+		    .prepareStatement("SELECT " + BOOK_NAME_F + ", " + COORD_CHAPT_F
+				    + "FROM " + VERSIONS
+				    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+				    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+				    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+				    + "WHERE " + VERSION_NAME_F + " = ?");
+	    	st.setString(1, version.getName());
+		
+		ResultSet rs = commitQuery(st);
+
+		while (rs.next())
+		    chapterList.add(new Position(BibleBook.getBibleBookByName(rs.getString(1)),
+		                                 rs.getInt(2), 0));
+
+		rs.close();
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("CHapters could not be retrieved", e);
+	} finally {
+	    try {
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+
+	return chapterList;
+    }
+
+    @Override
+    public List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException {
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
 

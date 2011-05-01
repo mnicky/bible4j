@@ -285,6 +285,84 @@ public final class H2DbBibleStorage_Test {
 	}
 	Assert.assertEquals(retrieved, exp);
     }
+    
+    @Test
+    public void getChapterShouldReturnAllVersesFromSpecifiedChapter() {
+
+	List<Verse> exp = new ArrayList<Verse>();
+	exp.add(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en")));
+	exp.add(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV", "en")));
+	exp.add(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en")));
+
+	List<Verse> retrieved = null;
+
+	try {
+	    //given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 3));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 2, 2));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 2), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 1, 3), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 1, 4), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text4", new Position(BibleBook.ACTS, 2, 2), new BibleVersion("KJV", "en")));
+
+	    Position chapter = new Position(BibleBook.ACTS, 1, 0);
+
+	    //when
+	    retrieved = bible.getChapter(chapter, new BibleVersion("KJV", "en"));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	//then
+	Assert.assertEquals(retrieved, exp);
+    }
+    
+    @Test
+    public void getChapterListShouldReturnAllChaptersInSpecifiedBibleVersion() {
+	List<Position> exp = new ArrayList<Position>();
+	exp.add(new Position(BibleBook.ACTS, 1, 0));
+	exp.add(new Position(BibleBook.ACTS, 2, 0));
+	exp.add(new Position(BibleBook.ACTS, 4, 0));
+	exp.add(new Position(BibleBook.LUKE, 4, 0));
+
+	List<Position> retrieved = null;
+
+	try {
+	    //given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleVersion(new BibleVersion("NIV", "en"));
+	    bible.insertBibleBook(BibleBook.ACTS);
+	    bible.insertBibleBook(BibleBook.JOB);
+	    bible.insertBibleBook(BibleBook.LUKE);
+	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 1));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 2, 2));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 3, 3));
+	    bible.insertPosition(new Position(BibleBook.ACTS, 4, 4));
+	    bible.insertPosition(new Position(BibleBook.JOB, 4, 4));
+	    bible.insertPosition(new Position(BibleBook.LUKE, 4, 4));
+	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 1), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 2, 2), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 3, 3), new BibleVersion("NIV", "en")));
+	    bible.insertVerse(new Verse("test text4", new Position(BibleBook.ACTS, 4, 4), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text5", new Position(BibleBook.LUKE, 4, 4), new BibleVersion("KJV", "en")));
+
+	    //when
+	    retrieved = bible.getChapterList(new BibleVersion("KJV", "en"));
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	//then
+	Assert.assertEquals(retrieved, exp);
+    }
 
     @Test
     public void compareVersesForOnePositionShouldRetrieveListOfAllRequestedVerses() {
