@@ -310,8 +310,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    rs = commitQuery(st);
 	    while (rs.next())
 		verse = new Verse(rs.getString(1), new Position(BibleBook.getBibleBookByName(rs
-			.getString(6)), rs.getInt(5), rs.getInt(4)),
-				  new BibleVersion(rs.getString(2), rs.getString(3)));
+			.getString(6)), rs.getInt(5), rs.getInt(4)), new BibleVersion(rs.getString(2), rs.getString(3)));
 
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Verse could not be retrieved", e);
