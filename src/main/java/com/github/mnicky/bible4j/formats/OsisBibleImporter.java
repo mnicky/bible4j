@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -25,9 +26,11 @@ public final class OsisBibleImporter implements BibleImporter {
 
     private String currentVerseText = "";
 
-    private BibleVersion currentBibleVersion = new BibleVersion("unknown", "unknown");
+    private BibleVersion currentBibleVersion = new BibleVersion("unknown", "unknown", "unknown");
 
     private Position currentPosition = null;
+    
+    //TODO parse bibleName (title in OSIS)
 
     @Override
     public void importBible(InputStream input, BibleStorage storage) throws BibleImporterException, BibleStorageException {
@@ -63,19 +66,20 @@ public final class OsisBibleImporter implements BibleImporter {
     }
 
     private void parseOsisText(XMLStreamReader reader) {
-	String versionName = "unknown";
+	String versionAbbr = "unknown";
 	String versionLang = "unknown";
+	String versionName = "unknown";
 
 	for (int i = 0; i < reader.getAttributeCount(); i++) {
 	    if (reader.getAttributeLocalName(i).equals("osisIDWork")) {
-		versionName = reader.getAttributeValue(i);
+		versionAbbr = reader.getAttributeValue(i).toLowerCase(new Locale("en"));
 	    }
 	    else if (reader.getAttributeLocalName(i).equals("lang")) {
 		versionLang = reader.getAttributeValue(i);
 	    }
 	}
 
-	currentBibleVersion = new BibleVersion(versionName, versionLang);
+	currentBibleVersion = new BibleVersion(versionName, versionAbbr, versionLang);
     }
 
     private void parseVerse(XMLStreamReader reader) throws XMLStreamException {
@@ -90,10 +94,10 @@ public final class OsisBibleImporter implements BibleImporter {
 
     private Position parsePosition(String position) {
 	String[] positionArray = position.split("\\.");
-	return new Position(getBibleBookName(positionArray[0]), Integer.valueOf(positionArray[1]), Integer.valueOf(positionArray[2]));
+	return new Position(getBibleBookByOsisAbbr(positionArray[0]), Integer.valueOf(positionArray[1]), Integer.valueOf(positionArray[2]));
     }
 
-    private BibleBook getBibleBookName(String bookAbbr) {
+    private BibleBook getBibleBookByOsisAbbr(String bookAbbr) {
 	if (bookAbbr.equals("Gen"))
 	    return BibleBook.GENESIS;
 	if (bookAbbr.equals("Exod"))
@@ -249,10 +253,10 @@ public final class OsisBibleImporter implements BibleImporter {
 	
     //for testing purpose
     public static void main(String[] args) throws FileNotFoundException, BibleImporterException, BibleStorageException, SQLException  {
-	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test2", "test", ""));
-	storage.createStorage();
+	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
+	//storage.createStorage();
 	BibleImporter importer = new OsisBibleImporter();
-	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-kjv_osis.xml"), storage);
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/my_kjv.xml"), storage);
 	System.out.println("finished");
     }
 
