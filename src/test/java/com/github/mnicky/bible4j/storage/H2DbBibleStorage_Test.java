@@ -326,10 +326,10 @@ public final class H2DbBibleStorage_Test {
     @Test
     public void getChapterListShouldReturnAllChaptersInSpecifiedBibleVersion() {
 	List<Position> exp = new ArrayList<Position>();
+	exp.add(new Position(BibleBook.LUKE, 4, 0));
 	exp.add(new Position(BibleBook.ACTS, 1, 0));
 	exp.add(new Position(BibleBook.ACTS, 2, 0));
 	exp.add(new Position(BibleBook.ACTS, 4, 0));
-	exp.add(new Position(BibleBook.LUKE, 4, 0));
 
 	List<Position> retrieved = null;
 
@@ -346,12 +346,14 @@ public final class H2DbBibleStorage_Test {
 	    bible.insertPosition(new Position(BibleBook.ACTS, 3, 3));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 4, 4));
 	    bible.insertPosition(new Position(BibleBook.JOB, 4, 4));
+	    bible.insertPosition(new Position(BibleBook.LUKE, 4, 2));
 	    bible.insertPosition(new Position(BibleBook.LUKE, 4, 4));
 	    bible.insertVerse(new Verse("test text1", new Position(BibleBook.ACTS, 1, 1), new BibleVersion("KJV", "en")));
 	    bible.insertVerse(new Verse("test text2", new Position(BibleBook.ACTS, 2, 2), new BibleVersion("KJV", "en")));
 	    bible.insertVerse(new Verse("test text3", new Position(BibleBook.ACTS, 3, 3), new BibleVersion("NIV", "en")));
 	    bible.insertVerse(new Verse("test text4", new Position(BibleBook.ACTS, 4, 4), new BibleVersion("KJV", "en")));
-	    bible.insertVerse(new Verse("test text5", new Position(BibleBook.LUKE, 4, 4), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text5", new Position(BibleBook.LUKE, 4, 2), new BibleVersion("KJV", "en")));
+	    bible.insertVerse(new Verse("test text6", new Position(BibleBook.LUKE, 4, 4), new BibleVersion("KJV", "en")));
 
 	    //when
 	    retrieved = bible.getChapterList(new BibleVersion("KJV", "en"));

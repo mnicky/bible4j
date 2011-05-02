@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -421,7 +422,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-		    .prepareStatement("SELECT " + BOOK_NAME_F + ", " + COORD_CHAPT_F
+		    .prepareStatement("SELECT DISTINCT " + BOOK_NAME_F + ", " + COORD_CHAPT_F
 				    + "FROM " + VERSIONS
 				    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 				    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
@@ -447,6 +448,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 		e.printStackTrace();
 	    }
 	}
+	
+	Collections.sort(chapterList);
 
 	return chapterList;
     }
