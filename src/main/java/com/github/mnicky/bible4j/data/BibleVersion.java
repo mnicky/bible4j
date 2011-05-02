@@ -6,25 +6,41 @@ package com.github.mnicky.bible4j.data;
 public final class BibleVersion {
 
     /**
-     * Name of this Bible version. 
+     * Abbreviation of this Bible version. 
      */
-    private final String name;
+    private final String abbr;
     
     /**
      * Language of this Bible version.
      */
     private final String language;
     
-    //TODO add bible version abbreviation?
+    /**
+     * Name of this Bible version.
+     */
+    private final String name; 
     
     /**
-     * Constructs new BibleVersion with specified name and language.
-     * @param name name of the Bible version
+     * Constructs new BibleVersion with specified abbreviation and language.
+     * @param abbr abbreviation of the Bible version
      * @param language language
      */
-    public BibleVersion(String name, String language) {
-	this.name = name;
+    public BibleVersion(String abbr, String language) {
+	this.abbr = abbr;
 	this.language = language;
+	this.name = "";
+    }
+    
+    /**
+     * Constructs new BibleVersion with specified name, abbreviation and language.
+     * @param name name of the Bible version
+     * @param abbr abbreviation of the Bible version
+     * @param language language
+     */
+    public BibleVersion(String name, String abbr, String language) {
+	this.abbr = abbr;
+	this.language = language;
+	this.name = name;
     }
     
     
@@ -33,18 +49,18 @@ public final class BibleVersion {
      * The representation format is subject to change,
      * but the following may be regarded as typical:
      *
-     * "King's James Version (en)"
+     * "King's James Version (KJV, en)"
      *
      * @return string representation of this BibleVersion
      */
     @Override
     public String toString() {
-	return name + " (" + language + ")";
+	return name + " (" + abbr + ", " + language + ")";
     }
     
     /**
      * Indicates whether the provided object equals to this BibleVersion object.
-     * @param obj object to compare this BibleVersion object with     *
+     * @param obj object to compare this BibleVersion object with 
      * @return true if this BibleVersion object equals to provided
      */
     @Override
@@ -54,29 +70,34 @@ public final class BibleVersion {
         if (!(obj instanceof BibleVersion))
             return false;
         BibleVersion bv = (BibleVersion) obj;
-        return bv.name.equals(this.name) && bv.language.equals(this.language);
+        return bv.abbr.equals(this.abbr) && bv.language.equals(this.language) && bv.name.equals(this.name);
     }
     
     /**
-     * Returns a hash code for this Position.     * 
+     * Returns a hash code for this Position.
      * @return a hash code for this Position
      */
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + (name == null ? 0 : name.hashCode());
+        result = 31 * result + (abbr == null ? 0 : abbr.hashCode());
         result = 31 * result + (language == null ? 0 : language.hashCode());
+        result = 31 * result + (name == null ? 0 : name.hashCode());
         return result;
     }
 
 
-    public String getName() {
-	return name;
+    public String getAbbr() {
+	return abbr;
     }
 
 
     public String getLanguage() {
 	return language;
     }   
+    
+    public String getName() {
+	return name;
+    } 
     
 }

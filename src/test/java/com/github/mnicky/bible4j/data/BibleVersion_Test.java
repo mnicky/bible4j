@@ -10,16 +10,16 @@ public class BibleVersion_Test {
 
     @BeforeMethod
     public void beforeMethod() {
-        bv1 = new BibleVersion("King's James Version", "en");
-        bv2 = new BibleVersion("King's James Version", "en");
-        bv3 = new BibleVersion("King's James Version", "en");
-        bv4 = new BibleVersion("Cesky ekumenicky preklad", "cz");
+        bv1 = new BibleVersion("King's James Version", "KJV", "en");
+        bv2 = new BibleVersion("King's James Version", "KJV", "en");
+        bv3 = new BibleVersion("King's James Version", "KJV", "en");
+        bv4 = new BibleVersion("Cesky ekumenicky preklad", "CEP", "cz");
     }
     
     @Test
     public void testToString() {
         String s = bv1.toString();
-        Assert.assertEquals(s, "King's James Version (en)");
+        Assert.assertEquals(s, "King's James Version (KJV, en)");
     }
     
     @Test

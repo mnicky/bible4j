@@ -228,7 +228,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 								+ " WHERE " + BOOK_NAME_F + " = ?) AND "
 								+ COORD_VERSE_F + " = ? ))");
 	    st.setString(1, verse.getText());
-	    st.setString(2, verse.getBibleVersion().getName());
+	    st.setString(2, verse.getBibleVersion().getAbbr());
 	    st.setInt(3, verse.getPosition().getChapterNum());
 	    st.setString(4, verse.getPosition().getBook().getName());
 	    st.setInt(5, verse.getPosition().getVerseNum());
@@ -274,7 +274,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement("MERGE INTO " + VERSIONS + " ("
 		    + VERSION_NAME + ", " + VERSION_LANG + ") KEY ( " + VERSION_NAME + " ) VALUES ( ?, ?)");
-	    st.setString(1, version.getName());
+	    st.setString(1, version.getAbbr());
 	    st.setString(2, version.getLanguage());
 	    commitUpdate(st);
 	} catch (SQLException e) {
@@ -301,7 +301,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 	    st.setInt(1, position.getChapterNum());
 	    st.setString(2, position.getBook().getName());
-	    st.setString(3, version.getName());
+	    st.setString(3, version.getAbbr());
 	    st.setInt(4, position.getVerseNum());
 	    rs = commitQuery(st);
 	    while (rs.next())
@@ -344,7 +344,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 					    + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 		st.setInt(1, position.getChapterNum());
 		st.setString(2, position.getBook().getName());
-		st.setString(3, version.getName());
+		st.setString(3, version.getAbbr());
 		st.setInt(4, position.getVerseNum());
 		rs = commitQuery(st);
 		while (rs.next())
@@ -388,7 +388,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 					    + " = ?");
 		st.setInt(1, chapter.getChapterNum());
 		st.setString(2, chapter.getBook().getName());
-		st.setString(3, version.getName());
+		st.setString(3, version.getAbbr());
 		rs = commitQuery(st);
 		while (rs.next())
 		    verseList.add(new Verse(rs.getString(1), new Position(BibleBook
@@ -424,7 +424,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 				    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 				    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
 				    + "WHERE " + VERSION_NAME_F + " = ?");
-	    	st.setString(1, version.getName());
+	    	st.setString(1, version.getAbbr());
 		
 		ResultSet rs = commitQuery(st);
 
@@ -467,7 +467,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 		st.setInt(1, position.getChapterNum());
 		st.setString(2, position.getBook().getName());
-		st.setString(3, version.getName());
+		st.setString(3, version.getAbbr());
 		st.setInt(4, position.getVerseNum());
 
 		ResultSet rs = commitQuery(st);
@@ -519,7 +519,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 					    + " = ? LIMIT 1");
 		    st.setInt(1, position.getChapterNum());
 		    st.setString(2, position.getBook().getName());
-		    st.setString(3, version.getName());
+		    st.setString(3, version.getAbbr());
 		    st.setInt(4, position.getVerseNum());
 		    rs = commitQuery(st);
 		    while (rs.next())
@@ -563,7 +563,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 									+ COORD_VERSE_F + " = ?) AND "
 					+ VERSE_TEXT_F + " = ?)" + ", ?)");
 
-	    st.setString(1, bookmark.getVerse().getBibleVersion().getName());
+	    st.setString(1, bookmark.getVerse().getBibleVersion().getAbbr());
 	    st.setString(2, bookmark.getVerse().getBibleVersion().getLanguage());
 	    st.setString(3, bookmark.getVerse().getPosition().getBook().getName());
 	    st.setInt(4, bookmark.getVerse().getPosition().getChapterNum());
@@ -631,7 +631,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
 					    + "WHERE " + VERSION_NAME_F + " = ?");
-	    st.setString(1, version.getName());
+	    st.setString(1, version.getAbbr());
 	    rs = commitQuery(st);
 	    while (rs.next())
 		bookmarkList.add(new Bookmark(rs.getString(1), new Verse(rs.getString(2),
