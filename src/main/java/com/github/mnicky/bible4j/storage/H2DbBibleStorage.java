@@ -26,6 +26,8 @@ import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
  * {@link BibleStorage} backed by <a href="http://h2database.com">H2 database</a>.
  */
 public final class H2DbBibleStorage implements BibleStorage {
+    
+    //FIXME update SQL queries with BIBLE_NAME
 
     /**
      * Connection to H2 database.
@@ -142,7 +144,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + VERSIONS + " ("
 		    + VERSION_ID + " INT IDENTITY NOT NULL,"
-		    + VERSION_NAME + " VARCHAR_IGNORECASE(50) NOT NULL UNIQUE,"
+		    + VERSION_ABBR + " VARCHAR_IGNORECASE(50) NOT NULL UNIQUE,"
+		    + VERSION_NAME + " VARCHAR_IGNORECASE(50) NOT NULL,"
 		    + VERSION_LANG + " VARCHAR(50) NOT NULL)");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + BOOKS + " ("
@@ -221,7 +224,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    + ", " + VERSE_COORD + ") VALUES "
 			    + "( ?,"
 			    + "(SELECT DISTINCT " + VERSION_ID_F + " FROM " + VERSIONS
-					+ " WHERE " + VERSION_NAME_F + " = ?),"
+					+ " WHERE " + VERSION_ABBR_F + " = ?),"
 			    + "(SELECT DISTINCT " + COORD_ID_F + " FROM " + COORDS
 					+ " WHERE " + COORD_CHAPT_F + " = ? AND "
 					+ COORD_BOOK_F + " = (SELECT DISTINCT " + BOOK_ID_F + " FROM " + BOOKS
@@ -273,9 +276,10 @@ public final class H2DbBibleStorage implements BibleStorage {
     public void insertBibleVersion(BibleVersion version) throws BibleStorageException {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement("MERGE INTO " + VERSIONS + " ("
-		    + VERSION_NAME + ", " + VERSION_LANG + ") KEY ( " + VERSION_NAME + " ) VALUES ( ?, ?)");
+		    + VERSION_ABBR + ", " + VERSION_LANG + ", " + VERSION_NAME + ") KEY ( " + VERSION_ABBR + " ) VALUES ( ?, ?, ?)");
 	    st.setString(1, version.getAbbr());
 	    st.setString(2, version.getLanguage());
+	    st.setString(3, version.getName());
 	    commitUpdate(st);
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Bible version could not be inserted", e);
@@ -290,7 +294,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 			    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
 			    + BOOK_NAME_F
 				      + "FROM " + VERSIONS
@@ -298,7 +302,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 				      + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 				      + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
 				      + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
-			    + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
+			    + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 	    st.setInt(1, position.getChapterNum());
 	    st.setString(2, position.getBook().getName());
 	    st.setString(3, version.getAbbr());
@@ -334,13 +338,13 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    try {
 		st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
 					    + "FROM " + VERSIONS
 					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_NAME_F
+					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_ABBR_F
 					    + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 		st.setInt(1, position.getChapterNum());
 		st.setString(2, position.getBook().getName());
@@ -378,13 +382,13 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    try {
 		st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
 					    + "FROM " + VERSIONS
 					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_NAME_F
+					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_ABBR_F
 					    + " = ?");
 		st.setInt(1, chapter.getChapterNum());
 		st.setString(2, chapter.getBook().getName());
@@ -423,7 +427,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 				    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 				    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 				    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-				    + "WHERE " + VERSION_NAME_F + " = ?");
+				    + "WHERE " + VERSION_ABBR_F + " = ?");
 	    	st.setString(1, version.getAbbr());
 		
 		ResultSet rs = commitQuery(st);
@@ -455,14 +459,14 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 			    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
 				    + "FROM " + VERSIONS
 				    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 				    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 				    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
 				    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
-				    + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
+				    + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 	    for (BibleVersion version : versions) {
 
 		st.setInt(1, position.getChapterNum());
@@ -508,14 +512,14 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    for (Position position : positions) {
 		try {
 		    st = dbConnection
-			    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 				    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
 					    + "FROM " + VERSIONS
 					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
 					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F
-					    + " = ? AND " + VERSION_NAME_F + " = ? AND " + COORD_VERSE_F
+					    + " = ? AND " + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F
 					    + " = ? LIMIT 1");
 		    st.setInt(1, position.getChapterNum());
 		    st.setString(2, position.getBook().getName());
@@ -553,7 +557,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    + "(" + BKMARK_VERSE + ", " + BKMARK_NAME + ") VALUES"
 			    + "((SELECT DISTINCT " + VERSE_ID_F + " FROM " + VERSES + " WHERE "
 					+ VERSE_VERSION_F + " = (SELECT DISTINCT " + VERSION_ID_F + " FROM " + VERSIONS + " WHERE "
-									+ VERSION_NAME_F + " = ? AND "
+									+ VERSION_ABBR_F + " = ? AND "
 									+ VERSION_LANG_F + " = ?) AND "
 					+ VERSE_COORD_F + " = (SELECT DISTINCT " + COORD_ID_F + " FROM " + COORDS + " WHERE"
 									+ COORD_BOOK_F + " = (SELECT DISTINCT "
@@ -585,7 +589,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F + "FROM " + BKMARKS
 					    + "INNER JOIN " + VERSES + " ON " + BKMARK_VERSE_F + " = " + VERSE_ID_F + " "
 					    + "INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
@@ -624,13 +628,13 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F + "FROM " + BKMARKS
 					    + "INNER JOIN " + VERSES + " ON " + BKMARK_VERSE_F + " = " + VERSE_ID_F + " "
 					    + "INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-					    + "WHERE " + VERSION_NAME_F + " = ?");
+					    + "WHERE " + VERSION_ABBR_F + " = ?");
 	    st.setString(1, version.getAbbr());
 	    rs = commitQuery(st);
 	    while (rs.next())
@@ -937,7 +941,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", "
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
 					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
 					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
 					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"

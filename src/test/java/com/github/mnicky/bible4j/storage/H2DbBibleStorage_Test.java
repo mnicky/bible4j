@@ -162,8 +162,8 @@ public final class H2DbBibleStorage_Test {
 
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
-		    .executeQuery("SELECT " + VERSION_NAME_F + ", " + VERSION_LANG_F + " FROM " + VERSIONS
-			    + " WHERE " + VERSION_NAME_F + " = 'Douay-Rheims' LIMIT 1");
+		    .executeQuery("SELECT " + VERSION_ABBR_F + ", " + VERSION_LANG_F + " FROM " + VERSIONS
+			    + " WHERE " + VERSION_ABBR_F + " = 'Douay-Rheims' LIMIT 1");
 
 	    int i = 0;
 	    while (rs.next()) {
@@ -200,7 +200,7 @@ public final class H2DbBibleStorage_Test {
 	    Statement st = conn.createStatement();
 	    ResultSet rs = st
 		    .executeQuery("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", "
-		                  	+ COORD_VERSE_F + ", " + VERSION_NAME_F + " FROM " + VERSIONS
+		                  	+ COORD_VERSE_F + ", " + VERSION_ABBR_F + " FROM " + VERSIONS
 			    + " INNER JOIN " + VERSES + " ON " + VERSION_ID_F + " = " + VERSE_VERSION_F
 			    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
 			    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F

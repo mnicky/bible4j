@@ -7,6 +7,8 @@ final class H2DbNaming {
     static final String VERSIONS = "`bible_versions`";
     static final String VERSION_ID = "`id`";
     static final String VERSION_ID_F = VERSIONS + "." + VERSION_ID;
+    static final String VERSION_ABBR = "`abbr`";
+    static final String VERSION_ABBR_F = VERSIONS + "." + VERSION_ABBR;
     static final String VERSION_NAME = "`name`";
     static final String VERSION_NAME_F = VERSIONS + "." + VERSION_NAME;
     static final String VERSION_LANG = "`lang`";
