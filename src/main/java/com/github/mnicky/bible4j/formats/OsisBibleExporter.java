@@ -1,6 +1,5 @@
 package com.github.mnicky.bible4j.formats;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -297,7 +296,7 @@ public final class OsisBibleExporter implements BibleExporter {
     public static void main(String[] args) throws FileNotFoundException, BibleImporterException, BibleStorageException, SQLException, BibleExporterException  {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	BibleExporter exporter = new OsisBibleExporter(storage);
-	exporter.exportBible(new BibleVersion("King's James Version", "kjv", "en"), new FileOutputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/my_kjv.xml"));
+	exporter.exportBible(new BibleVersion("King's James Version", "kjv2", "en"), new FileOutputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/my_kjv.xml"));
 	System.out.println("finished");
     }
 
