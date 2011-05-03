@@ -128,6 +128,27 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	return rows;
     }
+    
+    private boolean tableExists(String tableName) throws SQLException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	int count = 0;
+	try {
+	    st = dbConnection
+		    .prepareStatement("SELECT COUNT(`TABLE_NAME`) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'PUBLIC' AND `TABLE_NAME` = ?");
+	    st.setString(1, tableName);
+	    rs = commitQuery(st);
+	    while (rs.next())
+		count = rs.getInt(1);
+
+	} finally {
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
+	}
+	return (count > 0);
+    }
 
     @Override
     public int[] createStorage() throws BibleStorageException {
@@ -135,6 +156,9 @@ public final class H2DbBibleStorage implements BibleStorage {
 	int[] columns;
 
 	try {
+	    if (tableExists("BIBLE_VERSIONS"))
+		return null;
+	    
 	    Statement st = dbConnection.createStatement();
 
 	    // FIXME add CASCADE or RESTRICTED to foreign keys etc?
