@@ -439,7 +439,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		rs.close();
 
 	} catch (SQLException e) {
-	    throw new BibleStorageException("CHapters could not be retrieved", e);
+	    throw new BibleStorageException("Chapters could not be retrieved", e);
 	} finally {
 	    try {
 		if (st != null)
