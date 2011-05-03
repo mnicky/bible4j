@@ -67,10 +67,19 @@ public final class OsisBibleImporter implements BibleImporter {
 	    }
 	    reader.close();
 	    
+	    resetValues();
+	    
 	} catch (XMLStreamException e) {
 	    throw new BibleImporterException("Parsing error", e);
 	}
 
+    }
+
+    private void resetValues() {
+	    currentVerseText = "";
+	    currentBibleVersion = new BibleVersion("unknown", "unknown", "unknown");
+	    currentPosition = null;	    
+	    bibleVersionInserted = false;	
     }
 
     private void parseWork(BibleStorage storage, XMLStreamReader reader) throws XMLStreamException, BibleStorageException {
@@ -273,10 +282,25 @@ public final class OsisBibleImporter implements BibleImporter {
 	
     //for testing purpose
     public static void main(String[] args) throws FileNotFoundException, BibleImporterException, BibleStorageException, SQLException  {
-	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE;DB_CLOSE_ON_EXIT=FALSE", "test", ""));
+	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	storage.createStorage();
-	BibleImporter importer = new OsisBibleImporter();
-	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/my_kjv2.xml"), storage);
+	
+	OsisBibleImporter importer = new OsisBibleImporter();
+	
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-b21_osis.xml"), storage);
+	
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-bkr_osis.xml"), storage);
+	
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-cep_osis.xml"), storage);
+	
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-asv_osis.xml"), storage);
+	
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-kjv_osis.xml"), storage);
+	
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-rsv_osis.xml"), storage);
+	
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-web_osis.xml"), storage);
+	
 	System.out.println("finished");
     }
 
