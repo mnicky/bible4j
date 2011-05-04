@@ -221,6 +221,28 @@ public final class H2DbBibleStorage_Test {
 	}
 	Assert.assertTrue(Arrays.deepEquals(actual, exp));
     }
+    
+    @Test
+    public void getBibleVersionShoulReturnBibleVersionSpecifiedByAbbr() {
+	BibleVersion exp = new BibleVersion("KJV", "en");
+	BibleVersion retrieved = null;
+
+	try {
+	    //given
+	    bible.createStorage();
+	    bible.insertBibleVersion(new BibleVersion("RSV", "en"));
+	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
+	    bible.insertBibleVersion(new BibleVersion("NIV", "en"));
+	    //when
+	    retrieved = bible.getBibleVersion("KJV");
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+	//then
+	Assert.assertEquals(retrieved, exp);
+    }
 
     @Test
     public void testGetVerseWithOneVerse() {

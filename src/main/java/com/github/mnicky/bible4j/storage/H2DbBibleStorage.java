@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import com.github.mnicky.bible4j.data.BibleBook;
@@ -309,6 +310,37 @@ public final class H2DbBibleStorage implements BibleStorage {
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Bible version could not be inserted", e);
 	}
+    }
+    
+    @Override
+    public BibleVersion getBibleVersion(String abbr) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	BibleVersion version = null;
+
+	try {
+	    st = dbConnection
+		    .prepareStatement("SELECT " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+				      + "FROM " + VERSIONS
+				      + "WHERE " + VERSION_ABBR_F + " = ? LIMIT 1");
+	    st.setString(1, abbr.toLowerCase(new Locale("en")));
+	    rs = commitQuery(st);
+	    while (rs.next())
+		version = new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3));
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Version could not be retrieved", e);
+	} finally {
+	    try {
+		if (rs != null)
+		    rs.close();
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+	return version;
     }
 
     @Override
