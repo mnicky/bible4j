@@ -276,7 +276,7 @@ public final class OsisBibleImporter implements BibleImporter {
 	if (bookAbbr.equals("Rev"))
 	    return BibleBook.REVELATION;
 	else
-	    throw new IllegalArgumentException();
+	    throw new IllegalArgumentException("Unknown BibleBook type specified.");
 
     }
 	
