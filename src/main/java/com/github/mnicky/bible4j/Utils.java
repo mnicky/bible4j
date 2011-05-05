@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,7 @@ import com.github.mnicky.bible4j.data.BibleBook;
 public final class Utils {
     
     //FIXME: repair filepath
-    private static final String BIBLE_BOOK_ABBRS_FILE = "src/main/resources/bibleBookAbbrs.conf";
+    private static final String BIBLE_BOOK_ABBRS_FILE = "/bibleBookAbbrs.conf";
     private static final String COMMENT_CHAR = "#";
     private static final String SPLIT_CHAR = ":";
     
@@ -31,7 +32,12 @@ public final class Utils {
 	    throw new RuntimeException("BibleBook name could not be retrieved.", e);
 	}
 	
-	return bookNames.get(abbr);
+	BibleBook book = bookNames.get(abbr);
+	
+	if (book == null)
+	    throw new IllegalArgumentException("Bible book abbreviation '" + abbr + "' is unknown.");
+	
+	return book;
 	
     }
 
@@ -39,10 +45,10 @@ public final class Utils {
 	Map<String, BibleBook> bookNames = new HashMap<String, BibleBook>();
 	BufferedReader r = null;
 	String line;
-
-	try {
-	    r = new BufferedReader(new InputStreamReader(new FileInputStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
-
+	
+	try {	    
+	    r = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
+	    
 	    while ((line = r.readLine()) != null) {
 		if (line.length() > 0 && !line.startsWith(COMMENT_CHAR)) {
 		    String[] abbrAndName = line.split(SPLIT_CHAR);
@@ -86,7 +92,7 @@ public final class Utils {
     
     //for testing purposes
     public static void main(String[] args) {
-	System.out.println(Utils.getBibleBookNameByAbbr("1pt"));
+	System.out.println(Utils.getBibleBookNameByAbbr("mt"));
 	System.out.println("finished");
     }
 
