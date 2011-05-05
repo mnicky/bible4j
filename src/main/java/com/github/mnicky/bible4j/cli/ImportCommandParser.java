@@ -1,22 +1,56 @@
 package com.github.mnicky.bible4j.cli;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import com.github.mnicky.bible4j.formats.BibleImporter;
+import com.github.mnicky.bible4j.formats.BibleImporterException;
+import com.github.mnicky.bible4j.formats.OsisBibleImporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
+import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 public class ImportCommandParser extends CommandParser {
 
+    InputStream input;
+    
     public ImportCommandParser(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
     @Override
-    public void parse(String[] args) {
-	// TODO Auto-generated method stub
+    public void parse(String[] args) throws BibleImporterException {
+	try {
+	    input = parseInputStream(args);
+	} catch (FileNotFoundException e) {
+	    throw new BibleImporterException("Specified file not found", e);
+	}
 
+    }
+    
+    public void importBible() throws BibleImporterException, BibleStorageException {
+	BibleImporter importer = new OsisBibleImporter(bibleStorage);
+	importer.importBible(input);
+    }
+
+    private InputStream parseInputStream(String[] args) throws FileNotFoundException {
+	FileInputStream in = new FileInputStream(getFirstValue(args));
+	return in;
     }
 
     @Override
     public void printHelp() {
-	// TODO Auto-generated method stub
+	System.out.println("Usage:");
+        System.out.println("\t" + CommandParserLauncher.IMPORT_COMMAND + " PATH_TO_FILE");
+        
+        System.out.println();
+        System.out.println("\tPATH_TO_FILE \t path to OSIS file containing the Bible");
+        
+        System.out.println();
+        System.out.println("Examples:");
+        
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.IMPORT_COMMAND + " kjv-osis-bible.xml");
 	
     }
 
