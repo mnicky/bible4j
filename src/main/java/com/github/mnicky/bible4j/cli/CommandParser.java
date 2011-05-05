@@ -10,7 +10,9 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 public abstract class CommandParser {
     
-    protected static final String BIBLE_VERSION_PARAMETER = "-v";
+    protected static final String BIBLE_VERSION_ARGUMENT = "-v";
+    protected static final String BIBLE_BOOK_ARGUMENT = "-b";
+    
     protected final BibleStorage bibleStorage;
     
     public CommandParser(BibleStorage bibleStorage) {
@@ -44,6 +46,18 @@ public abstract class CommandParser {
 	return args[0];
     }
     
+    protected List<String> getAllNonArgumentValues(String[] args) {
+	List<String> values = new ArrayList<String>();
+	
+	for (String value : args) {
+	    if (isArgument(value))
+		break;
+	    values.add(value);
+	}
+	
+	return values;
+    }
+    
     protected String getFirstValueOfArgument(String arg, String[] args) {
 	for (int i = 0; i < args.length; i++)
 	    if (args[i].equalsIgnoreCase(arg) && (i + 1) < args.length)
@@ -70,14 +84,34 @@ public abstract class CommandParser {
 	return argValues;
     }
 
-    protected List<BibleVersion> parseVersions(String[] args) throws BibleStorageException {
+    protected List<BibleVersion> parseVersionsAndReturnFirstIfEmpty(String[] args) throws BibleStorageException {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
-        if (isArgumentPresent(BIBLE_VERSION_PARAMETER, args)) {
-            for (String version : getAllValuesOfArgument(BIBLE_VERSION_PARAMETER, args))
+        if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
+            for (String version : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args))
         	versionList.add(bibleStorage.getBibleVersion(version));
         }
         else 
             versionList.add(bibleStorage.getAllBibleVersions().get(0));
+        return versionList;
+    }
+    
+    protected List<BibleVersion> parseVersionsAndReturnAllIfEmpty(String[] args) throws BibleStorageException {
+        List<BibleVersion> versionList = new ArrayList<BibleVersion>();
+        if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
+            for (String version : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args))
+        	versionList.add(bibleStorage.getBibleVersion(version));
+        }
+        else 
+            versionList = (bibleStorage.getAllBibleVersions());
+        return versionList;
+    }
+    
+    protected List<BibleVersion> parseVersionsAndReturnNoneIfEmpty(String[] args) throws BibleStorageException {
+        List<BibleVersion> versionList = new ArrayList<BibleVersion>();
+        if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
+            for (String version : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args))
+        	versionList.add(bibleStorage.getBibleVersion(version));
+        }
         return versionList;
     }
     
