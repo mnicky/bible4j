@@ -15,7 +15,7 @@ public abstract class CommandParser {
 	this.bibleStorage = bibleStorage;
     }
 
-    public abstract void run(String[] args) throws BibleStorageException;
+    public abstract void parse(String[] args) throws BibleStorageException;
     
     protected boolean isArgumentPresent(String arg, String[] args) {
 	
@@ -45,7 +45,7 @@ public abstract class CommandParser {
 	    if (args[i].equalsIgnoreCase(arg) && (i + 1) < args.length)
 	    	return args[i + 1];
 	
-	throw new NoSuchElementException("Argument " + arg + " not present or without value.");
+	throw new IllegalArgumentException("Argument " + arg + " not present or without value.");
     }
     
     private int getArgumentIndex(String arg, String[] args) {
@@ -53,7 +53,7 @@ public abstract class CommandParser {
 	    if (args[i].equalsIgnoreCase(arg))
 		return i;
 
-	throw new NoSuchElementException("Argument " + arg + " not present.");
+	throw new IllegalArgumentException("Argument " + arg + " not present.");
     }
     
     protected List<String> getAllValuesOfArgument(String arg, String[] args) {
