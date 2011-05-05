@@ -1038,8 +1038,133 @@ public final class H2DbBibleStorage implements BibleStorage {
 					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
 					    + " INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 					    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
-					    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F);
+					    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+					    + " ORDER BY" + VERSION_ABBR_F);
 	    st.setString(1, text);
+	    rs = commitQuery(st);
+	    while (rs.next())
+		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
+			    .getBibleBookByName(rs
+				    .getString(6)), rs.getInt(5), rs
+			    .getInt(4)), new BibleVersion(rs.getString(2), rs
+			    .getString(3))));
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Verses could not be searched", e);
+	} finally {
+	    try {
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+
+	return verseList;
+    }
+
+    //TODO add unit test
+    @Override
+    public List<Verse> searchVersesForText(String text, BibleVersion version) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<Verse> verseList = new ArrayList<Verse>();
+
+	try {
+	    st = dbConnection
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
+					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
+					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
+					    + " INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " AND" + VERSION_ABBR_F + " = ?"
+					    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
+					    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+					    + " ORDER BY" + VERSION_ABBR_F);
+	    st.setString(1, text);
+	    st.setString(2, version.getAbbr());
+	    rs = commitQuery(st);
+	    while (rs.next())
+		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
+			    .getBibleBookByName(rs
+				    .getString(6)), rs.getInt(5), rs
+			    .getInt(4)), new BibleVersion(rs.getString(2), rs
+			    .getString(3))));
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Verses could not be searched", e);
+	} finally {
+	    try {
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+	
+	return verseList;
+    }
+
+    //TODO add unit test
+    @Override
+    public List<Verse> searchVersesForText(String text, BibleBook book) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<Verse> verseList = new ArrayList<Verse>();
+
+	try {
+	    st = dbConnection
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
+					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
+					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
+					    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
+					    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " AND" + BOOK_NAME_F + " = ?"
+					    + " INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F
+					    + " ORDER BY" + VERSION_ABBR_F);
+	    st.setString(1, text);
+	    st.setString(2, book.getName());
+	    rs = commitQuery(st);
+	    while (rs.next())
+		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
+			    .getBibleBookByName(rs
+				    .getString(6)), rs.getInt(5), rs
+			    .getInt(4)), new BibleVersion(rs.getString(2), rs
+			    .getString(3))));
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Verses could not be searched", e);
+	} finally {
+	    try {
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+
+	return verseList;
+    }
+
+    //TODO add unit test
+    @Override
+    public List<Verse> searchVersesForText(String text, BibleBook book, BibleVersion version) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<Verse> verseList = new ArrayList<Verse>();
+
+	try {
+	    st = dbConnection
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
+					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
+					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
+					    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
+					    + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " AND" + BOOK_NAME_F + " = ?"
+					    + " INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " AND" + VERSION_ABBR_F + " = ?"
+					    + " ORDER BY" + VERSION_ABBR_F);
+	    st.setString(1, text);
+	    st.setString(2, book.getName());
+	    st.setString(3, version.getAbbr());
 	    rs = commitQuery(st);
 	    while (rs.next())
 		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
