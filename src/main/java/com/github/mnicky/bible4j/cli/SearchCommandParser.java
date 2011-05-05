@@ -6,13 +6,18 @@ public class SearchCommandParser extends CommandParser {
 
     public SearchCommandParser(BibleStorage bibleStorage) {
 	super(bibleStorage);
-	// TODO Auto-generated constructor stub
     }
 
     @Override
     public void parse(String[] args) {
 	// TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void printHelp() {
+	// TODO Auto-generated method stub
+	
     }
 
 }

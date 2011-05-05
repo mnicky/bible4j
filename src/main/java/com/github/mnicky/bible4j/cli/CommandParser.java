@@ -17,6 +17,8 @@ public abstract class CommandParser {
 
     public abstract void parse(String[] args) throws BibleStorageException;
     
+    abstract public void printHelp();
+    
     protected boolean isArgumentPresent(String arg, String[] args) {
 	
 	for (String a : args)

@@ -292,4 +292,10 @@ public final class ReadCommandParser extends CommandParser {
 	
     }
 
+    @Override
+    public void printHelp() {
+	System.out.println("read");
+	
+    }
+
 }
