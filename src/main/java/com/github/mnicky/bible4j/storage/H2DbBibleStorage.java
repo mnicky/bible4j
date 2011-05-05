@@ -789,7 +789,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 					  + COORD_VERSE_F + ", " + NOTE_TYPE_F + "FROM " + NOTES
 				+ "INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
 				+ "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ?");
+				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ? AND " + COORD_VERSE_F + "= ?");
 	    st.setString(1, position.getBook().getName());
 	    st.setInt(2, position.getChapterNum());
 	    st.setInt(3, position.getVerseNum());
@@ -814,6 +814,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	return noteList;
     }
     
+    //TODO add unit test
     @Override
     public List<Note> getNotesForChapter(Position chapter) throws BibleStorageException {
 	ResultSet rs = null;
@@ -826,7 +827,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 					  + COORD_VERSE_F + ", " + NOTE_TYPE_F + "FROM " + NOTES
 				+ "INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
 				+ "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ? AND " + COORD_VERSE_F + "= ?");
+				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ?");
 	    st.setString(1, chapter.getBook().getName());
 	    st.setInt(2, chapter.getChapterNum());
 	    rs = commitQuery(st);
