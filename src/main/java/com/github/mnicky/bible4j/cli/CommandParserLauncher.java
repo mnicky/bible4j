@@ -96,7 +96,7 @@ public class CommandParserLauncher {
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException {
 	CommandParserLauncher cpl = new CommandParserLauncher(null);
-	String[] params = {"help", "read"};
+	String[] params = {"help", "search"};
 	cpl.launch(params);
     }
     

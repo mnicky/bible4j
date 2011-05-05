@@ -30,7 +30,7 @@ public final class ReadCommandParser extends CommandParser {
     @Override
     public void printHelp() {
         System.out.println("Usage:");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " POSITION [" + BIBLE_VERSION_PARAMETER + " BIBLE_VERSION...]");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " POSITION [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
         
         System.out.println();
         System.out.println("\tPOSITION \t Bible coordinates without spaces");
@@ -68,8 +68,8 @@ public final class ReadCommandParser extends CommandParser {
         System.out.println("  When no bible version is declared, the first bible found is used.");
         System.out.println("  You can declare one or more bible versions:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.8 " + BIBLE_VERSION_PARAMETER + " kjv");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:6-10 " + BIBLE_VERSION_PARAMETER + " niv rsv kjv");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.8 " + BIBLE_VERSION_ARGUMENT + " kjv");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:6-10 " + BIBLE_VERSION_ARGUMENT + " niv rsv kjv");
         
     }
 
@@ -113,7 +113,7 @@ public final class ReadCommandParser extends CommandParser {
 
 
     public void parse(String[] args) throws BibleStorageException {
-	versions = parseVersions(args);
+	versions = parseVersionsAndReturnFirstIfEmpty(args);
 	parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
     }
 
@@ -267,10 +267,10 @@ public final class ReadCommandParser extends CommandParser {
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, SQLException {
 	ReadCommandParser p = new ReadCommandParser(null);
-	String[] params = {"", " + BIBLE_VERSION_PARAMETER + ", "kjv", "niv", "esv"};
+	String[] params = {"", " + BIBLE_VERSION_ARGUMENT + ", "kjv", "niv", "esv"};
 	
-	System.out.println(p.getAllValuesOfArgument(" + BIBLE_VERSION_PARAMETER + ", params));
-	assert p.getAllValuesOfArgument(" + BIBLE_VERSION_PARAMETER + ", params).toString().equals("[kjv, niv, esv]");
+	System.out.println(p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params));
+	assert p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params).toString().equals("[kjv, niv, esv]");
 	
 	System.out.println(p.getFirstNonLetterPosition("mt5,4-8.12-17.21.23"));
 	assert p.getFirstNonLetterPosition("mt5,4-8.12-17.21.23") == 2;
@@ -319,7 +319,7 @@ public final class ReadCommandParser extends CommandParser {
 	
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	ReadCommandParser p3 = new ReadCommandParser(storage);
-	String[] params2 = {"1Jn1,6-7.9", " + BIBLE_VERSION_PARAMETER + ", "czeb21"};
+	String[] params2 = {"1Jn1,6-7.9", BIBLE_VERSION_ARGUMENT, "czeb21", "kjv"};
 	p3.parse(params2);
 	System.out.println();
 	List<Verse> verses = p3.getVerses(); 
