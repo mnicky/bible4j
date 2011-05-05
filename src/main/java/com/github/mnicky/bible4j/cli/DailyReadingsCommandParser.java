@@ -10,7 +10,7 @@ public class DailyReadingsCommandParser extends CommandParser {
     }
 
     @Override
-    public void run(String[] args) {
+    public void parse(String[] args) {
 	// TODO Auto-generated method stub
 
     }
