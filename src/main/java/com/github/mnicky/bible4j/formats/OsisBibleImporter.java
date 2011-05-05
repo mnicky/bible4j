@@ -23,6 +23,8 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 //TODO add unit tests for this class
 
 public final class OsisBibleImporter implements BibleImporter {
+    
+    private BibleStorage storage;
 
     private String currentVerseText = "";
 
@@ -31,9 +33,17 @@ public final class OsisBibleImporter implements BibleImporter {
     private Position currentPosition = null;
     
     boolean bibleVersionInserted = false;
+    
+    public OsisBibleImporter(BibleStorage storage) {
+	this.storage = storage;
+    }
+
+    public void setStorage(BibleStorage storage) {
+	this.storage = storage;
+    }
 
     @Override
-    public void importBible(InputStream input, BibleStorage storage) throws BibleImporterException, BibleStorageException {
+    public void importBible(InputStream input) throws BibleImporterException, BibleStorageException {
 	
 	try {
 	    XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
@@ -285,15 +295,15 @@ public final class OsisBibleImporter implements BibleImporter {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	storage.createStorage();
 	
-	OsisBibleImporter importer = new OsisBibleImporter();
+	OsisBibleImporter importer = new OsisBibleImporter(storage);
 	
-	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-b21_osis.xml"), storage);	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-bkr_osis.xml"), storage);	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-cep_osis.xml"), storage);	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-asv_osis.xml"), storage);	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-kjv_osis.xml"), storage);	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-rsv_osis.xml"), storage);	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-web_osis.xml"), storage);
+	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-b21_osis.xml"));	
+	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-bkr_osis.xml"));	
+	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/cz-cep_osis.xml"));	
+	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-asv_osis.xml"));	
+	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-kjv_osis.xml"));	
+	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-rsv_osis.xml"));	
+	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/en-web_osis.xml"));
 	
 	System.out.println("finished");
     }

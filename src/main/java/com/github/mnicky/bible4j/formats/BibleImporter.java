@@ -10,6 +10,6 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 public interface BibleImporter {
 
-    void importBible(InputStream input, BibleStorage storage) throws BibleImporterException, BibleStorageException;
+    void importBible(InputStream input) throws BibleImporterException, BibleStorageException;
 
 }
