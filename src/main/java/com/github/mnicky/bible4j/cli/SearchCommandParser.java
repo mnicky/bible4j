@@ -82,9 +82,9 @@ public class SearchCommandParser extends CommandParser {
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " PHRASE_TO_SEARCH... [" + BIBLE_BOOK_ARGUMENT + " BIBLE_BOOK...] [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
         
         System.out.println();
-        System.out.println("\tPHRASE_TO_SEARCH Phrase to search for (case is ignored)");
-        System.out.println("\tBIBLE_BOOK \t Bible book (name or abbreviation)");
-        System.out.println("\tBIBLE_VERSION \t Bible version abbreviation");
+        System.out.println("\tPHRASE_TO_SEARCH \t Phrase to search for (case is ignored)");
+        System.out.println("\tBIBLE_BOOK \t\t Bible book (name or abbreviation)");
+        System.out.println("\tBIBLE_VERSION \t\t Bible version abbreviation");
         
         System.out.println();
         System.out.println("Examples:");
