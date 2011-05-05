@@ -23,8 +23,6 @@ public final class ReadCommandParser extends CommandParser {
     
     private boolean wholeChaptersRequested = false;
     
-    private static final String BIBLE_VERSION_PARAMETER = "-v";
-    
     public ReadCommandParser(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
@@ -115,7 +113,7 @@ public final class ReadCommandParser extends CommandParser {
 
 
     public void parse(String[] args) throws BibleStorageException {
-	parseVersions(args);
+	versions = parseVersions(args);
 	parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
     }
 
@@ -266,17 +264,6 @@ public final class ReadCommandParser extends CommandParser {
 	return posDef.substring(0, getPositionAfterBookName(posDef));
     }
 
-    private void parseVersions(String[] args) throws BibleStorageException {
-	versions = new ArrayList<BibleVersion>();
-	if (isArgumentPresent(BIBLE_VERSION_PARAMETER, args)) {
-	    for (String version : getAllValuesOfArgument(BIBLE_VERSION_PARAMETER, args))
-		versions.add(bibleStorage.getBibleVersion(version));
-	}
-	else 
-	    versions.add(bibleStorage.getAllBibleVersions().get(0));
-    }
-    
-    
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, SQLException {
 	ReadCommandParser p = new ReadCommandParser(null);

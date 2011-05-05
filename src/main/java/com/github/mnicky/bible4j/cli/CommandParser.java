@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 public abstract class CommandParser {
     
+    protected static final String BIBLE_VERSION_PARAMETER = "-v";
     protected final BibleStorage bibleStorage;
     
     public CommandParser(BibleStorage bibleStorage) {
@@ -66,6 +68,17 @@ public abstract class CommandParser {
 	    argValues.add(args[i]);
 	}
 	return argValues;
+    }
+
+    protected List<BibleVersion> parseVersions(String[] args) throws BibleStorageException {
+        List<BibleVersion> versionList = new ArrayList<BibleVersion>();
+        if (isArgumentPresent(BIBLE_VERSION_PARAMETER, args)) {
+            for (String version : getAllValuesOfArgument(BIBLE_VERSION_PARAMETER, args))
+        	versionList.add(bibleStorage.getBibleVersion(version));
+        }
+        else 
+            versionList.add(bibleStorage.getAllBibleVersions().get(0));
+        return versionList;
     }
     
     
