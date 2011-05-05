@@ -34,8 +34,7 @@ public final class Note implements Comparable<Note> {
      * Returns NoteType conforming the specified character. This method is intented for use with databases
      * that doesn't have built-in enum type.
      * 
-     * @param ch
-     *            character specifying the NoteType
+     * @param ch character specifying the NoteType
      * @return NoteType conforming the specified character
      */
     public static NoteType getNoteTypeByChar(char ch) {
