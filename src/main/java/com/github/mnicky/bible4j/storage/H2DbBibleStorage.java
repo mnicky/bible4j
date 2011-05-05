@@ -789,7 +789,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 					  + COORD_VERSE_F + ", " + NOTE_TYPE_F + "FROM " + NOTES
 				+ "INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
 				+ "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ? AND " + COORD_VERSE_F + "= ?");
+				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ?");
 	    st.setString(1, position.getBook().getName());
 	    st.setInt(2, position.getChapterNum());
 	    st.setInt(3, position.getVerseNum());
@@ -801,7 +801,43 @@ public final class H2DbBibleStorage implements BibleStorage {
 						  .getString(5).charAt(0))));
 
 	} catch (SQLException e) {
-	    throw new BibleStorageException("Bookmarks could not be retrieved", e);
+	    throw new BibleStorageException("Notes could not be retrieved", e);
+	} finally {
+	    try {
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+
+	return noteList;
+    }
+    
+    @Override
+    public List<Note> getNotesForChapter(Position chapter) throws BibleStorageException {
+	ResultSet rs = null;
+	PreparedStatement st = null;
+	List<Note> noteList = new ArrayList<Note>();
+
+	try {
+	    st = dbConnection
+			.prepareStatement("SELECT " + NOTE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", "
+					  + COORD_VERSE_F + ", " + NOTE_TYPE_F + "FROM " + NOTES
+				+ "INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
+				+ "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ? AND " + COORD_VERSE_F + "= ?");
+	    st.setString(1, chapter.getBook().getName());
+	    st.setInt(2, chapter.getChapterNum());
+	    rs = commitQuery(st);
+	    while (rs.next())
+		noteList.add(new Note(rs.getString(1),
+					  new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs
+						  .getInt(3), rs.getInt(4)), Note.getNoteTypeByChar(rs
+						  .getString(5).charAt(0))));
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Notes could not be retrieved", e);
 	} finally {
 	    try {
 		if (st != null)

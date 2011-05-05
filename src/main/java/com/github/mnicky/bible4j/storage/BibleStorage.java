@@ -61,6 +61,8 @@ public interface BibleStorage {
     void insertNote(Note note) throws BibleStorageException;
 
     List<Note> getNotes(Position position) throws BibleStorageException;
+    
+    List<Note> getNotesForChapter(Position chapter) throws BibleStorageException;
 
     void insertBookmark(Bookmark bookmark) throws BibleStorageException;
 
