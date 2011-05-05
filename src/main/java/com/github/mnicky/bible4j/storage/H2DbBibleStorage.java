@@ -342,6 +342,39 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
 	return version;
     }
+    
+    @Override
+    public List<BibleVersion> getAllBibleVersions() throws BibleStorageException {
+	PreparedStatement st = null;
+	List<BibleVersion> versionList = new ArrayList<BibleVersion>();
+
+	try {
+	    st = dbConnection
+	    .prepareStatement("SELECT " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+			      + "FROM " + VERSIONS
+			      + "ORDER BY " + VERSION_ID_F);
+		
+		ResultSet rs = commitQuery(st);
+
+		while (rs.next())
+		    versionList.add(new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3)));
+
+		rs.close();
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Bible versions could not be retrieved", e);
+	} finally {
+	    try {
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+
+	return versionList;
+    }
+
 
     @Override
     public Verse getVerse(Position position, BibleVersion version) throws BibleStorageException {
