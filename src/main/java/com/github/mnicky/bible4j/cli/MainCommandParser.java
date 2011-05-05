@@ -28,7 +28,7 @@ public class MainCommandParser {
 	CommandParser parser = getCommandParser(args);
 	
 	if (parser != null)
-	    parser.run(Arrays.copyOfRange(args, 1, args.length));
+	    parser.parse(Arrays.copyOfRange(args, 1, args.length));
 	else
 	    printHelp();
     }
