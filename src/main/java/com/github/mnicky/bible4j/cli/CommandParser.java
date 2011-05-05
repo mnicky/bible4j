@@ -2,9 +2,10 @@ package com.github.mnicky.bible4j.cli;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import com.github.mnicky.bible4j.data.BibleVersion;
+import com.github.mnicky.bible4j.formats.BibleExporterException;
+import com.github.mnicky.bible4j.formats.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
@@ -19,7 +20,7 @@ public abstract class CommandParser {
 	this.bibleStorage = bibleStorage;
     }
 
-    public abstract void parse(String[] args) throws BibleStorageException;
+    public abstract void parse(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException;
     
     abstract public void printHelp();
     
