@@ -23,8 +23,56 @@ public final class ReadCommandParser extends CommandParser {
     
     private boolean wholeChaptersRequested = false;
     
+    private static final String BIBLE_VERSION_PARAMETER = "-v";
+    
     public ReadCommandParser(BibleStorage bibleStorage) {
 	super(bibleStorage);
+    }
+
+    @Override
+    public void printHelp() {
+        System.out.println("Usage:");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " POSITION [" + BIBLE_VERSION_PARAMETER + " BIBLE_VERSION...]");
+        
+        System.out.println();
+        System.out.println("\tPOSITION \t Bible coordinates without spaces");
+        System.out.println("\tBIBLE_VERSION \t Bible version abbreviation");
+        
+        System.out.println();
+        System.out.println("Examples:");
+        
+        System.out.println();
+        System.out.println("  Use ',' or ':' as delimiters between chapter and verse(s):");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Mt23,12");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Jn16:15");
+        
+        System.out.println();
+        System.out.println("  Use '-' to define an interval:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Lk3:12-14");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Genesis34,1-10");
+        
+        System.out.println();
+        System.out.println("  Use '.' to define a disjoint part:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Acts20:12.15");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Peter3,1-5.7-8.10");
+    
+        System.out.println();
+        System.out.println("  Omit verse number(s) to view whole chapters:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Pt2");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Jn2-3");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Exodus1-2.4-7.13-15");
+    
+        System.out.println();
+        System.out.println("  When no bible version is declared, the first bible found is used.");
+        System.out.println("  You can declare one or more bible versions:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.8 " + BIBLE_VERSION_PARAMETER + " kjv");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:6-10 " + BIBLE_VERSION_PARAMETER + " niv rsv kjv");
+        
     }
 
     public List<Verse> getVerses() throws BibleStorageException {
@@ -218,23 +266,24 @@ public final class ReadCommandParser extends CommandParser {
 	return posDef.substring(0, getPositionAfterBookName(posDef));
     }
 
-
     private void parseVersions(String[] args) throws BibleStorageException {
-	if (isArgumentPresent("-v", args)) {
-	    versions = new ArrayList<BibleVersion>();
-	    for (String version : getAllValuesOfArgument("-v", args))
+	versions = new ArrayList<BibleVersion>();
+	if (isArgumentPresent(BIBLE_VERSION_PARAMETER, args)) {
+	    for (String version : getAllValuesOfArgument(BIBLE_VERSION_PARAMETER, args))
 		versions.add(bibleStorage.getBibleVersion(version));
 	}
+	else 
+	    versions.add(bibleStorage.getAllBibleVersions().get(0));
     }
     
     
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, SQLException {
 	ReadCommandParser p = new ReadCommandParser(null);
-	String[] params = {"", "-v", "kjv", "niv", "esv"};
+	String[] params = {"", " + BIBLE_VERSION_PARAMETER + ", "kjv", "niv", "esv"};
 	
-	System.out.println(p.getAllValuesOfArgument("-v", params));
-	assert p.getAllValuesOfArgument("-v", params).toString().equals("[kjv, niv, esv]");
+	System.out.println(p.getAllValuesOfArgument(" + BIBLE_VERSION_PARAMETER + ", params));
+	assert p.getAllValuesOfArgument(" + BIBLE_VERSION_PARAMETER + ", params).toString().equals("[kjv, niv, esv]");
 	
 	System.out.println(p.getFirstNonLetterPosition("mt5,4-8.12-17.21.23"));
 	assert p.getFirstNonLetterPosition("mt5,4-8.12-17.21.23") == 2;
@@ -283,57 +332,12 @@ public final class ReadCommandParser extends CommandParser {
 	
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	ReadCommandParser p3 = new ReadCommandParser(storage);
-	String[] params2 = {"1Jn1,6-7.9", "-v", "czeb21"};
+	String[] params2 = {"1Jn1,6-7.9", " + BIBLE_VERSION_PARAMETER + ", "czeb21"};
 	p3.parse(params2);
 	System.out.println();
 	List<Verse> verses = p3.getVerses(); 
 	for (Verse v : verses)
 	    System.out.println(v == null ? "no text found" : v.getText());
-	
-    }
-
-    @Override
-    public void printHelp() {
-	System.out.println("Usage:");
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " POSITION [-v BIBLE_VERSION...]");
-	
-	System.out.println();
-	System.out.println("\tPOSITION \t Bible coordinates without spaces");
-	System.out.println("\tBIBLE_VERSION \t Bible version abbreviation");
-	
-	System.out.println();
-	System.out.println("Examples:");
-	
-	System.out.println();
-	System.out.println("  Use ',' or ':' as delimiters between chapter and verse(s):");
-	System.out.println();
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Mt23,12");
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Jn16:15");
-	
-	System.out.println();
-	System.out.println("  Use '-' to define an interval:");
-	System.out.println();
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Lk3:12-14");
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Genesis34,1-10");
-	
-	System.out.println();
-	System.out.println("  Use '.' to define a disjoint part:");
-	System.out.println();
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Acts20:12.15");
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Peter3,1-5.7-8.10");
-
-	System.out.println();
-	System.out.println("  Omit verse number(s) to view whole chapters:");
-	System.out.println();
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Pt2");
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Jn2-3");
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Exodus1-2.4-7.13-15");
-
-	System.out.println();
-	System.out.println("  You can declare one or more bible versions:");
-	System.out.println();
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.8 -v kjv");
-	System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:6-10 -v niv rsv kjv");
 	
     }
 
