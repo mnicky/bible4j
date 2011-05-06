@@ -857,7 +857,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    PreparedStatement st = dbConnection.prepareStatement(
 		    "MERGE INTO " + TERMS
 			    + "(" + TERM_NAME + ", " + TERM_DEF + ") KEY (" + TERM_NAME + ") VALUES (?, ?)");
-	    st.setString(1, term.getName());
+	    st.setString(1, term.getName().toLowerCase(new Locale("en")));
 	    st.setString(2, term.getDefinition());
 	    commitUpdate(st);
 	} catch (SQLException e) {
@@ -874,7 +874,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	try {
 	    st = dbConnection
 		    .prepareStatement("SELECT " + TERM_NAME_F + ", " + TERM_DEF_F + " FROM " + TERMS + " WHERE " + TERM_NAME_F + " = ? LIMIT 1");
-	    st.setString(1, name.toLowerCase(new Locale("en")));
+	    st.setString(1, name);
 	    rs = commitQuery(st);
 	    while (rs.next())
 		term = new DictTerm(rs.getString(1), rs.getString(2));
