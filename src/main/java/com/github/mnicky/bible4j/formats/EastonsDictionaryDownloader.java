@@ -15,7 +15,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class EastonsDictionaryImporter implements DictionaryImporter {
+public class EastonsDictionaryDownloader implements DictionaryDownloader {
     
     private static final String TITLE = "Easton's Bible Dictionary";
     
@@ -23,7 +23,7 @@ public class EastonsDictionaryImporter implements DictionaryImporter {
     
     private BibleStorage storage;
     
-    public EastonsDictionaryImporter(BibleStorage storage) {
+    public EastonsDictionaryDownloader(BibleStorage storage) {
 	this.storage = storage;
     }
     
@@ -111,7 +111,7 @@ public class EastonsDictionaryImporter implements DictionaryImporter {
     public static void main(String[] args) throws SQLException, BibleImporterException, BibleStorageException, MalformedURLException, IOException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	
-	DictionaryImporter dImp = new EastonsDictionaryImporter(storage);
+	DictionaryDownloader dImp = new EastonsDictionaryDownloader(storage);
 	dImp.downloadDictionary();
     }
 

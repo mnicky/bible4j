@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
-public interface DictionaryImporter {
+public interface DictionaryDownloader {
     
     String getTitle();
     
