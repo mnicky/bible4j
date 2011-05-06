@@ -16,6 +16,7 @@ public abstract class CommandParser {
     
     protected static final String BIBLE_VERSION_ARGUMENT = "-v";
     protected static final String BIBLE_BOOK_ARGUMENT = "-b";
+    protected static final String ADD_ARGUMENT = "-add";
     
     protected final BibleStorage bibleStorage;
     protected boolean wholeChaptersRequested = false;
@@ -260,6 +261,14 @@ public abstract class CommandParser {
 
     protected String extractFirstWord(String posDef) {
         return posDef.substring(0, getPositionAfterBookName(posDef));
+    }
+
+    protected String parseText(String[] args) {
+        List<String> text = getAllValuesOfArgument(ADD_ARGUMENT , args);
+        if (text.isEmpty())
+            return null;
+        else
+            return text.get(0);
     }
     
     

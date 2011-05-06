@@ -22,8 +22,6 @@ public class NotesCommandParser extends CommandParser {
     
     private List<Note> notes;
 
-    private static final String ADD_ARGUMENT = "-add";
-
     public NotesCommandParser(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
@@ -60,14 +58,6 @@ public class NotesCommandParser extends CommandParser {
     
     public List<Note> getNotes() {
 	return notes;
-    }
-
-    private String parseText(String[] args) {
-	List<String> text = getAllValuesOfArgument(ADD_ARGUMENT , args);
-	if (text.isEmpty())
-	    return null;
-	else
-	    return text.get(0);
     }
 
     @Override
