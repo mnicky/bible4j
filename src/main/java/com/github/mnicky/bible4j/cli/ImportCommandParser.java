@@ -4,9 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import com.github.mnicky.bible4j.formats.BibleImporter;
-import com.github.mnicky.bible4j.formats.BibleImporterException;
-import com.github.mnicky.bible4j.formats.OsisBibleImporter;
+import com.github.mnicky.bible4j.parsers.BibleImporter;
+import com.github.mnicky.bible4j.parsers.BibleImporterException;
+import com.github.mnicky.bible4j.parsers.OsisBibleImporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 

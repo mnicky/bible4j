@@ -5,9 +5,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import com.github.mnicky.bible4j.data.BibleVersion;
-import com.github.mnicky.bible4j.formats.BibleExporter;
-import com.github.mnicky.bible4j.formats.BibleExporterException;
-import com.github.mnicky.bible4j.formats.OsisBibleExporter;
+import com.github.mnicky.bible4j.parsers.BibleExporter;
+import com.github.mnicky.bible4j.parsers.BibleExporterException;
+import com.github.mnicky.bible4j.parsers.OsisBibleExporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
