@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.github.mnicky.bible4j.data.Note;
-import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.data.Note.NoteType;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.storage.BibleStorage;
@@ -118,7 +117,7 @@ public class NotesCommandParser extends CommandParser {
 //	p3.parse(params2);
 //	p3.printOrAddNote();
 	
-	String[] params3 = {"Jn1"};
+	String[] params3 = {"Jn1,5"};
 	p3.parse(params3);
 	p3.printOrAddNote();
 	System.out.println();

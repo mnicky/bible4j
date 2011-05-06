@@ -6,10 +6,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.github.mnicky.bible4j.data.BibleBook;
-import com.github.mnicky.bible4j.data.Note.NoteType;
-import com.github.mnicky.bible4j.data.Position;
-
 public final class DictTerm_Test {
 
     private DictTerm t1, t2, t3;

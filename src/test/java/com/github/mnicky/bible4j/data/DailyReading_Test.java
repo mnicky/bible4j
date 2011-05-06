@@ -1,7 +1,6 @@
 package com.github.mnicky.bible4j.data;
 
 import static org.testng.Assert.assertEquals;
-
 import hirondelle.date4j.DateTime;
 
 import java.util.ArrayList;
@@ -9,10 +8,6 @@ import java.util.ArrayList;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import com.github.mnicky.bible4j.data.BibleBook;
-import com.github.mnicky.bible4j.data.Note.NoteType;
-import com.github.mnicky.bible4j.data.Position;
 
 public final class DailyReading_Test {
 
