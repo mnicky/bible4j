@@ -36,97 +36,46 @@ public final class OsisBibleExporter implements BibleExporter {
     public void exportBible(BibleVersion bible, OutputStream stream) throws BibleExporterException, BibleStorageException {
 
 	try {
-
 	    XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(stream);
 
 	    writer.writeStartDocument("utf-8", "1.0");
 	    writer.writeCharacters("\n");
-	    
-	    writer.writeStartElement("", "osis", "http://www.bibletechnologies.net/2003/OSIS/namespace");
-	    writer.writeAttribute("xmlns", "http://www.bibletechnologies.net/2003/OSIS/namespace");
-	    writer.writeAttribute("xmlns", "", "xsi", "http://www.w3.org/2001/XMLSchema-instance");
-	    writer.writeAttribute("xsi", "", "schemaLocation", "http://www.bibletechnologies.net/2003/OSIS/namespace http://www.bibletechnologies.net/osisCore.2.1.1.xsd");
-	    writer.writeCharacters("\n");
-	    
-	    	writer.writeStartElement("osisText");
-	    	writer.writeAttribute("osisIDWork", bible.getAbbr().toUpperCase(new Locale("en")));
-	    	writer.writeAttribute("xml", "", "lang", bible.getLanguage());
-	    	writer.writeCharacters("\n");
 
-	    		writer.writeStartElement("header");
-	    		writer.writeCharacters("\n");
+	    writeOsisStartElement(writer);
+	    writeOsisTextStartElement(bible, writer);
+	    writeHeaderElement(bible, writer);
 
-	    			writer.writeStartElement("work");
-	    			writer.writeAttribute("osisWork", bible.getAbbr().toUpperCase(new Locale("en")));
-	    			writer.writeCharacters("\n");
+	    List<Position> chapters = storage.getChapterList(bible);
+	    BibleBook lastBook = null;
 
-	    				writer.writeStartElement("title");
-	    				writer.writeCharacters(bible.getName());
-	    				writer.writeEndElement();
-	    				writer.writeCharacters("\n");
-	    				
-	    				writer.writeStartElement("refSystem");
-	    				writer.writeCharacters("Bible." + bible.getAbbr().toUpperCase(new Locale("en")));
-	    				writer.writeEndElement();
-	    				writer.writeCharacters("\n");
-	    				
-	    				
-	    			writer.writeEndElement();
-	    			writer.writeCharacters("\n");
+	    for (Position chapter : chapters) {
+		List<Verse> verses = storage.getChapter(chapter, bible);
 
-	    		writer.writeEndElement();
-	    		writer.writeCharacters("\n");
-	    		
-	    		List<Position> chapters = storage.getChapterList(bible);
-	    		BibleBook lastBook = null;
-	    		
-	    		for (Position chapter : chapters) {
-	    		    List<Verse> verses = storage.getChapter(chapter, bible);
-	    		    
-	    		    if (lastBook == null) {
-	    			lastBook = chapter.getBook();
-	    			writer.writeStartElement("div");
-	    			writer.writeAttribute("type", "book");
-	    			writer.writeAttribute("osisID", getOsisAbbrFromBibleBook(lastBook));
-				writer.writeCharacters("\n");
-	    		    }
-	    		    else if (!lastBook.equals(chapter.getBook())) {
-	    			lastBook = chapter.getBook();
-    				writer.writeEndElement();
-    				writer.writeCharacters("\n");
-	    			writer.writeStartElement("div");
-	    			writer.writeAttribute("type", "book");
-	    			writer.writeAttribute("osisID", getOsisAbbrFromBibleBook(lastBook));
-				writer.writeCharacters("\n");
-	    		    }
-	    		    
-	    		    		writer.writeStartElement("chapter");
-	    		    		writer.writeAttribute("osisID", getOsisAbbrFromBibleBook(chapter.getBook()) + "." + chapter.getChapterNum());
-    					writer.writeCharacters("\n");
-	    		
-	    		    for (Verse verse : verses) {
-		    		    
-	    					writer.writeStartElement("verse");
-	    					writer.writeAttribute("osisID", getOsisAbbrFromBibleBook(verse.getPosition().getBook()) + "."
-	    					                      + verse.getPosition().getChapterNum() + "." + verse.getPosition().getVerseNum());
-	    					writer.writeCharacters(verse.getText());
-	    					writer.writeEndElement();
-	    					writer.writeCharacters("\n");
-	    		    }
-	    		    
-	    		    		writer.writeEndElement();
-	    		    		writer.writeCharacters("\n");
-	    		}
-	    		
+		if (lastBook == null) {
+		    lastBook = chapter.getBook();
+		    writeBookStartElement(writer, lastBook);
+		}
+		else if (!lastBook.equals(chapter.getBook())) {
+		    lastBook = chapter.getBook();
+		    // div#book EndElement
+		    writeEndElement(writer);
+		    writeBookStartElement(writer, lastBook);
+		}
+		writeChapterStartElement(writer, chapter);
+		
+		for (Verse verse : verses)
+		    writeVerseElement(writer, verse);
 
-	    			writer.writeEndElement();
-	    			writer.writeCharacters("\n");
+		// div#chapter EndElement		
+		writeEndElement(writer);
+	    }
 
-	    	writer.writeEndElement();
-	    	writer.writeCharacters("\n");
-
-	    writer.writeEndElement();
-	    writer.writeCharacters("\n");
+	    // div#book EndElement	    
+	    writeEndElement(writer);
+	    // osisText EndElement	    
+	    writeEndElement(writer);
+	    // osis EndElement	    
+	    writeEndElement(writer);
 
 	    writer.writeEndDocument();
 	    writer.flush();
@@ -136,6 +85,68 @@ public final class OsisBibleExporter implements BibleExporter {
 	    throw new BibleExporterException("Exporting error", e);
 	}
 
+    }
+
+    private void writeEndElement(XMLStreamWriter writer) throws XMLStreamException {
+	writer.writeEndElement();
+	writer.writeCharacters("\n");
+    }
+
+    private void writeOsisStartElement(XMLStreamWriter writer) throws XMLStreamException {
+	writer.writeStartElement("", "osis", "http://www.bibletechnologies.net/2003/OSIS/namespace");
+	writer.writeAttribute("xmlns", "http://www.bibletechnologies.net/2003/OSIS/namespace");
+	writer.writeAttribute("xmlns", "", "xsi", "http://www.w3.org/2001/XMLSchema-instance");
+	writer.writeAttribute("xsi", "", "schemaLocation", "http://www.bibletechnologies.net/2003/OSIS/namespace http://www.bibletechnologies.net/osisCore.2.1.1.xsd");
+	writer.writeCharacters("\n");
+    }
+
+    private void writeOsisTextStartElement(BibleVersion bible, XMLStreamWriter writer) throws XMLStreamException {
+	writer.writeStartElement("osisText");
+	writer.writeAttribute("osisIDWork", bible.getAbbr().toUpperCase(new Locale("en")));
+	writer.writeAttribute("xml", "", "lang", bible.getLanguage());
+	writer.writeCharacters("\n");
+    }
+
+    private void writeVerseElement(XMLStreamWriter writer, Verse verse) throws XMLStreamException {
+	writer.writeStartElement("verse");
+	writer.writeAttribute("osisID", getOsisAbbrFromBibleBook(verse.getPosition().getBook()) + "."
+	                      + verse.getPosition().getChapterNum() + "." + verse.getPosition().getVerseNum());
+	writer.writeCharacters(verse.getText());
+	writeEndElement(writer);
+    }
+
+    private void writeChapterStartElement(XMLStreamWriter writer, Position chapter) throws XMLStreamException {
+	writer.writeStartElement("chapter");
+	writer.writeAttribute("osisID", getOsisAbbrFromBibleBook(chapter.getBook()) + "." + chapter.getChapterNum());
+	writer.writeCharacters("\n");
+    }
+
+    private void writeBookStartElement(XMLStreamWriter writer, BibleBook lastBook) throws XMLStreamException {
+	writer.writeStartElement("div");
+	writer.writeAttribute("type", "book");
+	writer.writeAttribute("osisID", getOsisAbbrFromBibleBook(lastBook));
+	writer.writeCharacters("\n");
+    }
+
+    private void writeHeaderElement(BibleVersion bible, XMLStreamWriter writer) throws XMLStreamException {
+	writer.writeStartElement("header");
+	writer.writeCharacters("\n");
+
+		writer.writeStartElement("work");
+		writer.writeAttribute("osisWork", bible.getAbbr().toUpperCase(new Locale("en")));
+		writer.writeCharacters("\n");
+
+			writer.writeStartElement("title");
+			writer.writeCharacters(bible.getName());
+			writeEndElement(writer);
+			
+			writer.writeStartElement("refSystem");
+			writer.writeCharacters("Bible." + bible.getAbbr().toUpperCase(new Locale("en")));
+			writeEndElement(writer);
+			
+		writeEndElement(writer);
+
+	writeEndElement(writer);
     }
     
     private String getOsisAbbrFromBibleBook(BibleBook book) {
