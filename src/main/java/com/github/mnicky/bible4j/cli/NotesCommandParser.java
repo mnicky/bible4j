@@ -33,7 +33,7 @@ public class NotesCommandParser extends CommandParser {
 	    textOfNote = parseText(args);
     }
     
-    public void printOrAddNote() throws BibleStorageException {
+    public void retrieveOrAddNote() throws BibleStorageException {
 	
 	if (positions.isEmpty())
 	    throw new IllegalArgumentException("Coordinate of note not specified");
@@ -101,17 +101,17 @@ public class NotesCommandParser extends CommandParser {
     
     public static void main(String[] args) throws SQLException, BibleStorageException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	NotesCommandParser p3 = new NotesCommandParser(storage);
+	NotesCommandParser p = new NotesCommandParser(storage);
 	
-//	String[] params2 = {"Jn1,2", ADD_ARGUMENT, "This is my second note :-)"};
-//	p3.parse(params2);
-//	p3.printOrAddNote();
+//	String[] params = {"Jn1,2", ADD_ARGUMENT, "This is my second note :-)"};
+//	p.parse(params);
+//	p.retrieveOrAddNote();
 	
-	String[] params3 = {"Jn1,5"};
-	p3.parse(params3);
-	p3.printOrAddNote();
+	String[] params2 = {"Jn1,5"};
+	p.parse(params2);
+	p.retrieveOrAddNote();
 	System.out.println();
-	List<Note> notes = p3.getNotes(); 
+	List<Note> notes = p.getNotes(); 
 	for (Note v : notes)
 	    System.out.println(v == null ? "no text found" : v.getText());
     }
