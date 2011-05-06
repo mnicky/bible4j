@@ -73,40 +73,48 @@ public final class ReadCommandParser extends CommandParser {
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " POSITION [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
         
         System.out.println();
-        System.out.println("\tPOSITION \t Bible coordinates without spaces");
+        System.out.println("\tPOSITION \t Bible coordinates (without spaces)");
         System.out.println("\tBIBLE_VERSION \t Bible version abbreviation");
+        
+        System.out.println();
+        System.out.println("\tBible coordinates are specified in common used format, but without spaces.");
+        System.out.println("\tUse ',' or ':' as delimiters between chapter and verse(s).");
+        System.out.println("\tUse '-' to define an interval of verses (or chapters).");
+        System.out.println("\tUse '.' to define a disjoint part of verses (or chapters).");
+        System.out.println("\tOmit verse number(s) to view whole chapters.");
+        System.out.println("\tTo read text from specific Bible versions, use argument '" + BIBLE_VERSION_ARGUMENT + "' and specify one or more Bible versions.");
+        System.out.println("\tWhen no bible version is declared, the first Bible version found is used.");
         
         System.out.println();
         System.out.println("Examples:");
         
         System.out.println();
-        System.out.println("  Use ',' or ':' as delimiters between chapter and verse(s):");
+        System.out.println("  Reading one verse:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Mt23,12");
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Jn16:15");
         
         System.out.println();
-        System.out.println("  Use '-' to define an interval:");
+        System.out.println("  Reading more verses:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Lk3:12-14");
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Genesis34,1-10");
         
         System.out.println();
-        System.out.println("  Use '.' to define a disjoint part:");
+        System.out.println("  Specifying also disjoint verses:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Acts20:12.15");
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Peter3,1-5.7-8.10");
     
         System.out.println();
-        System.out.println("  Omit verse number(s) to view whole chapters:");
+        System.out.println("  Reading the whole chapters:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Pt2");
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Jn2-3");
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Exodus1-2.4-7.13-15");
     
         System.out.println();
-        System.out.println("  When no bible version is declared, the first bible found is used.");
-        System.out.println("  You can declare one or more bible versions:");
+        System.out.println("  Specifying the Bible versions:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.8 " + BIBLE_VERSION_ARGUMENT + " kjv");
         System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:6-10 " + BIBLE_VERSION_ARGUMENT + " niv rsv kjv");
