@@ -85,34 +85,40 @@ public class SearchCommandParser extends CommandParser {
         System.out.println("\tPHRASE_TO_SEARCH \t Phrase to search for (case is ignored)");
         System.out.println("\tBIBLE_BOOK \t\t Bible book (name or abbreviation)");
         System.out.println("\tBIBLE_VERSION \t\t Bible version abbreviation");
+
+        System.out.println();
+        System.out.println("\tYou can search for one word or for occurences of all specified words.");
+        System.out.println("\tTo search only in specific Bible books, use argument '" + BIBLE_BOOK_ARGUMENT + "' and specify one or more Bible books.");
+        System.out.println("\tTo search only in specific Bible versions, use argument '" + BIBLE_VERSION_ARGUMENT + "' and specify one or more Bible versions.");
+        System.out.println("\tIt can be mixed freely altogether.");
         
         System.out.println();
         System.out.println("Examples:");
         
         System.out.println();
-        System.out.println("  Simple search for one phrase:");
+        System.out.println("  Simple search for one word:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " israel");
         
         System.out.println();
-        System.out.println("  You can search for occurences of all specified phrases:");
+        System.out.println("  Search for occurences of all specified words:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " jesus john");
         
         System.out.println();
-        System.out.println("  You can specify one or more Bible books to search in:");
+        System.out.println("  Search only in specific Bible books:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " egypt " + BIBLE_BOOK_ARGUMENT + " exodus");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " peter john " + BIBLE_BOOK_ARGUMENT + " mk jn");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " jesus peter " + BIBLE_BOOK_ARGUMENT + " mk jn");
     
         System.out.println();
-        System.out.println("  You can specify one or more Bible versions to search in:");
+        System.out.println("  Search only in specific Bible versions:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " king " + BIBLE_VERSION_ARGUMENT + " kjv");
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " son of god " + BIBLE_VERSION_ARGUMENT + " rsv kjv web");
 	
         System.out.println();
-        System.out.println("  And you can mix it freely together:");
+        System.out.println("  Mixed together:");
         System.out.println();
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " love " + BIBLE_BOOK_ARGUMENT + " 1jn " + BIBLE_VERSION_ARGUMENT + " kjv");
         System.out.println("\t" + CommandParserLauncher.BIBLE_SEARCH_COMMAND + " light of life " + BIBLE_BOOK_ARGUMENT + " john ps " + BIBLE_VERSION_ARGUMENT + " rsv kjv web");
