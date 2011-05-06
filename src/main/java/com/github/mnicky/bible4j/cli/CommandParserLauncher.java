@@ -44,6 +44,8 @@ public class CommandParserLauncher {
 
 
     private CommandParser getCommandParser(String[] args) {
+	if (args.length < 1)
+	    return null;
 	
 	if (args[0].equalsIgnoreCase(BIBLE_READ_COMMAND))
 	    return new ReadCommandParser(storage);
@@ -98,7 +100,7 @@ public class CommandParserLauncher {
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException {
 	CommandParserLauncher cpl = new CommandParserLauncher(null);
-	String[] params = {"help", "note"};
+	String[] params = {"help", "bkmark"};
 	cpl.launch(params);
     }
     
