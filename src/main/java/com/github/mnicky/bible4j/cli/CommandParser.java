@@ -42,7 +42,7 @@ public abstract class CommandParser {
      * Returns true if the word is argument (not a value). The word is argument if it starts with character '-'.<br><br>
      * E. g.: program -arg value1 --arg2 value2 -a3 value3 value4
      */
-    private boolean isArgument(String word) {
+    protected boolean isArgument(String word) {
 	return word.startsWith("-");
     }
     
@@ -93,8 +93,7 @@ public abstract class CommandParser {
     protected List<BibleVersion> parseVersionsAndReturnFirstIfEmpty(String[] args) throws BibleStorageException {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
-            for (String version : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args))
-        	versionList.add(bibleStorage.getBibleVersion(version));
+            retrieveVersions(args, versionList);
         }
         else 
             versionList.add(bibleStorage.getAllBibleVersions().get(0));
@@ -104,8 +103,7 @@ public abstract class CommandParser {
     protected List<BibleVersion> parseVersionsAndReturnAllIfEmpty(String[] args) throws BibleStorageException {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
-            for (String version : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args))
-        	versionList.add(bibleStorage.getBibleVersion(version));
+            retrieveVersions(args, versionList);
         }
         else 
             versionList = (bibleStorage.getAllBibleVersions());
@@ -115,8 +113,7 @@ public abstract class CommandParser {
     protected List<BibleVersion> parseVersionsAndReturnNoneIfEmpty(String[] args) throws BibleStorageException {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
-            for (String version : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args))
-        	versionList.add(bibleStorage.getBibleVersion(version));
+            retrieveVersions(args, versionList);
         }
         return versionList;
     }
@@ -132,6 +129,15 @@ public abstract class CommandParser {
             verses = parseVerses(posDef);
         
         return getPositions(book, chapters, verses);	
+    }
+
+    private void retrieveVersions(String[] args, List<BibleVersion> versionList) throws BibleStorageException {
+	for (String versionAbbr : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args)) {
+	    BibleVersion v = bibleStorage.getBibleVersion(versionAbbr);
+	    if (v == null)
+		throw new IllegalArgumentException("Bible book abbreviation '" + versionAbbr + "' is unknown.");
+	    versionList.add(v);
+	}
     }
 
     private List<Position> getPositions(BibleBook book, List<Integer> chapters, List<Integer> verses) {
