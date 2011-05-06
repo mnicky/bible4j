@@ -227,7 +227,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + TERMS + " ("
 		    + TERM_ID + " INT IDENTITY NOT NULL,"
 		    + TERM_NAME + " VARCHAR_IGNORECASE (50) NOT NULL UNIQUE,"
-		    + TERM_DEF + " VARCHAR(500) NOT NULL)");
+		    + TERM_DEF + " VARCHAR(20000) NOT NULL)");
 
 	    // TODO make constants from strings
 	    st.addBatch("CALL FT_CREATE_INDEX('PUBLIC', 'VERSES', 'TEXT');");
