@@ -654,14 +654,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 											+ BOOK_ID_F + " FROM " + BOOKS + " WHERE "
 											+ BOOK_NAME_F + " = ?) AND "
 									+ COORD_CHAPT_F + " = ? AND "
-									+ COORD_VERSE_F + " = ?))" + ", ?)");
+									+ COORD_VERSE_F + " = ?) AND "
+					+ VERSE_TEXT_F + " = ?)" + ", ?)");
 
 	    st.setString(1, bookmark.getVerse().getBibleVersion().getAbbr());
 	    st.setString(2, bookmark.getVerse().getBibleVersion().getLanguage());
 	    st.setString(3, bookmark.getVerse().getPosition().getBook().getName());
 	    st.setInt(4, bookmark.getVerse().getPosition().getChapterNum());
 	    st.setInt(5, bookmark.getVerse().getPosition().getVerseNum());
-	    st.setString(6, bookmark.getName());
+	    st.setString(6, bookmark.getVerse().getText());
+	    st.setString(7, bookmark.getName());
 	    commitUpdate(st);
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Bookmark could not be inserted", e);

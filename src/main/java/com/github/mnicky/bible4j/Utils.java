@@ -32,9 +32,8 @@ public final class Utils {
 	
 	BibleBook book = bookNames.get(abbr);
 	
-	//better to be checked on the client side
-	//if (book == null)
-	//    throw new IllegalArgumentException("Bible book abbreviation '" + abbr + "' is unknown.");
+	if (book == null)
+	    throw new IllegalArgumentException("Bible book abbreviation '" + abbr + "' is unknown.");
 	
 	return book;
 	
