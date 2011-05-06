@@ -8,9 +8,7 @@ import java.util.Locale;
 
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
-import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
-import com.github.mnicky.bible4j.data.Note.NoteType;
 import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
@@ -81,7 +79,7 @@ public class BookmarksCommandParser extends CommandParser {
         System.out.println();
         System.out.println("\tTo view bookmarks for some Bible version(s) only,  use argument '" + BIBLE_VERSION_ARGUMENT + "' and specify one or more Bible versions.");
         System.out.println("\tTo add bookmark, specify Bible version and name of bookmark with arguments '" + BIBLE_VERSION_ARGUMENT + "' and '" + ADD_ARGUMENT + "'.");
-        System.out.println("\tBookmarks can only be added to one verse and Bible version. If more verses or Bible versions are specified, the first one is used.");
+        System.out.println("\tBookmarks can only be added to one verse. If more verses are specified, the first one is used.");
         System.out.println("\tSee '" + CommandParserLauncher.HELP_COMMAND + " " + CommandParserLauncher.BIBLE_READ_COMMAND + "' for description of how to define Bible coordinates.");
         
         System.out.println();
