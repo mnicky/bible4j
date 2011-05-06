@@ -163,7 +163,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    Statement st = dbConnection.createStatement();
 
 	    // FIXME add CASCADE or RESTRICTED to foreign keys etc?
-	    // TODO convert more VARCHARs to V_IGNORECASE?
 	    // TODO add more UNIQUE constraints, CHECK etc... ?
 
 	    st.addBatch("CREATE ALIAS IF NOT EXISTS FT_INIT FOR \"org.h2.fulltext.FullText.init\";CALL FT_INIT();");
@@ -172,7 +171,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    + VERSION_ID + " INT IDENTITY NOT NULL,"
 		    + VERSION_ABBR + " VARCHAR_IGNORECASE(50) NOT NULL UNIQUE,"
 		    + VERSION_NAME + " VARCHAR_IGNORECASE(50) NOT NULL,"
-		    + VERSION_LANG + " VARCHAR(50) NOT NULL)");
+		    + VERSION_LANG + " VARCHAR_IGNORECASE(50) NOT NULL)");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + BOOKS + " ("
 		    + BOOK_ID + " INT IDENTITY NOT NULL,"
@@ -197,20 +196,20 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + NOTES + " ("
 		    + NOTE_ID + " INT IDENTITY NOT NULL,"
-		    + NOTE_TYPE + " VARCHAR(1) NOT NULL,"
+		    + NOTE_TYPE + " VARCHAR_IGNORECASE(1) NOT NULL,"
 		    + NOTE_TEXT + " VARCHAR(500) NOT NULL,"
 		    + NOTE_COORD + " INT NOT NULL,"
 		    + "FOREIGN KEY (" + NOTE_COORD + ") REFERENCES " + COORDS + ")");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + BKMARKS + " ("
 		    + BKMARK_ID + " INT IDENTITY NOT NULL,"
-		    + BKMARK_NAME + " VARCHAR(50) NOT NULL,"
+		    + BKMARK_NAME + " VARCHAR_IGNORECASE(50) NOT NULL,"
 		    + BKMARK_VERSE + " INT NOT NULL,"
 		    + "FOREIGN KEY (" + BKMARK_VERSE + ") REFERENCES " + VERSES + ")");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + RLISTS + " ("
 		    + RLIST_ID + " INT IDENTITY NOT NULL,"
-		    + RLIST_NAME + " VARCHAR(50) NOT NULL UNIQUE)");
+		    + RLIST_NAME + " VARCHAR_IGNORECASE(50) NOT NULL UNIQUE)");
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + READS + " ("
 		    + READ_ID + " INT IDENTITY NOT NULL,"
