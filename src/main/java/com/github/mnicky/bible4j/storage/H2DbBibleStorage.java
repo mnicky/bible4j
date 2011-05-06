@@ -227,7 +227,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    st.addBatch("CREATE TABLE IF NOT EXISTS " + TERMS + " ("
 		    + TERM_ID + " INT IDENTITY NOT NULL,"
-		    + TERM_NAME + " VARCHAR(50) NOT NULL UNIQUE,"
+		    + TERM_NAME + " VARCHAR_IGNORECASE (50) NOT NULL UNIQUE,"
 		    + TERM_DEF + " VARCHAR(500) NOT NULL)");
 
 	    // TODO make constants from strings
@@ -857,7 +857,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    PreparedStatement st = dbConnection.prepareStatement(
 		    "MERGE INTO " + TERMS
 			    + "(" + TERM_NAME + ", " + TERM_DEF + ") KEY (" + TERM_NAME + ") VALUES (?, ?)");
-	    st.setString(1, term.getName().toLowerCase(new Locale("en")));
+	    st.setString(1, term.getName());
 	    st.setString(2, term.getDefinition());
 	    commitUpdate(st);
 	} catch (SQLException e) {
