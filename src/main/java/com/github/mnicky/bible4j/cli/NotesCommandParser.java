@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Note.NoteType;
 import com.github.mnicky.bible4j.data.Position;
@@ -28,9 +29,9 @@ public class NotesCommandParser extends CommandParser {
 
     @Override
     public void parse(String[] args) {
-	positions = parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
+	positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
 	if (isArgumentPresent(ADD_ARGUMENT, args)) 
-	    textOfNote = parseText(args);
+	    textOfNote = parseAddText(args);
     }
     
     public void retrieveOrAddNote() throws BibleStorageException {
@@ -39,14 +40,14 @@ public class NotesCommandParser extends CommandParser {
 	    throw new IllegalArgumentException("Coordinate of note not specified");
 	
 	if (textOfNote != null) {
-	    if (wholeChaptersRequested)
+	    if (Utils.isWholeChapter(positions.get(0)))
 		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
 	    bibleStorage.insertNote(new Note(textOfNote, positions.get(0), NoteType.USER_NOTE));
 	}
 	else {
 	    notes = new ArrayList<Note>();
 	    
-	    if (wholeChaptersRequested)
+	    if (Utils.isWholeChapter(positions.get(0)))
     	    	for (Position position : positions) 
     	    	    notes.addAll(bibleStorage.getNotesForChapter(position));
 	    else

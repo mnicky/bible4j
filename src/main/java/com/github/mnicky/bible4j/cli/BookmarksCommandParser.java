@@ -1,11 +1,14 @@
 package com.github.mnicky.bible4j.cli;
 
+import static com.github.mnicky.bible4j.Utils.isWholeChapter;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
 import com.github.mnicky.bible4j.data.Position;
@@ -31,9 +34,9 @@ public class BookmarksCommandParser extends CommandParser {
     @Override
     public void parse(String[] args) throws BibleStorageException {
 	if (args.length > 0 && !isArgument(args[0]))
-	    positions = parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
+	    positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
 	if (isArgumentPresent(ADD_ARGUMENT, args)) 
-	    nameOfBkmark = parseText(args);
+	    nameOfBkmark = parseAddText(args);
 	versions = parseVersionsAndReturnNoneIfEmpty(args);
     }
     
@@ -44,7 +47,7 @@ public class BookmarksCommandParser extends CommandParser {
 		    throw new IllegalArgumentException("Coordinate of bookmark not specified");
 	    if (versions.isEmpty())
 		    throw new IllegalArgumentException("Bible version of bookmark not specified");
-	    if (wholeChaptersRequested)
+	    if (isWholeChapter(positions.get(0)))
 		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
 	    
 	    bibleStorage.insertBookmark(new Bookmark(nameOfBkmark, new Verse("", positions.get(0), versions.get(0))));

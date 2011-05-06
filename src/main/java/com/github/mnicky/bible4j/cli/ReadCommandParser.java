@@ -1,11 +1,14 @@
 package com.github.mnicky.bible4j.cli;
 
+import static com.github.mnicky.bible4j.Utils.isWholeChapter;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
@@ -27,27 +30,27 @@ public final class ReadCommandParser extends CommandParser {
 	List<Verse> verses = new ArrayList<Verse>();
 	
 	if (versions.size() <= 1 && positions.size() <= 1) {
-	    if (wholeChaptersRequested)
+	    if (isWholeChapter(positions.get(0)))
 		verses = bibleStorage.getChapter(positions.get(0), versions.get(0));
 	    else
 		verses.add(bibleStorage.getVerse(positions.get(0), versions.get(0)));
 	}
 	else if (versions.size() <= 1 && positions.size() > 1) {
-	    if (wholeChaptersRequested)
+	    if (isWholeChapter(positions.get(0)))
 		for (Position pos : positions)
 		    verses.addAll(bibleStorage.getChapter(pos, versions.get(0)));
 	    else
 		verses = bibleStorage.getVerses(positions, versions.get(0));
 	}
 	else if (versions.size() > 1 && positions.size() <= 1) {
-	    if (wholeChaptersRequested)
+	    if (isWholeChapter(positions.get(0)))
 		for (BibleVersion ver : versions)
 		    verses.addAll(bibleStorage.getChapter(positions.get(0), ver));
 	    else
 		verses = bibleStorage.compareVerses(positions.get(0), versions);
 	}
 	else if (versions.size() > 1 && positions.size() > 1) {
-	    if (wholeChaptersRequested)
+	    if (isWholeChapter(positions.get(0)))
 		for (BibleVersion ver : versions)
 		    for (Position pos : positions)
 			verses.addAll(bibleStorage.getChapter(pos, ver));
@@ -64,7 +67,7 @@ public final class ReadCommandParser extends CommandParser {
 
     public void parse(String[] args) throws BibleStorageException {
 	versions = parseVersionsAndReturnFirstIfEmpty(args);
-	positions = parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
+	positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
     }
 
     @Override
@@ -139,56 +142,12 @@ public final class ReadCommandParser extends CommandParser {
 	System.out.println(p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params));
 	assert p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params).toString().equals("[kjv, niv, esv]");
 	
-	System.out.println(p.getPositionOfFirstNonLetter("mt5,4-8.12-17.21.23"));
-	assert p.getPositionOfFirstNonLetter("mt5,4-8.12-17.21.23") == 2;
-	
-	System.out.println(p.extractFirstWord("mt5,4-8.12-17.21.23"));
-	assert p.extractFirstWord("mt5,4-8.12-17.21.23").toString().equals("mt");
-	
-	System.out.println(p.extractFirstWord("1cor5,4-8.12-17.21.23"));
-	assert p.extractFirstWord("1cor5,4-8.12-17.21.23").toString().equals("1cor");
-	
-	System.out.println(p.extractBibleBook("mt5:4-8,12-17,21,23"));
-	assert p.extractBibleBook("mt5:4-8,12-17,21,23").toString().equals("MATTHEW");
-	
-	System.out.println(p.parseChapters("mt21,8"));
-	assert p.parseChapters("mt21,8").toString().equals("[21]");
-	
-	System.out.println(p.parseChapters("mt10,4-8"));
-	assert p.parseChapters("mt10,4-8").toString().equals("[10]");
-	
-	System.out.println(p.parseChapters("mt15,4-8"));
-	assert p.parseChapters("mt15,4-8.12-17.21.23").toString().equals("[15]");
-	
-	System.out.println(p.parseChapters("jn4-6"));
-	assert p.parseChapters("jn4-6").toString().equals("[4, 5, 6]");
-	
-	String[] ranges = {"1-5", "8-10", "15-16"};
-	System.out.println(p.parseNumberRanges(ranges));
-	assert p.parseNumberRanges(ranges).toString().equals("[1, 2, 3, 4, 5, 8, 9, 10, 15, 16]");
-	
-	System.out.println(p.parseChapters("mt4.12"));
-	assert p.parseChapters("mt4.12").toString().equals("[4, 12]");
-	
-	System.out.println(p.parseChapters("mt4-8.12-17.21.23"));
-	assert p.parseChapters("mt4-8.12-17.21.23").toString().equals("[4, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17, 21, 23]");
-	
-	System.out.println(p.parseVerses("mt22,4-8.12-17.21.23"));
-	assert p.parseVerses("mt22,4-8.12-17.21.23").toString().equals("[4, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17, 21, 23]");
-	
-
-	CommandParser p2 = new ReadCommandParser(null);
-	System.out.println(p2.parsePositions("mt22:4-8,12-17,21,23"));
-	assert p2.parsePositions("mt22:4-8,12-17,21,23").toString().equals("[MATTHEW 22,4, MATTHEW 22,5, MATTHEW 22,6, MATTHEW 22,7, MATTHEW 22,8," +
-	                                      	" MATTHEW 22,12, MATTHEW 22,13, MATTHEW 22,14, MATTHEW 22,15," +
-						" MATTHEW 22,16, MATTHEW 22,17, MATTHEW 22,21, MATTHEW 22,23]");
-	
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	ReadCommandParser p3 = new ReadCommandParser(storage);
+	ReadCommandParser p2 = new ReadCommandParser(storage);
 	String[] params2 = {"1Jn1,6-7.9", BIBLE_VERSION_ARGUMENT, "czeb21", "kjv"};
-	p3.parse(params2);
+	p2.parse(params2);
 	System.out.println();
-	List<Verse> verses = p3.getVerses(); 
+	List<Verse> verses = p2.getVerses(); 
 	for (Verse v : verses)
 	    System.out.println(v == null ? "no text found" : v.getText());
 	
