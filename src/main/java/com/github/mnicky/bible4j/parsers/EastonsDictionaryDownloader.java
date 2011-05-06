@@ -1,7 +1,6 @@
 package com.github.mnicky.bible4j.parsers;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -108,7 +107,7 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
     
     
     //for testing purpose
-    public static void main(String[] args) throws SQLException, BibleImporterException, BibleStorageException, MalformedURLException, IOException {
+    public static void main(String[] args) throws SQLException, BibleImporterException, BibleStorageException, IOException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	
 	DictionaryDownloader dImp = new EastonsDictionaryDownloader(storage);

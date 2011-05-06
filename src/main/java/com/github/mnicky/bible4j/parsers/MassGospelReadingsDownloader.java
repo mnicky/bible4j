@@ -1,7 +1,6 @@
 package com.github.mnicky.bible4j.parsers;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -36,7 +35,7 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     }
 
     @Override
-    public void downloadDictionary(int nextMonths) throws MalformedURLException, IOException, BibleStorageException {
+    public void downloadDictionary(int nextMonths) throws IOException, BibleStorageException {
 		
 	Source source = new Source(new URL(START_URL));
 	
@@ -126,7 +125,7 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     
     
     //for testing purposes
-    public static void main(String[] args) throws SQLException, MalformedURLException, IOException, BibleStorageException {
+    public static void main(String[] args) throws SQLException, IOException, BibleStorageException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	
 	ReadingsDownloader readD = new MassGospelReadingsDownloader(storage);
