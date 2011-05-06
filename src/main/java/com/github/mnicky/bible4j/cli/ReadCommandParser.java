@@ -77,11 +77,21 @@ public final class ReadCommandParser extends CommandParser {
         System.out.println("\tBIBLE_VERSION \t Bible version abbreviation");
         
         System.out.println();
-        System.out.println("\tBible coordinates are specified in common used format, but without spaces.");
-        System.out.println("\tUse ',' or ':' as delimiters between chapter and verse(s).");
-        System.out.println("\tUse '-' to define an interval of verses (or chapters).");
-        System.out.println("\tUse '.' to define a disjoint part of verses (or chapters).");
-        System.out.println("\tOmit verse number(s) to view whole chapters.");
+        System.out.println("\tBible coordinates must be provided without spaces and can be specified in two common formats:");
+        System.out.println();
+        System.out.println("\t(1)  The format used by the New American Bible (a preferred one)");
+        System.out.println("\t     This format is using ',' as delimiter between chapter and verse(s)");
+        System.out.println("\t     and '.' to define a disjoint part of verses (e.g. Mk3,5-7.10)");
+        System.out.println();
+        System.out.println("\t(2)  The format used by Chicago manual of style");
+        System.out.println("\t     This format is using ':' as delimiter between chapter and verse(s)");
+        System.out.println("\t     and ',' to define a disjoint part of verses (e.g. Mk3:5-7,10)");
+        System.out.println();
+        System.out.println("\tIn both of above formats, '-' is used to define an interval of verses.");
+        System.out.println("\tSee http://en.wikipedia.org/wiki/Bible_citation#Common_formats for more information.");
+        System.out.println();
+        System.out.println("\tTo specify whole chapters, verse numbers can be omitted, but ONLY USING THE FIRST FORMAT (e.g. Psalms20-23.120)");
+        System.out.println();
         System.out.println("\tTo read text from specific Bible versions, use argument '" + BIBLE_VERSION_ARGUMENT + "' and specify one or more Bible versions.");
         System.out.println("\tWhen no bible version is declared, the first Bible version found is used.");
         
@@ -97,28 +107,28 @@ public final class ReadCommandParser extends CommandParser {
         System.out.println();
         System.out.println("  Reading more verses:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Lk3:12-14");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Genesis34,1-10");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Lk3,12-14");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Genesis34:1-10");
         
         System.out.println();
         System.out.println("  Specifying also disjoint verses:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Acts20:12.15");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Peter3,1-5.7-8.10");
-    
-        System.out.println();
-        System.out.println("  Reading the whole chapters:");
-        System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Pt2");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Jn2-3");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Exodus1-2.4-7.13-15");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Acts20,12.15");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Peter3:1-5,7-8,10");
     
         System.out.println();
         System.out.println("  Specifying the Bible versions:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.8 " + BIBLE_VERSION_ARGUMENT + " kjv");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:6-10 " + BIBLE_VERSION_ARGUMENT + " niv rsv kjv");
-        
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.10 " + BIBLE_VERSION_ARGUMENT + " kjv");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:3-6,9 " + BIBLE_VERSION_ARGUMENT + " niv rsv kjv");
+    
+        System.out.println();
+        System.out.println("  Specifying the whole chapters:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Pt2");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Jn2-3");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Exodus1-2.4-7.9");
+        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Deut3-6.10-15.33 " + BIBLE_VERSION_ARGUMENT + " esv asv");
     }
 
     //for testing purposes
@@ -138,8 +148,8 @@ public final class ReadCommandParser extends CommandParser {
 	System.out.println(p.extractFirstWord("1cor5,4-8.12-17.21.23"));
 	assert p.extractFirstWord("1cor5,4-8.12-17.21.23").toString().equals("1cor");
 	
-	System.out.println(p.extractBibleBook("mt5,4-8.12-17.21.23"));
-	assert p.extractBibleBook("mt5,4-8.12-17.21.23").toString().equals("MATTHEW");
+	System.out.println(p.extractBibleBook("mt5:4-8,12-17,21,23"));
+	assert p.extractBibleBook("mt5:4-8,12-17,21,23").toString().equals("MATTHEW");
 	
 	System.out.println(p.parseChapters("mt21,8"));
 	assert p.parseChapters("mt21,8").toString().equals("[21]");
@@ -168,8 +178,8 @@ public final class ReadCommandParser extends CommandParser {
 	
 
 	CommandParser p2 = new ReadCommandParser(null);
-	System.out.println(p2.parsePositions("mt22:4-8.12-17.21.23"));
-	assert p2.parsePositions("mt22:4-8.12-17.21.23").toString().equals("[MATTHEW 22,4, MATTHEW 22,5, MATTHEW 22,6, MATTHEW 22,7, MATTHEW 22,8," +
+	System.out.println(p2.parsePositions("mt22:4-8,12-17,21,23"));
+	assert p2.parsePositions("mt22:4-8,12-17,21,23").toString().equals("[MATTHEW 22,4, MATTHEW 22,5, MATTHEW 22,6, MATTHEW 22,7, MATTHEW 22,8," +
 	                                      	" MATTHEW 22,12, MATTHEW 22,13, MATTHEW 22,14, MATTHEW 22,15," +
 						" MATTHEW 22,16, MATTHEW 22,17, MATTHEW 22,21, MATTHEW 22,23]");
 	

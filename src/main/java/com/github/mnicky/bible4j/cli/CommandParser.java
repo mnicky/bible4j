@@ -7,8 +7,8 @@ import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
-import com.github.mnicky.bible4j.formats.BibleExporterException;
-import com.github.mnicky.bible4j.formats.BibleImporterException;
+import com.github.mnicky.bible4j.parsers.BibleExporterException;
+import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
@@ -119,7 +119,11 @@ public abstract class CommandParser {
     }
 
     protected List<Position> parsePositions(String posDef) {
-        posDef = posDef.replace(":", ",");
+        
+	if (posDef.contains(":")) {
+            posDef = posDef.replace(",", ".");
+            posDef = posDef.replace(":", ",");
+        }
         
         BibleBook book = extractBibleBook(posDef);
         List<Integer> chapters = parseChapters(posDef);
