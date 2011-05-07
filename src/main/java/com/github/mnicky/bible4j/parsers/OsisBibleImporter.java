@@ -293,7 +293,7 @@ public final class OsisBibleImporter implements BibleImporter {
     //for testing purpose
     public static void main(String[] args) throws FileNotFoundException, BibleImporterException, BibleStorageException, SQLException  {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
-	storage.createStorage();
+	storage.initializeStorage();
 	
 	OsisBibleImporter importer = new OsisBibleImporter(storage);
 	

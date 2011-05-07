@@ -69,7 +69,7 @@ public final class H2DbBibleStorage_Test {
 	int[] columns = null;
 
 	try {
-	    columns = bible.createStorage();
+	    columns = bible.initializeStorage();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    Assert.fail();
@@ -96,7 +96,7 @@ public final class H2DbBibleStorage_Test {
 	Object[] actual = new Object[2];
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleBook(BibleBook.BARUCH);
 
 	    Statement st = conn.createStatement();
@@ -129,7 +129,7 @@ public final class H2DbBibleStorage_Test {
 	Object[] actual = new Object[3];
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleBook(BibleBook.JOHN);
 	    bible.insertPosition(new Position(BibleBook.JOHN, 3, 16));
 
@@ -165,7 +165,7 @@ public final class H2DbBibleStorage_Test {
 	Object[] actual = new Object[2];
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("Douay-Rheims", "en"));
 
 	    Statement st = conn.createStatement();
@@ -200,7 +200,7 @@ public final class H2DbBibleStorage_Test {
 	Object[] actual = new Object[5];
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("English Standard Version", "en"));
 	    bible.insertBibleBook(BibleBook.JOHN);
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
@@ -245,7 +245,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    //given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("RSV", "en"));
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleVersion(new BibleVersion("NIV", "en"));
@@ -266,7 +266,7 @@ public final class H2DbBibleStorage_Test {
 	Verse retrieved = null;
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
@@ -294,7 +294,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    //given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("", "KJV", "en"));
 	    bible.insertBibleVersion(new BibleVersion("", "NIV", "en"));
 	    bible.insertBibleVersion(new BibleVersion("", "ESV", "en"));
@@ -321,7 +321,7 @@ public final class H2DbBibleStorage_Test {
 	List<Verse> retrieved = null;
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
@@ -363,7 +363,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    //given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
@@ -400,7 +400,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    //given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleVersion(new BibleVersion("NIV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
@@ -446,7 +446,7 @@ public final class H2DbBibleStorage_Test {
 	List<Verse> retrieved = null;
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 
 	    for (int i = 0; i < numOfVersionsToTest; i++)
 		bible.insertBibleVersion(new BibleVersion("KJV" + (i + 1), "en"));
@@ -491,7 +491,7 @@ public final class H2DbBibleStorage_Test {
 	List<Verse> retrieved = null;
 
 	try {
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV1", "en"));
 	    bible.insertBibleVersion(new BibleVersion("KJV2", "en"));
 	    bible.insertBibleVersion(new BibleVersion("KJV3", "en"));
@@ -590,7 +590,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 2, 16));
@@ -648,7 +648,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
@@ -698,7 +698,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleVersion(new BibleVersion("ROH", "sk"));
 	    bible.insertBibleVersion(new BibleVersion("NIV", "en"));
@@ -758,7 +758,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 2, 16));
@@ -807,7 +807,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleBook(BibleBook.ACTS);
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 2));
 	    bible.insertPosition(new Position(BibleBook.ACTS, 1, 4));
@@ -835,7 +835,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 
 	    // when
 	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
@@ -871,7 +871,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
 	    bible.insertDictTerm(new DictTerm("term number two", "term text"));
 	    bible.insertDictTerm(new DictTerm("term number three", "term text"));
@@ -894,7 +894,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 
 	    // when
 	    bible.insertReadingList("reading list");
@@ -928,7 +928,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.JOHN);
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
@@ -993,7 +993,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.JOHN);
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 1));
@@ -1029,7 +1029,7 @@ public final class H2DbBibleStorage_Test {
 
 	try {
 	    // given
-	    bible.createStorage();
+	    bible.initializeStorage();
 	    bible.insertBibleVersion(new BibleVersion("KJV", "en"));
 	    bible.insertBibleBook(BibleBook.JOHN);
 	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));

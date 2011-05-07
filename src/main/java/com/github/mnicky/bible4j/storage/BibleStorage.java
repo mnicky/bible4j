@@ -27,7 +27,7 @@ public interface BibleStorage {
     void close() throws BibleStorageException;
 
     //TODO: change createStorage() to return void
-    int[] createStorage() throws BibleStorageException;
+    int[] initializeStorage() throws BibleStorageException;
 
     void insertVerse(Verse verse) throws BibleStorageException;
 
