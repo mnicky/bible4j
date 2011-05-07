@@ -32,7 +32,7 @@ public class BookmarksCommandRunner extends CommandRunner {
     }
 
     @Override
-    public void parse(String[] args) throws BibleStorageException {
+    void parseCommandLine(String[] args) throws BibleStorageException {
 	if (args.length > 0 && !isArgument(args[0]))
 	    positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
 	if (isArgumentPresent(ADD_ARGUMENT, args)) 
@@ -40,7 +40,13 @@ public class BookmarksCommandRunner extends CommandRunner {
 	versions = parseVersionsAndReturnNoneIfEmpty(args);
     }
     
-    public void retrieveOrAddBkmarks() throws BibleStorageException {
+    @Override
+    void doAction() throws BibleStorageException {
+        retrieveOrAddBkmarks();
+        //display
+    }
+
+    private void retrieveOrAddBkmarks() throws BibleStorageException {
 	
 	if (nameOfBkmark != null) {
 	    if (positions.isEmpty())
@@ -64,7 +70,7 @@ public class BookmarksCommandRunner extends CommandRunner {
 	}
     }
     
-    public List<Bookmark> getBookmarks() {
+    private List<Bookmark> getBookmarks() {
 	return bookmarks;
     }
 
@@ -105,8 +111,9 @@ public class BookmarksCommandRunner extends CommandRunner {
         System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " Lk3:12 " + " " + BIBLE_VERSION_ARGUMENT + " kjv " + ADD_ARGUMENT + " \"This is bookmark name\"");    
 	
     }
-    
-    
+
+
+    //for testing purposes
     public static void main(String[] args) throws BibleStorageException, SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	BookmarksCommandRunner p = new BookmarksCommandRunner(storage);
@@ -116,7 +123,7 @@ public class BookmarksCommandRunner extends CommandRunner {
 //	p.retrieveOrAddBkmarks();
 	
 	String[] params2 = {"-v", "czecep", "kjv"};
-	p.parse(params2);
+	p.parseCommandLine(params2);
 	p.retrieveOrAddBkmarks();
 	System.out.println();
 	List<Bookmark> bkmarks = p.getBookmarks();

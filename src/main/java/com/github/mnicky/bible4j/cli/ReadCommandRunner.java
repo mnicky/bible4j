@@ -22,52 +22,59 @@ public final class ReadCommandRunner extends CommandRunner {
     
     private List<BibleVersion> versions;
     
+    private List<Verse> verses; 
+    
     public ReadCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
-    public List<Verse> getVerses() throws BibleStorageException {
-	List<Verse> verses = new ArrayList<Verse>();
-	
-	if (versions.size() <= 1 && positions.size() <= 1) {
-	    if (isWholeChapter(positions.get(0)))
-		verses = bibleStorage.getChapter(positions.get(0), versions.get(0));
-	    else
-		verses.add(bibleStorage.getVerse(positions.get(0), versions.get(0)));
-	}
-	else if (versions.size() <= 1 && positions.size() > 1) {
-	    if (isWholeChapter(positions.get(0)))
-		for (Position pos : positions)
-		    verses.addAll(bibleStorage.getChapter(pos, versions.get(0)));
-	    else
-		verses = bibleStorage.getVerses(positions, versions.get(0));
-	}
-	else if (versions.size() > 1 && positions.size() <= 1) {
-	    if (isWholeChapter(positions.get(0)))
-		for (BibleVersion ver : versions)
-		    verses.addAll(bibleStorage.getChapter(positions.get(0), ver));
-	    else
-		verses = bibleStorage.compareVerses(positions.get(0), versions);
-	}
-	else if (versions.size() > 1 && positions.size() > 1) {
-	    if (isWholeChapter(positions.get(0)))
-		for (BibleVersion ver : versions)
-		    for (Position pos : positions)
-			verses.addAll(bibleStorage.getChapter(pos, ver));
-	    else
-		verses = bibleStorage.compareVerses(positions, versions);
-	}
-	
-	if (verses.get(0) == null)
-	    verses = new ArrayList<Verse>();
-	
-	return verses;
-    }
-
-
-    public void parse(String[] args) throws BibleStorageException {
+    void parseCommandLine(String[] args) throws BibleStorageException {
 	versions = parseVersionsAndReturnFirstIfEmpty(args);
 	positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
+    }
+
+    @Override
+    void doAction() throws BibleStorageException {
+        verses = getVerses();
+        //display
+    }
+
+    private List<Verse> getVerses() throws BibleStorageException {
+        List<Verse> verseList = new ArrayList<Verse>();
+        
+        if (versions.size() <= 1 && positions.size() <= 1) {
+            if (isWholeChapter(positions.get(0)))
+        	verseList = bibleStorage.getChapter(positions.get(0), versions.get(0));
+            else
+        	verseList.add(bibleStorage.getVerse(positions.get(0), versions.get(0)));
+        }
+        else if (versions.size() <= 1 && positions.size() > 1) {
+            if (isWholeChapter(positions.get(0)))
+        	for (Position pos : positions)
+        	    verseList.addAll(bibleStorage.getChapter(pos, versions.get(0)));
+            else
+        	verseList = bibleStorage.getVerses(positions, versions.get(0));
+        }
+        else if (versions.size() > 1 && positions.size() <= 1) {
+            if (isWholeChapter(positions.get(0)))
+        	for (BibleVersion ver : versions)
+        	    verseList.addAll(bibleStorage.getChapter(positions.get(0), ver));
+            else
+        	verseList = bibleStorage.compareVerses(positions.get(0), versions);
+        }
+        else if (versions.size() > 1 && positions.size() > 1) {
+            if (isWholeChapter(positions.get(0)))
+        	for (BibleVersion ver : versions)
+        	    for (Position pos : positions)
+        		verseList.addAll(bibleStorage.getChapter(pos, ver));
+            else
+        	verseList = bibleStorage.compareVerses(positions, versions);
+        }
+        
+        if (verseList.get(0) == null)
+            verseList = new ArrayList<Verse>();
+        
+        return verseList;
     }
 
     @Override
@@ -145,7 +152,7 @@ public final class ReadCommandRunner extends CommandRunner {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	ReadCommandRunner p2 = new ReadCommandRunner(storage);
 	String[] params2 = {"1Jn1,6-7.9", BIBLE_VERSION_ARGUMENT, "czeb21", "kjv"};
-	p2.parse(params2);
+	p2.parseCommandLine(params2);
 	System.out.println();
 	List<Verse> verses = p2.getVerses(); 
 	for (Verse v : verses)

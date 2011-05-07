@@ -28,12 +28,19 @@ public class NotesCommandRunner extends CommandRunner {
     }
 
     @Override
-    public void parse(String[] args) {
+    public void parseCommandLine(String[] args) {
 	positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
 	if (isArgumentPresent(ADD_ARGUMENT, args)) 
 	    textOfNote = parseAddText(args);
     }
     
+    @Override
+    void doAction() throws BibleStorageException {
+	retrieveOrAddNote();
+	//display
+        
+    }
+
     public void retrieveOrAddNote() throws BibleStorageException {
 	
 	if (positions.isEmpty())
@@ -109,7 +116,7 @@ public class NotesCommandRunner extends CommandRunner {
 //	p.retrieveOrAddNote();
 	
 	String[] params2 = {"Jn1,5"};
-	p.parse(params2);
+	p.parseCommandLine(params2);
 	p.retrieveOrAddNote();
 	System.out.println();
 	List<Note> notes = p.getNotes(); 

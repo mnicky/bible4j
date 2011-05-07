@@ -19,38 +19,46 @@ public class SearchCommandRunner extends CommandRunner {
     private List<BibleVersion> versions;
     private List<BibleBook> books;
     private String searchPhrases;
+    private List<Verse> verses;
 
     public SearchCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
     @Override
-    public void parse(String[] args) throws BibleStorageException {
+    void parseCommandLine(String[] args) throws BibleStorageException {
 	versions = parseVersionsAndReturnNoneIfEmpty(args);
 	books = parseBooks(args);
 	searchPhrases = parseSearchPhrases(args);
     }
     
-    public List<Verse> getVerses() throws BibleStorageException {
-	List<Verse> verses = new ArrayList<Verse>();
+    @Override
+    void doAction() throws BibleStorageException {
+	verses = getVerses();
+	// display
+        
+    }
+
+    private List<Verse> getVerses() throws BibleStorageException {
+	List<Verse> verseList = new ArrayList<Verse>();
 	
 	if (versions.isEmpty() && books.isEmpty())
-	    verses = bibleStorage.searchVersesForText(searchPhrases);
+	    verseList = bibleStorage.searchVersesForText(searchPhrases);
 	
 	else if (versions.isEmpty() && !books.isEmpty())
 	    for (BibleBook book : books)
-		verses.addAll(bibleStorage.searchVersesForText(searchPhrases, book));
+		verseList.addAll(bibleStorage.searchVersesForText(searchPhrases, book));
 	
 	else if (!versions.isEmpty() && books.isEmpty())
 	    for (BibleVersion version : versions)
-		verses.addAll(bibleStorage.searchVersesForText(searchPhrases, version));
+		verseList.addAll(bibleStorage.searchVersesForText(searchPhrases, version));
 		
 	else if (!versions.isEmpty() && !books.isEmpty())
 	    for (BibleVersion version : versions)
 		for (BibleBook book : books)
-		    verses.addAll(bibleStorage.searchVersesForText(searchPhrases, book, version));
+		    verseList.addAll(bibleStorage.searchVersesForText(searchPhrases, book, version));
 	
-	return verses;
+	return verseList;
     }
 
     private String parseSearchPhrases(String[] args) {
@@ -131,7 +139,7 @@ public class SearchCommandRunner extends CommandRunner {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	SearchCommandRunner p3 = new SearchCommandRunner(storage);
 	String[] params2 = {"light of life", BIBLE_BOOK_ARGUMENT, "john", "ps", BIBLE_VERSION_ARGUMENT, "kjv", "asv", "rsv", "web"};
-	p3.parse(params2);
+	p3.parseCommandLine(params2);
 	System.out.println();
 	List<Verse> verses = p3.getVerses(); 
 	for (Verse v : verses)

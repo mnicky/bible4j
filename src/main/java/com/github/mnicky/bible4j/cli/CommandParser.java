@@ -9,11 +9,11 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 public class CommandParser {
-    
+
     private final BibleStorage storage;
 
     private boolean helpRequested = false;
-    
+
     static final String BIBLE_READ_COMMAND = "read";
     static final String BIBLE_SEARCH_COMMAND = "search";
     static final String IMPORT_COMMAND = "import";
@@ -24,60 +24,66 @@ public class CommandParser {
     static final String BOOKMARKS_COMMAND = "bkmark";
     static final String INFO_COMMAND = "info";
     static final String HELP_COMMAND = "help";
-    
+
     public CommandParser(BibleStorage bibleStorage) {
 	this.storage = bibleStorage;
     }
-    
+
     public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
-	
+
 	CommandRunner parser = getCommandParser(args);
-	
+
 	if (parser != null) {
 	    if (helpRequested)
+		// print specific help
 		parser.printHelp();
 	    else
-		parser.parse(Arrays.copyOfRange(args, 1, args.length));
+		//run the application
+		runParser(parser, args);	    	
 	}
 	else
+	    // print main help
 	    printHelp();
     }
 
-
+    private void runParser(CommandRunner parser, String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
+	parser.parseCommandLine(Arrays.copyOfRange(args, 1, args.length));
+	parser.doAction();
+    }
 
     private CommandRunner getCommandParser(String[] args) {
 	if (args.length < 1)
 	    return null;
-	
+
 	if (args[0].equalsIgnoreCase(BIBLE_READ_COMMAND))
 	    return new ReadCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(BIBLE_SEARCH_COMMAND))
 	    return new SearchCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(IMPORT_COMMAND))
 	    return new ImportCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(EXPORT_COMMAND))
 	    return new ExportCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(NOTES_COMMAND))
 	    return new NotesCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(DICTIONARY_COMMAND))
 	    return new DictionaryCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(DAILY_READINGS_COMMAND))
 	    return new DailyReadingsCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(BOOKMARKS_COMMAND))
 	    return new BookmarksCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(INFO_COMMAND))
 	    return new InfoCommandRunner(storage);
-	
+
 	else if (args[0].equalsIgnoreCase(HELP_COMMAND) && !helpRequested) {
-	    helpRequested  = true;
+	    helpRequested = true;
 	    if (args.length > 1)
 		return getCommandParser(Arrays.copyOfRange(args, 1, args.length));
 	}
@@ -85,8 +91,6 @@ public class CommandParser {
 	return null;
     }
 
-
-    
     private void printHelp() {
 	System.out.println("Use '" + HELP_COMMAND + " COMMAND' for help.");
 	System.out.println();
@@ -101,13 +105,12 @@ public class CommandParser {
 	System.out.println(EXPORT_COMMAND + "\t export the Bible");
 	System.out.println(INFO_COMMAND + "\t view informations about program and available Bible versions");
     }
-    
-    
-    //for testing purposes
+
+    // for testing purposes
     public static void main(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 	CommandParser cpl = new CommandParser(null);
-	String[] params = {"help", "info"};
+	String[] params = { "help", "info" };
 	cpl.launch(params);
     }
-    
+
 }

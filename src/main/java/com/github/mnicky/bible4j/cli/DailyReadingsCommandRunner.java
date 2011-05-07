@@ -18,20 +18,28 @@ public class DailyReadingsCommandRunner extends CommandRunner {
 
     private DateTime date = new DateTime("0000-00-00");
     
+    private List<DailyReading> readings;
+    
     public DailyReadingsCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
     @Override
-    public void parse(String[] args) throws IOException, BibleStorageException {
+    void parseCommandLine(String[] args) throws IOException, BibleStorageException {
 	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT))
 	    downloadReadings(parseDownloadMonthCount(args));
 	else
 	    date = parseDate(getFirstValue(args));
     }
     
-    public List<DailyReading> getDailyReadings() throws BibleStorageException {
-	return bibleStorage.getDailyReadings(date);
+    @Override
+    void doAction() throws BibleStorageException {
+       readings = bibleStorage.getDailyReadings(date);
+        //display
+    }
+
+    private List<DailyReading> getDailyReadings() throws BibleStorageException {
+	return readings;
     }
 
     private DateTime parseDate(String date) {
@@ -92,7 +100,7 @@ public class DailyReadingsCommandRunner extends CommandRunner {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	DailyReadingsCommandRunner p = new DailyReadingsCommandRunner(storage);
 	String[] params = { "-down", "2" };
-	p.parse(params);
+	p.parseCommandLine(params);
 	//System.out.println(p.getDailyReadings());
     }
 

@@ -23,9 +23,11 @@ public abstract class CommandRunner {
 	this.bibleStorage = bibleStorage;
     }
 
-    public abstract void parse(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException;
+    abstract void parseCommandLine(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException;
     
     abstract public void printHelp();
+
+    abstract void doAction() throws BibleStorageException, BibleExporterException, BibleImporterException;
     
     protected boolean isArgumentPresent(String arg, String[] args) {
 	

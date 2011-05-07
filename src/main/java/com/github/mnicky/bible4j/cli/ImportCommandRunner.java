@@ -19,7 +19,14 @@ public class ImportCommandRunner extends CommandRunner {
     }
 
     @Override
-    public void parse(String[] args) throws BibleImporterException {
+    void doAction() throws BibleImporterException, BibleStorageException {
+        importBible();
+        //display
+        
+    }
+
+    @Override
+    void parseCommandLine(String[] args) throws BibleImporterException {
 	try {
 	    input = parseInputStream(args);
 	} catch (FileNotFoundException e) {

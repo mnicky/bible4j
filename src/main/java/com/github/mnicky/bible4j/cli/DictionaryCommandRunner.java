@@ -20,12 +20,18 @@ public class DictionaryCommandRunner extends CommandRunner {
     }
 
     @Override
-    public void parse(String[] args) throws BibleStorageException, IOException {
+    void parseCommandLine(String[] args) throws BibleStorageException, IOException {
 	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT))
 	    downloadDictionary();
 	dictTerm = parseDictTerm(getFirstValue(args));
     }
     
+    @Override
+    void doAction() {
+        //display
+        
+    }
+
     private void downloadDictionary() throws BibleStorageException, IOException {
 	DictionaryDownloader dictdown = new EastonsDictionaryDownloader(bibleStorage);
 	dictdown.downloadDictionary();
@@ -72,7 +78,7 @@ public class DictionaryCommandRunner extends CommandRunner {
 	DictionaryCommandRunner p = new DictionaryCommandRunner(storage);
 	//storage.insertDictTerm(new DictTerm("Jehovah", "Hebrew 'name' for God, meaning 'I am'"));
 	String[] params = {"aaron"};
-	p.parse(params);
+	p.parseCommandLine(params);
 	System.out.println(p.getDictTerm());
     }
 

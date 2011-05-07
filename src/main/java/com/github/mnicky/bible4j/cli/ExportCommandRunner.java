@@ -21,7 +21,7 @@ public class ExportCommandRunner extends CommandRunner {
     }
 
     @Override
-    public void parse(String[] args) throws BibleExporterException, BibleStorageException {
+    void parseCommandLine(String[] args) throws BibleExporterException, BibleStorageException {
 	    try {
 		output = parseOutputStream(args);
 	    } catch (FileNotFoundException e) {
@@ -30,7 +30,13 @@ public class ExportCommandRunner extends CommandRunner {
 	    version = parseVersionsAndReturnFirstIfEmpty(args).get(0);
     }
     
-    public void exportBible() throws BibleStorageException, BibleExporterException {
+    @Override
+    void doAction() throws BibleStorageException, BibleExporterException {
+        exportBible();
+        //display
+    }
+
+    private void exportBible() throws BibleStorageException, BibleExporterException {
 	BibleExporter exporter = new OsisBibleExporter(bibleStorage);
 	exporter.exportBible(version, output);
     }
