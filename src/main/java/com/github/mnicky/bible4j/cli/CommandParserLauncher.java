@@ -101,7 +101,7 @@ public class CommandParserLauncher {
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 	CommandParserLauncher cpl = new CommandParserLauncher(null);
-	String[] params = {"help", "read"};
+	String[] params = {"help", "daily"};
 	cpl.launch(params);
     }
     
