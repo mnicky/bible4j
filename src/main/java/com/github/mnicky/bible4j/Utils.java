@@ -130,8 +130,10 @@ public final class Utils {
         return position.getVerseNum() == 0;
     }
 
-    // TODO add support for rare and complex position definitions with more chapters and verse precision (e.g. Mk1,3-3,4 or Lk1,1-4.4,14-21)
-    public static List<Position> parsePositions(String posDef) {
+    // TODO add support for rare and complex position definitions with verse precision through more chapters (e.g. Mk1,3-3,4 or Lk1,1-4.4,14-21)
+    public static List<Position> parsePositions(String posDef) {	
+	if (posDef == null)
+	    throw new IllegalArgumentException("Bible coordinates not provided.");
         
         if (posDef.contains(":")) {
             posDef = posDef.replace(",", ".");
@@ -149,6 +151,9 @@ public final class Utils {
     }
 
     private static List<Position> getPositions(BibleBook book, List<Integer> chapters, List<Integer> verses) {
+	if (book == null || chapters == null)
+	    throw new IllegalArgumentException("Books or chapters not provided.");
+	
         List<Position> positionList = new ArrayList<Position>();
         
         //contains also verse numbers (i.e.: Jn3,5-7)
@@ -168,6 +173,9 @@ public final class Utils {
     }
 
     private static List<Integer> parseVerses(String posDef) {
+	if (posDef == null)
+	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	
         List<Integer> verses;
         String verseDef = posDef.substring(posDef.indexOf(",") + 1);
         
@@ -185,6 +193,9 @@ public final class Utils {
     }
 
     private static List<Integer> parseChapters(String posDef) {
+	if (posDef == null)
+	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	
         List<Integer> chapters;
         String chaptDef = posDef.substring(getPositionAfterBookName(posDef));
         
@@ -197,7 +208,7 @@ public final class Utils {
         //contains only chapter numbers  (i.e.: Mk4-6)
         else {
             String[] chaptRanges = null;
-            //contains also disjoint chapter nums (i.e.: Mk3-5.8-9.15)
+            //contains also disjoint chapter numbers (i.e.: Mk3-5.8-9.15)
             if (chaptDef.contains("."))
         	 chaptRanges = chaptDef.split("\\.");
             else {
@@ -214,6 +225,9 @@ public final class Utils {
     }
 
     private static List<Integer> parseNumberRanges(String[] numberRanges) {
+	if (numberRanges == null || numberRanges.length < 1)
+	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	
         List<Integer> numbers = new ArrayList<Integer>();
         
         for (String numberRange : numberRanges) {
@@ -221,13 +235,11 @@ public final class Utils {
             //contains more numbers (i.e.: Mt13-15)
             if (numberRange.contains("-")) {
         	String[] numberRangeEnds = numberRange.split("-");
-        	
         	if (numberRangeEnds.length > 2)
         	    throw new IllegalArgumentException("Bad format of number range: '" + numberRange + "'.");
 
 		int beginning = -2;
 		int end = -1;
-
 		try {
 		    beginning = Integer.valueOf(numberRangeEnds[0]);
 		    end = Integer.valueOf(numberRangeEnds[1]);
@@ -236,7 +248,7 @@ public final class Utils {
 		}
         	
         	if (beginning > end)
-        	    throw new IllegalArgumentException("Beginning of interval is greater than end: " + numberRange);
+        	    throw new IllegalArgumentException("Beginning of interval is greater than end in nuber range: " + numberRange);
         	
         	for (int i = beginning; i <= end; i++)
         	    numbers.add(i);
@@ -252,31 +264,32 @@ public final class Utils {
     }
 
     private static BibleBook extractBibleBook(String posDef) {
+	if (posDef == null)
+	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	
         String bookNameDef = extractFirstWord(posDef);
         return Utils.getBibleBookNameByAbbr(bookNameDef);
     }
 
     private static int getPositionAfterBookName(String posDef) {
-        int positionAfterBookName;
+	if (posDef == null)
+	    throw new IllegalArgumentException("Bible coordinates not provided.");
         
         if (Character.isDigit(posDef.charAt(0)))
-            positionAfterBookName = getPositionOfFirstNonLetter(posDef.substring(1)) + 1;
+            return getPositionOfFirstNonLetter(posDef.substring(1)) + 1;
         else
-            positionAfterBookName = getPositionOfFirstNonLetter(posDef);
-        
-        return positionAfterBookName;
+            return getPositionOfFirstNonLetter(posDef);
     }
 
     private static int getPositionOfFirstNonLetter(String posDef) {
-        int firstNonLetterPosition = -1;
-        for (int i = 0; i < posDef.length(); i++)
-            if (!Character.isLetter(posDef.charAt(i))) {
-        	firstNonLetterPosition = i;
-        	break;
-            }
-        if (firstNonLetterPosition == -1)
-            throw new IllegalArgumentException("Bible coordinate doesn't contain a book name.");	
-        return firstNonLetterPosition;
+	if (posDef == null)
+	    throw new IllegalArgumentException("Bible coordinates not provided.");
+
+	for (int i = 0; i < posDef.length(); i++)
+	    if (!Character.isLetter(posDef.charAt(i)))
+		return i;
+
+	throw new IllegalArgumentException("Bible coordinate doesn't contain a book name.");
     }
 
     private static String extractFirstWord(String posDef) {
