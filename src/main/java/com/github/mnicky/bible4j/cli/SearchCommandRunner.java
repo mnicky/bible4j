@@ -13,14 +13,14 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class SearchCommandParser extends CommandParser {
+public class SearchCommandRunner extends CommandRunner {
     
     private static final String BIBLE_BOOK_PARAMETER = "-b";
     private List<BibleVersion> versions;
     private List<BibleBook> books;
     private String searchPhrases;
 
-    public SearchCommandParser(BibleStorage bibleStorage) {
+    public SearchCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
@@ -129,7 +129,7 @@ public class SearchCommandParser extends CommandParser {
     
     public static void main(String[] args) throws BibleStorageException, SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	SearchCommandParser p3 = new SearchCommandParser(storage);
+	SearchCommandRunner p3 = new SearchCommandRunner(storage);
 	String[] params2 = {"light of life", BIBLE_BOOK_ARGUMENT, "john", "ps", BIBLE_VERSION_ARGUMENT, "kjv", "asv", "rsv", "web"};
 	p3.parse(params2);
 	System.out.println();

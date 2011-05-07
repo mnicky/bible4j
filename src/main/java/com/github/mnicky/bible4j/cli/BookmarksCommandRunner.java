@@ -17,7 +17,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class BookmarksCommandParser extends CommandParser {
+public class BookmarksCommandRunner extends CommandRunner {
 
     private List<Position> positions;
     
@@ -27,7 +27,7 @@ public class BookmarksCommandParser extends CommandParser {
     
     private List<Bookmark> bookmarks;
 
-    public BookmarksCommandParser(BibleStorage bibleStorage) {
+    public BookmarksCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
@@ -109,7 +109,7 @@ public class BookmarksCommandParser extends CommandParser {
     
     public static void main(String[] args) throws BibleStorageException, SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	BookmarksCommandParser p = new BookmarksCommandParser(storage);
+	BookmarksCommandRunner p = new BookmarksCommandRunner(storage);
 	
 //	String[] params = {"Jn1,1", ADD_ARGUMENT, "Jn 1,1 bookmark", BIBLE_VERSION_ARGUMENT, "kjv"};
 //	p.parse(params);

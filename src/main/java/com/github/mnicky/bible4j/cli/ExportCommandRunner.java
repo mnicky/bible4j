@@ -11,12 +11,12 @@ import com.github.mnicky.bible4j.parsers.OsisBibleExporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
-public class ExportCommandParser extends CommandParser {
+public class ExportCommandRunner extends CommandRunner {
     
     OutputStream output;
     private BibleVersion version;
 
-    public ExportCommandParser(BibleStorage bibleStorage) {
+    public ExportCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 

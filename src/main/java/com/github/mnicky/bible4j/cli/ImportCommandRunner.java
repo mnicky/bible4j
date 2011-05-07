@@ -10,11 +10,11 @@ import com.github.mnicky.bible4j.parsers.OsisBibleImporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
-public class ImportCommandParser extends CommandParser {
+public class ImportCommandRunner extends CommandRunner {
 
     InputStream input;
     
-    public ImportCommandParser(BibleStorage bibleStorage) {
+    public ImportCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 

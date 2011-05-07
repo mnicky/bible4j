@@ -31,7 +31,7 @@ public class CommandParserLauncher {
     
     public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 	
-	CommandParser parser = getCommandParser(args);
+	CommandRunner parser = getCommandParser(args);
 	
 	if (parser != null) {
 	    if (helpRequested)
@@ -45,36 +45,36 @@ public class CommandParserLauncher {
 
 
 
-    private CommandParser getCommandParser(String[] args) {
+    private CommandRunner getCommandParser(String[] args) {
 	if (args.length < 1)
 	    return null;
 	
 	if (args[0].equalsIgnoreCase(BIBLE_READ_COMMAND))
-	    return new ReadCommandParser(storage);
+	    return new ReadCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(BIBLE_SEARCH_COMMAND))
-	    return new SearchCommandParser(storage);
+	    return new SearchCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(IMPORT_COMMAND))
-	    return new ImportCommandParser(storage);
+	    return new ImportCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(EXPORT_COMMAND))
-	    return new ExportCommandParser(storage);
+	    return new ExportCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(NOTES_COMMAND))
-	    return new NotesCommandParser(storage);
+	    return new NotesCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(DICTIONARY_COMMAND))
-	    return new DictionaryCommandParser(storage);
+	    return new DictionaryCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(DAILY_READINGS_COMMAND))
-	    return new DailyReadingsCommandParser(storage);
+	    return new DailyReadingsCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(BOOKMARKS_COMMAND))
-	    return new BookmarksCommandParser(storage);
+	    return new BookmarksCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(INFO_COMMAND))
-	    return new InfoCommandParser(storage);
+	    return new InfoCommandRunner(storage);
 	
 	else if (args[0].equalsIgnoreCase(HELP_COMMAND) && !helpRequested) {
 	    helpRequested  = true;

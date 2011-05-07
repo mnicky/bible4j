@@ -10,7 +10,7 @@ import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
-public abstract class CommandParser {
+public abstract class CommandRunner {
     
     protected static final String BIBLE_VERSION_ARGUMENT = "-v";
     protected static final String BIBLE_BOOK_ARGUMENT = "-b";
@@ -19,7 +19,7 @@ public abstract class CommandParser {
     
     protected final BibleStorage bibleStorage;
     
-    public CommandParser(BibleStorage bibleStorage) {
+    public CommandRunner(BibleStorage bibleStorage) {
 	this.bibleStorage = bibleStorage;
     }
 

@@ -16,13 +16,13 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public final class ReadCommandParser extends CommandParser {
+public final class ReadCommandRunner extends CommandRunner {
 
     private List<Position> positions;
     
     private List<BibleVersion> versions;
     
-    public ReadCommandParser(BibleStorage bibleStorage) {
+    public ReadCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
@@ -136,14 +136,14 @@ public final class ReadCommandParser extends CommandParser {
 
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, SQLException {
-	CommandParser p = new ReadCommandParser(null);
+	CommandRunner p = new ReadCommandRunner(null);
 	String[] params = {"", " + BIBLE_VERSION_ARGUMENT + ", "kjv", "niv", "esv"};
 	
 	System.out.println(p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params));
 	assert p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params).toString().equals("[kjv, niv, esv]");
 	
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	ReadCommandParser p2 = new ReadCommandParser(storage);
+	ReadCommandRunner p2 = new ReadCommandRunner(storage);
 	String[] params2 = {"1Jn1,6-7.9", BIBLE_VERSION_ARGUMENT, "czeb21", "kjv"};
 	p2.parse(params2);
 	System.out.println();

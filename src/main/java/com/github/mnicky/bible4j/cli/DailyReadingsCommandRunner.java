@@ -14,11 +14,11 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class DailyReadingsCommandParser extends CommandParser {
+public class DailyReadingsCommandRunner extends CommandRunner {
 
     private DateTime date = new DateTime("0000-00-00");
     
-    public DailyReadingsCommandParser(BibleStorage bibleStorage) {
+    public DailyReadingsCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
@@ -90,7 +90,7 @@ public class DailyReadingsCommandParser extends CommandParser {
     // for testing purposes
     public static void main(String[] args) throws SQLException, IOException, BibleStorageException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	DailyReadingsCommandParser p = new DailyReadingsCommandParser(storage);
+	DailyReadingsCommandRunner p = new DailyReadingsCommandRunner(storage);
 	String[] params = { "-down", "2" };
 	p.parse(params);
 	//System.out.println(p.getDailyReadings());

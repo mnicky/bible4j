@@ -15,7 +15,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class NotesCommandParser extends CommandParser {
+public class NotesCommandRunner extends CommandRunner {
     
     private List<Position> positions;
     
@@ -23,7 +23,7 @@ public class NotesCommandParser extends CommandParser {
     
     private List<Note> notes;
 
-    public NotesCommandParser(BibleStorage bibleStorage) {
+    public NotesCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
@@ -102,7 +102,7 @@ public class NotesCommandParser extends CommandParser {
     
     public static void main(String[] args) throws SQLException, BibleStorageException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	NotesCommandParser p = new NotesCommandParser(storage);
+	NotesCommandRunner p = new NotesCommandRunner(storage);
 	
 //	String[] params = {"Jn1,2", ADD_ARGUMENT, "This is my second note :-)"};
 //	p.parse(params);

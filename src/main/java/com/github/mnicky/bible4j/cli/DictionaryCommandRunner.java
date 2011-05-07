@@ -11,11 +11,11 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class DictionaryCommandParser extends CommandParser {
+public class DictionaryCommandRunner extends CommandRunner {
     
     private DictTerm dictTerm;
 
-    public DictionaryCommandParser(BibleStorage bibleStorage) {
+    public DictionaryCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
     }
 
@@ -69,7 +69,7 @@ public class DictionaryCommandParser extends CommandParser {
     
     public static void main(String[] args) throws SQLException, BibleStorageException, IOException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	DictionaryCommandParser p = new DictionaryCommandParser(storage);
+	DictionaryCommandRunner p = new DictionaryCommandRunner(storage);
 	//storage.insertDictTerm(new DictTerm("Jehovah", "Hebrew 'name' for God, meaning 'I am'"));
 	String[] params = {"aaron"};
 	p.parse(params);
