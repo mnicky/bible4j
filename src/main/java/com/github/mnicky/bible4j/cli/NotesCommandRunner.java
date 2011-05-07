@@ -64,7 +64,7 @@ public class NotesCommandRunner extends CommandRunner {
     @Override
     public void printHelp() {
 	System.out.println("Usage:");
-        System.out.println("\t" + CommandParserLauncher.NOTES_COMMAND + " POSITION [" + ADD_ARGUMENT + " NOTE_TEXT]");
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " POSITION [" + ADD_ARGUMENT + " NOTE_TEXT]");
         
         System.out.println();
         System.out.println("\tPOSITION \t Bible coordinates without spaces");
@@ -74,7 +74,7 @@ public class NotesCommandRunner extends CommandRunner {
         System.out.println("\tTo view notes, enter just Bible coordinates.");
         System.out.println("\tTo add note, use argument '" + ADD_ARGUMENT + "' and specify the text of note.");
         System.out.println("\tNotes can only be added to one verse. If more verses are specified, the first one is used.");
-        System.out.println("\tSee '" + CommandParserLauncher.HELP_COMMAND + " " + CommandParserLauncher.BIBLE_READ_COMMAND + "' for description of how to define Bible coordinates.");
+        System.out.println("\tSee '" + CommandParser.HELP_COMMAND + " " + CommandParser.BIBLE_READ_COMMAND + "' for description of how to define Bible coordinates.");
         
         System.out.println();
         System.out.println("Examples:");
@@ -82,19 +82,19 @@ public class NotesCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("  View notes for specified verses:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.NOTES_COMMAND + " Mt23,12");
-        System.out.println("\t" + CommandParserLauncher.NOTES_COMMAND + " Jn16:1-10.20-30");
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " Mt23,12");
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " Jn16:1-10.20-30");
         
         System.out.println();
         System.out.println("  View notes for whole specified chapters:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.NOTES_COMMAND + " Exodus1");
-        System.out.println("\t" + CommandParserLauncher.NOTES_COMMAND + " Acts1-5");
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " Exodus1");
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " Acts1-5");
         
         System.out.println();
         System.out.println("  Add note to verse:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.NOTES_COMMAND + " Lk3:12 " + ADD_ARGUMENT + " \"This is note text\"");    
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " Lk3:12 " + ADD_ARGUMENT + " \"This is note text\"");    
         
     }
     

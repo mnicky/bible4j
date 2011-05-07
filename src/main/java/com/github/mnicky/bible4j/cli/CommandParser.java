@@ -8,7 +8,7 @@ import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
-public class CommandParserLauncher {
+public class CommandParser {
     
     private final BibleStorage storage;
 
@@ -25,7 +25,7 @@ public class CommandParserLauncher {
     static final String INFO_COMMAND = "info";
     static final String HELP_COMMAND = "help";
     
-    public CommandParserLauncher(BibleStorage bibleStorage) {
+    public CommandParser(BibleStorage bibleStorage) {
 	this.storage = bibleStorage;
     }
     
@@ -105,7 +105,7 @@ public class CommandParserLauncher {
     
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
-	CommandParserLauncher cpl = new CommandParserLauncher(null);
+	CommandParser cpl = new CommandParser(null);
 	String[] params = {"help", "info"};
 	cpl.launch(params);
     }

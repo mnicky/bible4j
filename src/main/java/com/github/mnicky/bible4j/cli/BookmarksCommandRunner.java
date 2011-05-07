@@ -71,8 +71,8 @@ public class BookmarksCommandRunner extends CommandRunner {
     @Override
     public void printHelp() {
 	System.out.println("Usage:");
-        System.out.println("\t" + CommandParserLauncher.BOOKMARKS_COMMAND + " [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
-        System.out.println("\t" + CommandParserLauncher.BOOKMARKS_COMMAND + " POSITION " + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION " + ADD_ARGUMENT + " BOOKMARK_NAME");
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " POSITION " + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION " + ADD_ARGUMENT + " BOOKMARK_NAME");
         
         System.out.println();
         System.out.println("\tBIBLE_VERSION \t Bible version abbreviation");
@@ -83,7 +83,7 @@ public class BookmarksCommandRunner extends CommandRunner {
         System.out.println("\tTo view bookmarks for some Bible version(s) only,  use argument '" + BIBLE_VERSION_ARGUMENT + "' and specify one or more Bible versions.");
         System.out.println("\tTo add bookmark, specify Bible version and name of bookmark with arguments '" + BIBLE_VERSION_ARGUMENT + "' and '" + ADD_ARGUMENT + "'.");
         System.out.println("\tBookmarks can only be added to one verse. If more verses are specified, the first one is used.");
-        System.out.println("\tSee '" + CommandParserLauncher.HELP_COMMAND + " " + CommandParserLauncher.BIBLE_READ_COMMAND + "' for description of how to define Bible coordinates.");
+        System.out.println("\tSee '" + CommandParser.HELP_COMMAND + " " + CommandParser.BIBLE_READ_COMMAND + "' for description of how to define Bible coordinates.");
         
         System.out.println();
         System.out.println("Examples:");
@@ -91,18 +91,18 @@ public class BookmarksCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("  View all bookmarks:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BOOKMARKS_COMMAND);
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND);
         
         System.out.println();
         System.out.println("  View bookmarks for specified Bible book(s):");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BOOKMARKS_COMMAND + " " + BIBLE_VERSION_ARGUMENT + " kjv");
-        System.out.println("\t" + CommandParserLauncher.BOOKMARKS_COMMAND + " " + BIBLE_VERSION_ARGUMENT + " niv rsv");
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " " + BIBLE_VERSION_ARGUMENT + " kjv");
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " " + BIBLE_VERSION_ARGUMENT + " niv rsv");
         
         System.out.println();
         System.out.println("  Add bookmark to verse:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BOOKMARKS_COMMAND + " Lk3:12 " + " " + BIBLE_VERSION_ARGUMENT + " kjv " + ADD_ARGUMENT + " \"This is bookmark name\"");    
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " Lk3:12 " + " " + BIBLE_VERSION_ARGUMENT + " kjv " + ADD_ARGUMENT + " \"This is bookmark name\"");    
 	
     }
     

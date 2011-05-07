@@ -43,7 +43,7 @@ public class ExportCommandRunner extends CommandRunner {
     @Override
     public void printHelp() {
 	System.out.println("Usage:");
-        System.out.println("\t" + CommandParserLauncher.EXPORT_COMMAND + " PATH_TO_FILE [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION]");
+        System.out.println("\t" + CommandParser.EXPORT_COMMAND + " PATH_TO_FILE [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION]");
         
         System.out.println();
         System.out.println("\tPATH_TO_FILE \t path to OSIS file containing the Bible");
@@ -53,7 +53,7 @@ public class ExportCommandRunner extends CommandRunner {
         System.out.println("Examples:");
         
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.EXPORT_COMMAND + " kjv-osis-bible.xml " + BIBLE_VERSION_ARGUMENT + " kjv");
+        System.out.println("\t" + CommandParser.EXPORT_COMMAND + " kjv-osis-bible.xml " + BIBLE_VERSION_ARGUMENT + " kjv");
 	
     }
 

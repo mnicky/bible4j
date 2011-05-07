@@ -38,7 +38,7 @@ public final class InfoCommandRunner extends CommandRunner {
     @Override
     public void printHelp() {
 	System.out.println("Usage:");
-        System.out.println("\t" + CommandParserLauncher.INFO_COMMAND);
+        System.out.println("\t" + CommandParser.INFO_COMMAND);
         
         System.out.println();
         System.out.println("Examples:");
@@ -46,7 +46,7 @@ public final class InfoCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("  View informations about program and available Bible versions:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.HELP_COMMAND);
+        System.out.println("\t" + CommandParser.HELP_COMMAND);
 
     }
     

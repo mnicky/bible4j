@@ -60,8 +60,8 @@ public class DailyReadingsCommandRunner extends CommandRunner {
     public void printHelp() {
 	
 	System.out.println("Usage:");
-        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " DD-MM-YYYY");
-        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " NUMBER_OF_MONTHS");
+        System.out.println("\t" + CommandParser.DAILY_READINGS_COMMAND + " DD-MM-YYYY");
+        System.out.println("\t" + CommandParser.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " NUMBER_OF_MONTHS");
         
         System.out.println();
         System.out.println("\tDD-MM-YYYY \t\t Date of daily bible reading to show (must be in specified format)");
@@ -78,12 +78,12 @@ public class DailyReadingsCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("  View daily Bible readings for specific day:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " 12-03-2010");
+        System.out.println("\t" + CommandParser.DAILY_READINGS_COMMAND + " 12-03-2010");
         
         System.out.println();
         System.out.println("  Download daily Bible readings for two months ahead:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " 2");
+        System.out.println("\t" + CommandParser.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " 2");
 
     }
 

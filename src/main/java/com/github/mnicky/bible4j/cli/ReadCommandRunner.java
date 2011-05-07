@@ -73,7 +73,7 @@ public final class ReadCommandRunner extends CommandRunner {
     @Override
     public void printHelp() {
         System.out.println("Usage:");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " POSITION [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " POSITION [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
         
         System.out.println();
         System.out.println("\tPOSITION \t Bible coordinates (without spaces)");
@@ -104,34 +104,34 @@ public final class ReadCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("  Reading one verse:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Mt23,12");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Jn16:15");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Mt23,12");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Jn16:15");
         
         System.out.println();
         System.out.println("  Reading more verses:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Lk3,12-14");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Genesis34:1-10");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Lk3,12-14");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Genesis34:1-10");
         
         System.out.println();
         System.out.println("  Specifying also disjoint verses:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Acts20,12.15");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Peter3:1-5,7-8,10");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Acts20,12.15");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " 1Peter3:1-5,7-8,10");
     
         System.out.println();
         System.out.println("  Specifying the Bible versions:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Gal2,3-7.10 " + BIBLE_VERSION_ARGUMENT + " kjv");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Ps139:3-6,9 " + BIBLE_VERSION_ARGUMENT + " niv rsv kjv");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Gal2,3-7.10 " + BIBLE_VERSION_ARGUMENT + " kjv");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Ps139:3-6,9 " + BIBLE_VERSION_ARGUMENT + " niv rsv kjv");
     
         System.out.println();
         System.out.println("  Specifying the whole chapters:");
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Pt2");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " 1Jn2-3");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Exodus1-2.4-7.9");
-        System.out.println("\t" + CommandParserLauncher.BIBLE_READ_COMMAND + " Deut3-6.10-15.33 " + BIBLE_VERSION_ARGUMENT + " esv asv");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " 1Pt2");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " 1Jn2-3");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Exodus1-2.4-7.9");
+        System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Deut3-6.10-15.33 " + BIBLE_VERSION_ARGUMENT + " esv asv");
     }
 
     //for testing purposes
