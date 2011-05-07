@@ -33,12 +33,13 @@ public class ExportCommandRunner extends CommandRunner {
     @Override
     void doAction() throws BibleStorageException, BibleExporterException {
         exportBible();
-        //display
     }
 
     private void exportBible() throws BibleStorageException, BibleExporterException {
 	BibleExporter exporter = new OsisBibleExporter(bibleStorage);
+	System.out.println("Exporting the Bible...");
 	exporter.exportBible(version, output);
+	System.out.println("Bible exported.");
     }
 
     private OutputStream parseOutputStream(String[] args) throws FileNotFoundException {

@@ -47,6 +47,8 @@ public abstract class CommandRunner {
     }
     
     protected String getFirstValue(String[] args) {
+	if (args == null || args.length < 1)
+	    throw new IllegalArgumentException("No argument provided.");
 	if (isArgument(args[0]))
 	    throw new IllegalArgumentException("The first word is an argument, not a value.");
 	return args[0];

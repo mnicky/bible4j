@@ -7,7 +7,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.DailyReading;
+import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.parsers.MassGospelReadingsDownloader;
 import com.github.mnicky.bible4j.parsers.ReadingsDownloader;
 import com.github.mnicky.bible4j.storage.BibleStorage;
@@ -18,7 +20,9 @@ public class DailyReadingsCommandRunner extends CommandRunner {
 
     private DateTime date = new DateTime("0000-00-00");
     
-    private List<DailyReading> readings;
+    
+    private List<Verse> verses = null;
+    private BibleVersion version;
     
     public DailyReadingsCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
@@ -28,18 +32,45 @@ public class DailyReadingsCommandRunner extends CommandRunner {
     void parseCommandLine(String[] args) throws IOException, BibleStorageException {
 	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT))
 	    downloadReadings(parseDownloadMonthCount(args));
-	else
+	else {
 	    date = parseDate(getFirstValue(args));
-    }
-    
-    @Override
-    void doAction() throws BibleStorageException {
-       readings = bibleStorage.getDailyReadings(date);
-        //display
+	    version = parseVersionsAndReturnFirstIfEmpty(args).get(0);
+	}
     }
 
-    private List<DailyReading> getDailyReadings() throws BibleStorageException {
-	return readings;
+    @Override
+    void doAction() throws BibleStorageException {
+	verses = getReading();
+	printReading();
+    }
+
+    private List<Verse> getReading() throws BibleStorageException {
+	List<DailyReading> readings = bibleStorage.getDailyReadings(date);
+	if (readings != null && readings.size() > 0)
+	    return bibleStorage.getVerses(readings.get(0).getPositions(), version);
+	else
+	    return null;
+    }
+
+    private void printReading() {
+	if (verses == null)
+	    return;	
+
+	int lastChapter = 0;
+	    
+	for (Verse verse : verses) {
+	    BibleVersion bible = verse.getBibleVersion();
+	    String book = verse.getPosition().getBook().name();//.replace("_", " ");
+	    int chapter = verse.getPosition().getChapterNum();
+
+	    if (lastChapter == 0 || lastChapter != chapter) {
+		System.out.println("\n   " + book + ", chapter " + chapter + ", " + bible);
+		System.out.println("   =============================================================");
+		lastChapter = chapter;
+	    }
+	    System.out.println(verse.getPosition().getVerseNum() + "  " + verse.getText());
+	}
+	
     }
 
     private DateTime parseDate(String date) {
@@ -60,8 +91,9 @@ public class DailyReadingsCommandRunner extends CommandRunner {
 
     private void downloadReadings(int nextMonths) throws IOException, BibleStorageException {
 	ReadingsDownloader readDown = new MassGospelReadingsDownloader(bibleStorage);
+	System.out.println("Downloading " + readDown.getTitle() + "...");
 	readDown.downloadReadings(nextMonths);
-
+	System.out.println("Readings downloaded.");
     }
 
     @Override
@@ -99,9 +131,10 @@ public class DailyReadingsCommandRunner extends CommandRunner {
     public static void main(String[] args) throws SQLException, IOException, BibleStorageException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	DailyReadingsCommandRunner p = new DailyReadingsCommandRunner(storage);
-	String[] params = { "-down", "2" };
+	//String[] params = { "-down", "2" };
+	String[] params = { "09-05-2011"};
 	p.parseCommandLine(params);
-	//System.out.println(p.getDailyReadings());
+	p.doAction();
     }
 
 }

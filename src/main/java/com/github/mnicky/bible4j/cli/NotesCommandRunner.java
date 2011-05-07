@@ -37,11 +37,22 @@ public class NotesCommandRunner extends CommandRunner {
     @Override
     void doAction() throws BibleStorageException {
 	retrieveOrAddNote();
-	//display
+	displayNotes();
         
     }
+    
+    private void displayNotes() {
+	if (notes == null)
+	    return;
+	System.out.println("Notes:");
+	System.out.println();
+	System.out.println("Verse \t\t Note");
+	System.out.println("------------------------------------------------------------");
+	for (Note note : notes)
+	    System.out.println(note.getPosition() + " \t " + note.getText());
+    }
 
-    public void retrieveOrAddNote() throws BibleStorageException {
+    private void retrieveOrAddNote() throws BibleStorageException {
 	
 	if (positions.isEmpty())
 	    throw new IllegalArgumentException("Coordinate of note not specified");
@@ -50,6 +61,7 @@ public class NotesCommandRunner extends CommandRunner {
 	    if (Utils.isWholeChapter(positions.get(0)))
 		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
 	    bibleStorage.insertNote(new Note(textOfNote, positions.get(0), NoteType.USER_NOTE));
+	    System.out.println("Note inserted.");
 	}
 	else {
 	    notes = new ArrayList<Note>();
@@ -115,13 +127,10 @@ public class NotesCommandRunner extends CommandRunner {
 //	p.parse(params);
 //	p.retrieveOrAddNote();
 	
-	String[] params2 = {"Jn1,5"};
+	String[] params2 = {"Jn1"};
 	p.parseCommandLine(params2);
-	p.retrieveOrAddNote();
-	System.out.println();
-	List<Note> notes = p.getNotes(); 
-	for (Note v : notes)
-	    System.out.println(v == null ? "no text found" : v.getText());
+	p.doAction();
+	
     }
 
 }

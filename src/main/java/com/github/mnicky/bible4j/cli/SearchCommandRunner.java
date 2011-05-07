@@ -19,7 +19,7 @@ public class SearchCommandRunner extends CommandRunner {
     private List<BibleVersion> versions;
     private List<BibleBook> books;
     private String searchPhrases;
-    private List<Verse> verses;
+    private List<Verse> verses = null;
 
     public SearchCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
@@ -35,8 +35,24 @@ public class SearchCommandRunner extends CommandRunner {
     @Override
     void doAction() throws BibleStorageException {
 	verses = getVerses();
-	// display
-        
+	displayFoundVerses();
+    }
+
+    private void displayFoundVerses() {
+	if (verses == null)
+	    return;
+	
+	for (Verse verse : verses) {
+	    System.out.println(verse.getBibleVersion().getAbbr() + "  " + formatPosition(verse) + "\t" + verse.getText());
+	}
+	System.out.println("\n" + verses.size() + " occurences total.");
+    }
+
+    private String formatPosition(Verse verse) {
+	StringBuilder pos = new StringBuilder(verse.getPosition().toString()); 
+	while(pos.length() < 12)
+	    pos = pos.append(" ");
+	return pos.toString();
     }
 
     private List<Verse> getVerses() throws BibleStorageException {
@@ -137,13 +153,10 @@ public class SearchCommandRunner extends CommandRunner {
     
     public static void main(String[] args) throws BibleStorageException, SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
-	SearchCommandRunner p3 = new SearchCommandRunner(storage);
+	SearchCommandRunner p = new SearchCommandRunner(storage);
 	String[] params2 = {"light of life", BIBLE_BOOK_ARGUMENT, "john", "ps", BIBLE_VERSION_ARGUMENT, "kjv", "asv", "rsv", "web"};
-	p3.parseCommandLine(params2);
-	System.out.println();
-	List<Verse> verses = p3.getVerses(); 
-	for (Verse v : verses)
-	    System.out.println(v == null ? "no text found" : v.getText());
+	p.parseCommandLine(params2);
+	p.doAction();
 	
     }
 

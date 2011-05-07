@@ -2,6 +2,7 @@ package com.github.mnicky.bible4j.parsers;
 
 import hirondelle.date4j.DateTime;
 
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.DriverManager;
@@ -16,6 +17,7 @@ import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
+
 //TODO add more similar readings downloaders and ability to choose between them
 public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     
@@ -48,28 +50,22 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
 
 	String nextReadingUrl = null;
 	String nextReadingDate = null;
+	String lastReadingDate = null;
 	String bibleCoords = null;
 	
 	storage.insertReadingList(TITLE);
 
 	while (nextMonths != 0 && monthCount < nextMonths) {
-
-	    if (nextReadingUrl != null && nextReadingDate != null) {
-		System.out.println(nextReadingDate);
-		System.out.println(bibleCoords);
-		//System.out.println(nextReadingUrl);
-		System.out.println();
-
+	    if (nextReadingUrl != null && lastReadingDate != null) {
+		System.out.println(lastReadingDate + " - " + bibleCoords);
+//		System.out.println(nextReadingUrl);
 		try {
 		    storage.insertDailyReading(new DailyReading(TITLE, new DateTime(nextReadingDate), Utils.parsePositions(bibleCoords)));
 		} catch (IllegalArgumentException e) {
 		    //we don't want to stop downloading the readings because of one malformed
 		    e.printStackTrace();
 		}
-		
-		
-	    }
-	    
+	    }	    
 	    bibleCoords = null;
 	    nextReadingUrl = null;
 	    nextReadingDate = null;
@@ -79,35 +75,30 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
 	    boolean isAfterNextReadingInfo = false;
 
 	    for (Segment segment : source) {
-
 		if (gospelHrefFollows && segment instanceof StartTag) {
 		    gospelHrefFollows = false;
-		    gospelCoordinateFollows = true;
-		}
+		    gospelCoordinateFollows = true;		}
 
 		if (gospelCoordinateFollows && segmentIsText(segment)) {
 		    bibleCoords = segment.toString().trim().replace(" ", "");
 		    break;
 		}
-
 		if (!isAfterNextReadingInfo && segmentIsText(segment) && segmentEquals(segment, "day")) {
 		    nextReadingUrl = parseNextReadingUrl(source, segment);
 		    nextReadingDate = parseReadingDateFromUrl(nextReadingUrl);
+		    lastReadingDate = nextReadingDate;
 		    isAfterNextReadingInfo = true;
 		}
-
 		if (segmentIsText(segment) && segmentEquals(segment, "gospel:") || segmentEquals(segment, "gospel: (optional)"))
 		    gospelHrefFollows = true;
-
 	    }
 
 	    if (actualMonth == 0)
-		actualMonth = parseActualMonth(nextReadingDate);
-	    else if (actualMonth != parseActualMonth(nextReadingDate)) {
+		actualMonth = parseActualMonth(lastReadingDate);
+	    else if (actualMonth != parseActualMonth(lastReadingDate)) {
 		monthCount++;
-		actualMonth = parseActualMonth(nextReadingDate);
-	    }
-	    
+		actualMonth = parseActualMonth(lastReadingDate);
+	    }	    
 	    source = Utils.getSource(new URL(nextReadingUrl), 3, 1000);
 	    
 	    //TODO add server error recovery - skip to next (manually computed) URL
@@ -150,12 +141,11 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     private String parseNextReadingUrl(Source source, Segment segment) {
 	return source.getNextElement(segment.getEnd()).getAttributeValue("href");
     }
-    
-
 
     private boolean segmentIsText(Segment segment) {
 	return segment.getClass().getName().equals("net.htmlparser.jericho.Segment");
     }
+    
     
     
     //for testing purposes
@@ -163,7 +153,7 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	
 	ReadingsDownloader readD = new MassGospelReadingsDownloader(storage);
-	readD.downloadReadings(13);
+	readD.downloadReadings(1);
     }
 
 }

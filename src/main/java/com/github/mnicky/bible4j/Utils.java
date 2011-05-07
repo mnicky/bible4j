@@ -130,6 +130,7 @@ public final class Utils {
         return position.getVerseNum() == 0;
     }
 
+    // TODO add support for rare and complex position definitions with more chapters and verse precision (e.g. Mk1,3-3,4 or Lk1,1-4.4,14-21)
     public static List<Position> parsePositions(String posDef) {
         
         if (posDef.contains(":")) {
@@ -223,9 +224,16 @@ public final class Utils {
         	
         	if (numberRangeEnds.length > 2)
         	    throw new IllegalArgumentException("Bad format of number range: '" + numberRange + "'.");
-        	
-        	int beginning = Integer.valueOf(numberRangeEnds[0]);
-        	int end = Integer.valueOf(numberRangeEnds[1]);
+
+		int beginning = -2;
+		int end = -1;
+
+		try {
+		    beginning = Integer.valueOf(numberRangeEnds[0]);
+		    end = Integer.valueOf(numberRangeEnds[1]);
+		} catch (NumberFormatException e) {
+		    throw new IllegalArgumentException("Bad format of number range: '" + numberRange + "'.");
+		}
         	
         	if (beginning > end)
         	    throw new IllegalArgumentException("Beginning of interval is greater than end: " + numberRange);

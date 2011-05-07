@@ -24,9 +24,8 @@ public final class InfoCommandRunner extends CommandRunner {
 
     @Override
     void doAction() {
-	//info about program
+	CommandParser.printProgramInfo();
         printVersionsInfo();
-        
     }
 
     private List<BibleVersion> getVersions() throws BibleStorageException {
@@ -34,7 +33,9 @@ public final class InfoCommandRunner extends CommandRunner {
     }
 
     private void printVersionsInfo() {
-	System.out.println("Available Bible versions:");
+	System.out.println();
+	System.out.println();
+	System.out.println("Bible versions saved in the storage:");
 	System.out.println();
 	System.out.println("Abbreviation \t Language \t Name");
 	System.out.println("-------------------------------------------------------------------");
@@ -65,7 +66,7 @@ public final class InfoCommandRunner extends CommandRunner {
 	//storage.insertDictTerm(new DictTerm("Jehovah", "Hebrew 'name' for God, meaning 'I am'"));
 	String[] params = {""};
 	p.parseCommandLine(params);
-	p.printVersionsInfo();
+	p.doAction();
     }
 
 }

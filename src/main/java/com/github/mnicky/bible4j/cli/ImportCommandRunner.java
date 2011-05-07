@@ -20,9 +20,7 @@ public class ImportCommandRunner extends CommandRunner {
 
     @Override
     void doAction() throws BibleImporterException, BibleStorageException {
-        importBible();
-        //display
-        
+        importBible();        
     }
 
     @Override
@@ -37,7 +35,9 @@ public class ImportCommandRunner extends CommandRunner {
     
     public void importBible() throws BibleImporterException, BibleStorageException {
 	BibleImporter importer = new OsisBibleImporter(bibleStorage);
+	System.out.println("Importing the Bible...");
 	importer.importBible(input);
+	System.out.println("Bible imported.");
     }
 
     private InputStream parseInputStream(String[] args) throws FileNotFoundException {

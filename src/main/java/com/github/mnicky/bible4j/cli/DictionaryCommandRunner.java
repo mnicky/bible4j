@@ -13,7 +13,8 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 public class DictionaryCommandRunner extends CommandRunner {
     
-    private DictTerm dictTerm;
+    private DictTerm dictTerm = null;
+    boolean downloading = false;
 
     public DictionaryCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
@@ -21,24 +22,30 @@ public class DictionaryCommandRunner extends CommandRunner {
 
     @Override
     void parseCommandLine(String[] args) throws BibleStorageException, IOException {
-	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT))
+	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT)) {
 	    downloadDictionary();
+	    downloading = true;
+	}
 	dictTerm = parseDictTerm(getFirstValue(args));
     }
     
     @Override
     void doAction() {
-        //display
-        
+        displayDictTerm();
+    }
+
+    private void displayDictTerm() {
+	if (dictTerm != null)
+	    System.out.println(dictTerm);
+	else if (!downloading)
+	    System.out.println("Term not found.");
     }
 
     private void downloadDictionary() throws BibleStorageException, IOException {
 	DictionaryDownloader dictdown = new EastonsDictionaryDownloader(bibleStorage);
+	System.out.println("Downloading " + dictdown.getTitle() + "...");
 	dictdown.downloadDictionary();
-    }
-
-    public DictTerm getDictTerm() {
-	return dictTerm;
+	System.out.println("Dictionary downloaded.");
     }
 
     private DictTerm parseDictTerm(String name) throws BibleStorageException {
@@ -77,9 +84,10 @@ public class DictionaryCommandRunner extends CommandRunner {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	DictionaryCommandRunner p = new DictionaryCommandRunner(storage);
 	//storage.insertDictTerm(new DictTerm("Jehovah", "Hebrew 'name' for God, meaning 'I am'"));
-	String[] params = {"aaron"};
+	//String[] params = {"aaron"};
+	String[] params = {"-down"};
 	p.parseCommandLine(params);
-	System.out.println(p.getDictTerm());
+	p.doAction();
     }
 
 }

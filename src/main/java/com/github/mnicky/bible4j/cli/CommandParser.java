@@ -31,27 +31,29 @@ public class CommandParser {
 
     public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 
-	CommandRunner parser = getCommandParser(args);
+	CommandRunner runner = getCommandRunner(args);
 
-	if (parser != null) {
+	if (runner != null) {
 	    if (helpRequested)
 		// print specific help
-		parser.printHelp();
+		runner.printHelp();
 	    else
 		//run the application
-		runParser(parser, args);	    	
+		runCommandRunner(runner, args);	    	
 	}
-	else
+	else {
 	    // print main help
+	    printProgramInfo();
 	    printHelp();
+	}
     }
 
-    private void runParser(CommandRunner parser, String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
-	parser.parseCommandLine(Arrays.copyOfRange(args, 1, args.length));
-	parser.doAction();
+    private void runCommandRunner(CommandRunner runner, String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
+	runner.parseCommandLine(Arrays.copyOfRange(args, 1, args.length));
+	runner.doAction();
     }
 
-    private CommandRunner getCommandParser(String[] args) {
+    private CommandRunner getCommandRunner(String[] args) {
 	if (args.length < 1)
 	    return null;
 
@@ -85,13 +87,14 @@ public class CommandParser {
 	else if (args[0].equalsIgnoreCase(HELP_COMMAND) && !helpRequested) {
 	    helpRequested = true;
 	    if (args.length > 1)
-		return getCommandParser(Arrays.copyOfRange(args, 1, args.length));
+		return getCommandRunner(Arrays.copyOfRange(args, 1, args.length));
 	}
 
 	return null;
     }
 
     private void printHelp() {
+	System.out.println();
 	System.out.println("Use '" + HELP_COMMAND + " COMMAND' for help.");
 	System.out.println();
 	System.out.println("Possible commands:");
@@ -106,11 +109,20 @@ public class CommandParser {
 	System.out.println(INFO_COMMAND + "\t view informations about program and available Bible versions");
     }
 
+    static void printProgramInfo() {
+        System.out.println("bible4j - Simple Bible viewer for Java");
+        System.out.println("        - by Marek Srank (xmnicky@gmail.com, http://mnicky.github.com)");
+        System.out.println();
+        System.out.println("License - The MIT License (http://www.opensource.org/licenses/mit-license.php)");
+        System.out.println("Bugs    - Probably. Please, send bug reports to the email above.");
+        System.out.println();
+    }
+
     // for testing purposes
     public static void main(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
-	CommandParser cpl = new CommandParser(null);
-	String[] params = { "help", "info" };
-	cpl.launch(params);
+	CommandParser cp = new CommandParser(null);
+	String[] params = { "help", "fg" };
+	cp.launch(params);
     }
 
 }

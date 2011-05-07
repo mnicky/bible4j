@@ -22,7 +22,7 @@ public final class ReadCommandRunner extends CommandRunner {
     
     private List<BibleVersion> versions;
     
-    private List<Verse> verses; 
+    private List<Verse> verses = null;
     
     public ReadCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
@@ -36,7 +36,32 @@ public final class ReadCommandRunner extends CommandRunner {
     @Override
     void doAction() throws BibleStorageException {
         verses = getVerses();
-        //display
+        displayVerses();
+    }
+
+    private void displayVerses() {
+	if (verses == null)
+	    return;
+	
+	BibleVersion lastBible = null;
+	int lastChapter = 0;
+	
+	for (Verse verse : verses) {
+	    BibleVersion bible = verse.getBibleVersion();
+	    String book = verse.getPosition().getBook().name();//.replace("_", " ");
+	    int chapter = verse.getPosition().getChapterNum();
+	    
+	    if (lastBible == null || !lastBible.equals(bible)) {
+		lastBible = bible;
+		lastChapter = 0;
+	    }
+	    if (lastChapter == 0 || lastChapter != chapter) {
+		System.out.println("\n   " + book + ", chapter " + chapter + ", " + bible);
+		System.out.println("   =============================================================");
+		lastChapter = chapter;
+	    }
+	    System.out.println(verse.getPosition().getVerseNum() + "  " + verse.getText());
+	}
     }
 
     private List<Verse> getVerses() throws BibleStorageException {
@@ -146,17 +171,14 @@ public final class ReadCommandRunner extends CommandRunner {
 	CommandRunner p = new ReadCommandRunner(null);
 	String[] params = {"", " + BIBLE_VERSION_ARGUMENT + ", "kjv", "niv", "esv"};
 	
-	System.out.println(p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params));
+	//System.out.println(p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params));
 	assert p.getAllValuesOfArgument(" + BIBLE_VERSION_ARGUMENT + ", params).toString().equals("[kjv, niv, esv]");
 	
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	ReadCommandRunner p2 = new ReadCommandRunner(storage);
 	String[] params2 = {"1Jn1,6-7.9", BIBLE_VERSION_ARGUMENT, "czeb21", "kjv"};
 	p2.parseCommandLine(params2);
-	System.out.println();
-	List<Verse> verses = p2.getVerses(); 
-	for (Verse v : verses)
-	    System.out.println(v == null ? "no text found" : v.getText());
+	p2.doAction();
 	
     }
 

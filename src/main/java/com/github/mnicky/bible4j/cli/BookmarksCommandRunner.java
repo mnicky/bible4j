@@ -25,7 +25,7 @@ public class BookmarksCommandRunner extends CommandRunner {
     
     private List<BibleVersion> versions;
     
-    private List<Bookmark> bookmarks;
+    private List<Bookmark> bookmarks = null;
 
     public BookmarksCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
@@ -43,7 +43,18 @@ public class BookmarksCommandRunner extends CommandRunner {
     @Override
     void doAction() throws BibleStorageException {
         retrieveOrAddBkmarks();
-        //display
+        displayBkmarks();
+    }
+
+    private void displayBkmarks() {
+	if (bookmarks == null)
+	    return;
+	System.out.println("Saved bookmarks:");
+	System.out.println();
+	System.out.println("Bible \t Coordinate \t Name");
+	System.out.println("------------------------------------------------------------");
+	for (Bookmark bkmark : bookmarks)
+	    System.out.println(bkmark.getVerse().getBibleVersion().getAbbr() + " \t " + bkmark.getVerse().getPosition() + " \t " + bkmark.getName());
     }
 
     private void retrieveOrAddBkmarks() throws BibleStorageException {
@@ -57,6 +68,7 @@ public class BookmarksCommandRunner extends CommandRunner {
 		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
 	    
 	    bibleStorage.insertBookmark(new Bookmark(nameOfBkmark, new Verse("", positions.get(0), versions.get(0))));
+	    System.out.println("Bookmark inserted.");
 	}
 	else {
 	    bookmarks = new ArrayList<Bookmark>();
@@ -68,10 +80,6 @@ public class BookmarksCommandRunner extends CommandRunner {
 		    if (version != null)
 		    bookmarks.addAll(bibleStorage.getBookmarks(version));
 	}
-    }
-    
-    private List<Bookmark> getBookmarks() {
-	return bookmarks;
     }
 
     @Override
@@ -119,16 +127,9 @@ public class BookmarksCommandRunner extends CommandRunner {
 	BookmarksCommandRunner p = new BookmarksCommandRunner(storage);
 	
 //	String[] params = {"Jn1,1", ADD_ARGUMENT, "Jn 1,1 bookmark", BIBLE_VERSION_ARGUMENT, "kjv"};
-//	p.parse(params);
-//	p.retrieveOrAddBkmarks();
-	
 	String[] params2 = {"-v", "czecep", "kjv"};
 	p.parseCommandLine(params2);
-	p.retrieveOrAddBkmarks();
-	System.out.println();
-	List<Bookmark> bkmarks = p.getBookmarks();
-	for (Bookmark b : bkmarks)
-	    System.out.println(b);
+	p.doAction();
     }
 
 }
