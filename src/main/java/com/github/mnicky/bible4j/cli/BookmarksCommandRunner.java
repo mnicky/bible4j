@@ -49,6 +49,12 @@ public class BookmarksCommandRunner extends CommandRunner {
     private void displayBkmarks() {
 	if (bookmarks == null)
 	    return;
+	
+	if (bookmarks.size() < 1) {
+	    System.out.println("No bookmarks found.");
+	    return;
+	}
+	
 	System.out.println("Saved bookmarks:");
 	System.out.println();
 	System.out.println("Bible \t Coordinate \t Name");

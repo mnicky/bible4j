@@ -19,7 +19,7 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 public class DailyReadingsCommandRunner extends CommandRunner {
 
     private DateTime date = new DateTime("0000-00-00");
-    
+    boolean downloading = false;
     
     private List<Verse> verses = null;
     private BibleVersion version;
@@ -30,8 +30,10 @@ public class DailyReadingsCommandRunner extends CommandRunner {
 
     @Override
     void parseCommandLine(String[] args) throws IOException, BibleStorageException {
-	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT))
+	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT)) {
+	    downloading = true;
 	    downloadReadings(parseDownloadMonthCount(args));
+	}
 	else {
 	    date = parseDate(getFirstValue(args));
 	    version = parseVersionsAndReturnFirstIfEmpty(args).get(0);
@@ -40,6 +42,8 @@ public class DailyReadingsCommandRunner extends CommandRunner {
 
     @Override
     void doAction() throws BibleStorageException {
+	if (downloading)
+	    return;
 	verses = getReading();
 	printReading();
     }
@@ -55,6 +59,11 @@ public class DailyReadingsCommandRunner extends CommandRunner {
     private void printReading() {
 	if (verses == null)
 	    return;	
+	
+	if (verses.size() < 1) {
+	    System.out.println("No daily Bible reading for this date found.");
+	    return;
+	}
 
 	int lastChapter = 0;
 	    

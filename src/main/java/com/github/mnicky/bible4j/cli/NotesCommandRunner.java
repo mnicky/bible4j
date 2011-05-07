@@ -44,6 +44,12 @@ public class NotesCommandRunner extends CommandRunner {
     private void displayNotes() {
 	if (notes == null)
 	    return;
+	
+	if (notes.size() < 1) {
+	    System.out.println("No notes found for specified coordinate.");
+	    return;
+	}
+	
 	System.out.println("Notes:");
 	System.out.println();
 	System.out.println("Verse \t\t Note");

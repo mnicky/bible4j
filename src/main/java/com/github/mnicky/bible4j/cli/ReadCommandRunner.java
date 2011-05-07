@@ -43,6 +43,11 @@ public final class ReadCommandRunner extends CommandRunner {
 	if (verses == null)
 	    return;
 	
+	if (verses.size() < 1) {
+	    System.out.println("No Bible verses found for specified coordinate.");
+	    return;
+	}
+	
 	BibleVersion lastBible = null;
 	int lastChapter = 0;
 	
@@ -96,7 +101,7 @@ public final class ReadCommandRunner extends CommandRunner {
         	verseList = bibleStorage.compareVerses(positions, versions);
         }
         
-        if (verseList.get(0) == null)
+        if (verseList == null || verseList.size() < 1 || verseList.get(0) == null)
             verseList = new ArrayList<Verse>();
         
         return verseList;

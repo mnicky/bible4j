@@ -140,6 +140,10 @@ public final class Utils {
             posDef = posDef.replace(":", ",");
         }
         
+        //TODO remove this restriction by improving coordinate parsing
+        if (posDef.contains(",") && posDef.indexOf(',') != posDef.lastIndexOf(','))
+            throw new IllegalArgumentException("Bible coordinate cannot contain more chapter delimiters.");
+        
         BibleBook book = extractBibleBook(posDef);
         List<Integer> chapters = parseChapters(posDef);
         List<Integer> verses = null;
@@ -289,7 +293,7 @@ public final class Utils {
 	    if (!Character.isLetter(posDef.charAt(i)))
 		return i;
 
-	throw new IllegalArgumentException("Bible coordinate doesn't contain a book name.");
+	throw new IllegalArgumentException("Bible coordinate doesn't contain chapter number(s).");
     }
 
     private static String extractFirstWord(String posDef) {

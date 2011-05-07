@@ -547,41 +547,6 @@ public final class H2DbBibleStorage_Test {
 	Assert.assertEquals(retrieved, exp);
     }
 
-    private void insertSimulatedBibles(BibleStorage bible) throws BibleStorageException {
-
-	int BIBLE_VERSIONS = 61;
-	int CHAPTERS_IN_BOOK = 7;
-	int VERSES_IN_CHAPTER = 11;
-
-	BibleVersion[] bibles = new BibleVersion[BIBLE_VERSIONS];
-	for (int i = 0; i < BIBLE_VERSIONS; i++) {
-	    bibles[i] = new BibleVersion("Bible version " + i, "lang " + i);
-	    bible.insertBibleVersion(bibles[i]);
-	}
-
-	for (BibleBook book : BibleBook.values()) {
-	    System.out.println(book.getName());
-	    bible.insertBibleBook(book);
-
-	    for (int chpt = 0; chpt < CHAPTERS_IN_BOOK; chpt++)
-
-		for (int vrs = 0; vrs < VERSES_IN_CHAPTER; vrs++) {
-
-		    Position pos = new Position(book, chpt, vrs);
-		    bible.insertPosition(pos);
-
-		    for (BibleVersion version : bibles) {
-			bible.insertVerse(new Verse("this is the Bible verse text of position"
-				+ pos.toString()
-				+ "and version " + version.toString(), pos, version));
-		    }
-
-		}
-
-	}
-
-    }
-
     @Test
     public void insertBookmarkShouldInsertBookmark() {
 

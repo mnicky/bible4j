@@ -34,9 +34,9 @@ public final class OsisBibleExporter implements BibleExporter {
 
     @Override
     public void exportBible(BibleVersion bible, OutputStream stream) throws BibleExporterException, BibleStorageException {
-
+	XMLStreamWriter writer = null;
 	try {
-	    XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(stream);
+	    writer = XMLOutputFactory.newInstance().createXMLStreamWriter(stream);
 
 	    writer.writeStartDocument("utf-8", "1.0");
 	    writer.writeCharacters("\n");
@@ -79,11 +79,18 @@ public final class OsisBibleExporter implements BibleExporter {
 
 	    writer.writeEndDocument();
 	    writer.flush();
-	    writer.close();
 
 	} catch (XMLStreamException e) {
 	    throw new BibleExporterException("Exporting error", e);
+	} finally {
+	    if (writer != null)
+		try {
+		    writer.close();
+		} catch (XMLStreamException e) {
+		    throw new BibleExporterException("Exporting error", e);
+		}
 	}
+	
 
     }
 

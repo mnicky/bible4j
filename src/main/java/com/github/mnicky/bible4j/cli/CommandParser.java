@@ -28,24 +28,37 @@ public class CommandParser {
 
     public CommandParser(BibleStorageFactory factory) throws BibleStorageException {
 	this.storage = factory.createBibleStorage();
+	if (!storage.isStorageInitialized())
+	    storage.initializeStorage();
     }
 
     public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 
-	CommandRunner runner = getCommandRunner(args);
+	try {
+	    CommandRunner runner = getCommandRunner(args);
 
-	if (runner != null) {
-	    if (helpRequested)
-		// print specific help
-		runner.printHelp();
-	    else
-		//run the application
-		runCommandRunner(runner, args);	    	
-	}
-	else {
-	    // print main help
-	    printProgramInfo();
-	    printHelp();
+	    if (runner != null) {
+		if (helpRequested)
+		    // print specific help
+		    runner.printHelp();
+		else
+		    // run the application
+		    runCommandRunner(runner, args);
+	    }
+	    else {
+		// print main help
+		printProgramInfo();
+		printMainHelp();
+	    }
+	} catch (IllegalArgumentException argEx) {
+	    System.out.println("Error: " + argEx.getMessage());
+	    System.out.println("       Use command '" + HELP_COMMAND + "' for help");
+	    //argEx.printStackTrace();
+	}  catch (RuntimeException runEx) {
+	    System.out.println("Error: " + runEx.getMessage());
+	    //runEx.printStackTrace();
+	} finally {
+	    storage.close();
 	}
     }
 
@@ -94,36 +107,32 @@ public class CommandParser {
 	return null;
     }
 
-    private void printHelp() {
+    private void printMainHelp() {
 	System.out.println();
-	System.out.println("Use '" + HELP_COMMAND + " COMMAND' for help.");
+	System.out.println(" Possible commands:");
+	System.out.println(" =========================================");
+	System.out.println(" " + BIBLE_READ_COMMAND + "\t read the Bible");
+	System.out.println(" " + BIBLE_SEARCH_COMMAND + "\t search the Bible");
+	System.out.println(" " + NOTES_COMMAND + "\t add notes to the Bible text");
+	System.out.println(" " + BOOKMARKS_COMMAND + "\t bookmark Bible passage");
+	System.out.println(" " + DAILY_READINGS_COMMAND + "\t view daily readings");
+	System.out.println(" " + DICTIONARY_COMMAND + "\t look up a word in a Biblical dictionary");
+	System.out.println(" " + IMPORT_COMMAND + "\t import the Bible");
+	System.out.println(" " + EXPORT_COMMAND + "\t export the Bible");
+	System.out.println(" " + INFO_COMMAND + "\t view informations about program and available Bible versions");
 	System.out.println();
-	System.out.println("Possible commands:");
-	System.out.println(BIBLE_READ_COMMAND + "\t read the Bible");
-	System.out.println(BIBLE_SEARCH_COMMAND + "\t search the Bible");
-	System.out.println(NOTES_COMMAND + "\t add notes to the Bible text");
-	System.out.println(BOOKMARKS_COMMAND + "\t bookmark Bible passage");
-	System.out.println(DAILY_READINGS_COMMAND + "\t view daily readings");
-	System.out.println(DICTIONARY_COMMAND + "\t look up a word in a Biblical dictionary");
-	System.out.println(IMPORT_COMMAND + "\t import the Bible");
-	System.out.println(EXPORT_COMMAND + "\t export the Bible");
-	System.out.println(INFO_COMMAND + "\t view informations about program and available Bible versions");
+	System.out.println(" Use '" + HELP_COMMAND + " COMMAND' to see help for specific command.");
+	System.out.println();
     }
 
     static void printProgramInfo() {
-        System.out.println("bible4j - Simple Bible viewer for Java");
+	System.out.println();
+        System.out.println(" bible4j - Simple Bible viewer for Java");
         System.out.println("        - by Marek Srank (xmnicky@gmail.com, http://mnicky.github.com)");
         System.out.println();
-        System.out.println("License - The MIT License (http://www.opensource.org/licenses/mit-license.php)");
-        System.out.println("Bugs    - Probably. Please, send bug reports to the email above.");
+        System.out.println(" License - The MIT License (http://www.opensource.org/licenses/mit-license.php)");
+        System.out.println(" Bugs    - Probably. Please, send bug reports to the email above.");
         System.out.println();
-    }
-
-    // for testing purposes
-    public static void main(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
-	CommandParser cp = new CommandParser(null);
-	String[] params = { "help", "fg" };
-	cp.launch(params);
     }
 
 }

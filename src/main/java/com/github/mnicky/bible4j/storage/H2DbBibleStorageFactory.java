@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 public final class H2DbBibleStorageFactory implements BibleStorageFactory {
     
-    private String url = "jdbc:h2:tcp://localhost/test";
-    //private String url = "jdbc:h2:~/bible4j";
+    //private String url = "jdbc:h2:tcp://localhost/test";
+    private String url = "jdbc:h2:~/bible4j;MVCC=TRUE";
     
     private String user = "test";
     
@@ -33,9 +33,14 @@ public final class H2DbBibleStorageFactory implements BibleStorageFactory {
 	    if (System.getProperty("h2.pwd") != null)
 		password = System.getProperty("h2.pwd");
 	    
+	    //workaround for some buggy JVMs, that don't load the driver automatically
+	    Class.forName("org.h2.Driver");
+	    
 	    return new H2DbBibleStorage(DriverManager.getConnection(url, user, password));
 	
 	} catch (SQLException e) {
+	    throw new BibleStorageException("BibleStorage could not be created", e);
+	} catch (ClassNotFoundException e) {
 	    throw new BibleStorageException("BibleStorage could not be created", e);
 	}
     }

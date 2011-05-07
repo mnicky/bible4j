@@ -44,9 +44,9 @@ public final class OsisBibleImporter implements BibleImporter {
 
     @Override
     public void importBible(InputStream input) throws BibleImporterException, BibleStorageException {
-	
+	XMLStreamReader reader = null;
 	try {
-	    XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
+	    reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
 
 	    while (reader.hasNext()) {
 
@@ -75,12 +75,18 @@ public final class OsisBibleImporter implements BibleImporter {
 
 		reader.next();
 	    }
-	    reader.close();
 	    
 	    resetValues();
 	    
 	} catch (XMLStreamException e) {
-	    throw new BibleImporterException("Parsing error", e);
+	    throw new BibleImporterException("Importing error", e);
+	} finally {
+	    if (reader != null)
+		try {
+		    reader.close();
+		} catch (XMLStreamException e) {
+		    throw new BibleImporterException("Importing error", e);
+		}
 	}
 
     }

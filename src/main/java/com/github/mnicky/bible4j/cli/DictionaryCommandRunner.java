@@ -23,14 +23,17 @@ public class DictionaryCommandRunner extends CommandRunner {
     @Override
     void parseCommandLine(String[] args) throws BibleStorageException, IOException {
 	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT)) {
-	    downloadDictionary();
 	    downloading = true;
+	    downloadDictionary();
 	}
-	dictTerm = parseDictTerm(getFirstValue(args));
+	else
+	    dictTerm = parseDictTerm(getFirstValue(args));
     }
     
     @Override
     void doAction() {
+	if (downloading)
+	    return;
         displayDictTerm();
     }
 

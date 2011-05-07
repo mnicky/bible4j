@@ -95,38 +95,49 @@ public abstract class CommandRunner {
     protected List<BibleVersion> parseVersionsAndReturnFirstIfEmpty(String[] args) throws BibleStorageException {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
-            retrieveVersions(args, versionList);
+            retrieveSpecificVersions(args, versionList);
         }
-        else 
-            versionList.add(bibleStorage.getAllBibleVersions().get(0));
+        else {
+	    List<BibleVersion> versionsRetrieved = retrieveAllVersions();
+            versionList.add(versionsRetrieved.get(0));
+        }
         return versionList;
     }
     
     protected List<BibleVersion> parseVersionsAndReturnAllIfEmpty(String[] args) throws BibleStorageException {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
-            retrieveVersions(args, versionList);
+            retrieveSpecificVersions(args, versionList);
         }
-        else 
-            versionList = (bibleStorage.getAllBibleVersions());
+        else
+            versionList = retrieveAllVersions();
         return versionList;
     }
     
     protected List<BibleVersion> parseVersionsAndReturnNoneIfEmpty(String[] args) throws BibleStorageException {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
-            retrieveVersions(args, versionList);
+            retrieveSpecificVersions(args, versionList);
         }
         return versionList;
     }
 
-    private void retrieveVersions(String[] args, List<BibleVersion> versionList) throws BibleStorageException {
+    private List<BibleVersion> retrieveAllVersions() throws BibleStorageException {
+	List<BibleVersion> versionsRetrieved = bibleStorage.getAllBibleVersions();
+	if (versionsRetrieved.size() < 1)
+	    throw new RuntimeException("No Bible version found.");
+	return versionsRetrieved;
+    }
+
+    private void retrieveSpecificVersions(String[] args, List<BibleVersion> versionList) throws BibleStorageException {
 	for (String versionAbbr : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args)) {
 	    BibleVersion v = bibleStorage.getBibleVersion(versionAbbr);
 	    if (v == null)
-		throw new IllegalArgumentException("Bible book abbreviation '" + versionAbbr + "' is unknown.");
+		throw new IllegalArgumentException("No Bible version for abbreviation '" + versionAbbr + "' found.");
 	    versionList.add(v);
 	}
+	if (versionList.size() < 1)
+	    throw new RuntimeException("No Bible version found.");
     }
 
     //TODO merge with method getFirsValueOfArgument() and remove side effects

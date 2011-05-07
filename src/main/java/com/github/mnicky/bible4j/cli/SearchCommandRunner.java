@@ -42,6 +42,11 @@ public class SearchCommandRunner extends CommandRunner {
 	if (verses == null)
 	    return;
 	
+	if (verses.size() < 1) {
+	    System.out.println("Specified phrase not found.");
+	    return;
+	}
+	
 	for (Verse verse : verses) {
 	    System.out.println(verse.getBibleVersion().getAbbr() + "  " + formatPosition(verse) + "\t" + verse.getText());
 	}

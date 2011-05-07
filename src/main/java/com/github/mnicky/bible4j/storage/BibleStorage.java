@@ -26,6 +26,8 @@ public interface BibleStorage {
      */
     void close() throws BibleStorageException;
 
+    public boolean isStorageInitialized() throws BibleStorageException;
+    
     //TODO: change createStorage() to return void
     int[] initializeStorage() throws BibleStorageException;
 

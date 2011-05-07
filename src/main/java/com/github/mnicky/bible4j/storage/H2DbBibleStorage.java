@@ -148,6 +148,18 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
 	return (count > 0);
     }
+    
+    public boolean isStorageInitialized() throws BibleStorageException {
+	try {	    
+	    if (tableExists(VERSIONS_BARE) && tableExists(BOOKS_BARE) && tableExists(COORDS_BARE) && tableExists(VERSES_BARE)
+	    	&& tableExists(NOTES_BARE) && tableExists(BKMARKS_BARE) && tableExists(RLISTS_BARE) && tableExists(READxCOORDS_BARE))
+	        return true;
+	    else
+	        return false;
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Could not be checked whether the Bible storage is initialized.", e);
+	}
+    }
 
     @Override
     public int[] initializeStorage() throws BibleStorageException {
@@ -155,7 +167,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	int[] columns;
 
 	try {
-	    if (tableExists("BIBLE_VERSIONS"))
+	    if (isStorageInitialized())
 		return null;
 	    
 	    Statement st = dbConnection.createStatement();
@@ -685,16 +697,14 @@ public final class H2DbBibleStorage implements BibleStorage {
 											+ BOOK_ID_F + " FROM " + BOOKS + " WHERE "
 											+ BOOK_NAME_F + " = ?) AND "
 									+ COORD_CHAPT_F + " = ? AND "
-									+ COORD_VERSE_F + " = ?) AND "
-					+ VERSE_TEXT_F + " = ?)" + ", ?)");
+									+ COORD_VERSE_F + " = ?))" + ", ?)");
 
 	    st.setString(1, bookmark.getVerse().getBibleVersion().getAbbr());
 	    st.setString(2, bookmark.getVerse().getBibleVersion().getLanguage());
 	    st.setString(3, bookmark.getVerse().getPosition().getBook().getName());
 	    st.setInt(4, bookmark.getVerse().getPosition().getChapterNum());
 	    st.setInt(5, bookmark.getVerse().getPosition().getVerseNum());
-	    st.setString(6, bookmark.getVerse().getText());
-	    st.setString(7, bookmark.getName());
+	    st.setString(6, bookmark.getName());
 	    commitUpdate(st);
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Bookmark could not be inserted", e);
