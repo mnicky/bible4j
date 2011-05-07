@@ -43,15 +43,26 @@ public class DictionaryCommandParser extends CommandParser {
     public void printHelp() {
 	System.out.println("Usage:");
         System.out.println("\t" + CommandParserLauncher.DICTIONARY_COMMAND + " TERM_NAME");
+        System.out.println("\t" + CommandParserLauncher.DICTIONARY_COMMAND + " " + DOWNLOAD_ARGUMENT);
         
         System.out.println();
         System.out.println("\tTERM_NAME \t Name of the term to look up in the dictionary (case insensitive)");
         
         System.out.println();
+        System.out.println("\tTo download the dictionary, use argument '" + DOWNLOAD_ARGUMENT +"'");
+        
+        System.out.println();
         System.out.println("Examples:");
         
         System.out.println();
-        System.out.println("\t" + CommandParserLauncher.DICTIONARY_COMMAND + " israel");
+        System.out.println("  Lookup a word in the Bible dictionary:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.DICTIONARY_COMMAND + " Israel");
+        
+        System.out.println();
+        System.out.println("  Download the Bible dictionary:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.DICTIONARY_COMMAND + " " + DOWNLOAD_ARGUMENT);
 	
     }
     
