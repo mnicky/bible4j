@@ -22,6 +22,7 @@ public class CommandParserLauncher {
     static final String DICTIONARY_COMMAND = "dict";
     static final String DAILY_READINGS_COMMAND = "daily";
     static final String BOOKMARKS_COMMAND = "bkmark";
+    static final String INFO_COMMAND = "info";
     static final String HELP_COMMAND = "help";
     
     public CommandParserLauncher(BibleStorage bibleStorage) {
@@ -72,6 +73,9 @@ public class CommandParserLauncher {
 	else if (args[0].equalsIgnoreCase(BOOKMARKS_COMMAND))
 	    return new BookmarksCommandParser(storage);
 	
+	else if (args[0].equalsIgnoreCase(INFO_COMMAND))
+	    return new InfoCommandParser(storage);
+	
 	else if (args[0].equalsIgnoreCase(HELP_COMMAND) && !helpRequested) {
 	    helpRequested  = true;
 	    if (args.length > 1)
@@ -95,13 +99,14 @@ public class CommandParserLauncher {
 	System.out.println(DICTIONARY_COMMAND + "\t look up a word in a Biblical dictionary");
 	System.out.println(IMPORT_COMMAND + "\t import the Bible");
 	System.out.println(EXPORT_COMMAND + "\t export the Bible");
+	System.out.println(INFO_COMMAND + "\t view informations about program and available Bible versions");
     }
     
     
     //for testing purposes
     public static void main(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 	CommandParserLauncher cpl = new CommandParserLauncher(null);
-	String[] params = {"help", "daily"};
+	String[] params = {"help", "info"};
 	cpl.launch(params);
     }
     
