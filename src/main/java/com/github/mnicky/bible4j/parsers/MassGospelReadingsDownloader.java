@@ -22,8 +22,7 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     
     private static final String TITLE = "Catholic Mass Gospel Readings";
     
-    //private static final String START_URL = "http://cathcal.org/index.php";
-    private static final String START_URL = "http://www.easterbrooks.com/cgi-bin/Cathcal.cgi?20121101";
+    private static final String START_URL = "http://cathcal.org/index.php";
 
     BibleStorage storage;
     
@@ -126,11 +125,11 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
 
     }
 
-    private String computeNextUrl(String nextReadingUrl) {
-	DateTime date = new DateTime(parseReadingDateFromUrl(nextReadingUrl));
-	date.plus(0, 0, 2, 0, 0, 0, DayOverflow.FirstDay);
-	return date.toString();
-    }
+//    private String computeNextUrl(String nextReadingUrl) {
+//	DateTime date = new DateTime(parseReadingDateFromUrl(nextReadingUrl));
+//	date.plus(0, 0, 2, 0, 0, 0, DayOverflow.FirstDay);
+//	return date.toString();
+//    }
 
     private boolean segmentEquals(Segment segment, String string) {
 	return segment.toString().trim().equalsIgnoreCase(string);
