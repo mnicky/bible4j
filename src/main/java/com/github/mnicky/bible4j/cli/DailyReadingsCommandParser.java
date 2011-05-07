@@ -26,8 +26,8 @@ public class DailyReadingsCommandParser extends CommandParser {
     public void parse(String[] args) throws IOException, BibleStorageException {
 	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT))
 	    downloadReadings(parseDownloadMonthCount(args));
-	date = parseDate(getFirstValue(args));
-	System.out.println(date);
+	else
+	    date = parseDate(getFirstValue(args));
     }
     
     public List<DailyReading> getDailyReadings() throws BibleStorageException {
@@ -52,13 +52,38 @@ public class DailyReadingsCommandParser extends CommandParser {
 
     private void downloadReadings(int nextMonths) throws IOException, BibleStorageException {
 	ReadingsDownloader readDown = new MassGospelReadingsDownloader(bibleStorage);
-	readDown.downloadDictionary(nextMonths);
+	readDown.downloadReadings(nextMonths);
 
     }
 
     @Override
     public void printHelp() {
-	// TODO Auto-generated method stub
+	
+	System.out.println("Usage:");
+        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " DD-MM-YYYY");
+        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " NUMBER_OF_MONTHS");
+        
+        System.out.println();
+        System.out.println("\tDD-MM-YYYY \t\t Date of daily bible reading to show (must be in specified format)");
+        System.out.println("\tNUMBER_OF_MONTHS \t Number of next months to download readings for (including this month)");
+        
+        System.out.println();
+	System.out.println("\tDate must be in format DD-MM-YYYY, but you can also use '.' or '/' as delimiters");
+	System.out.println("\tTo download daily readings, use argument '" + DOWNLOAD_ARGUMENT
+		+ "' and provide the number of months (including this) to download the readings for.");
+
+        System.out.println();
+        System.out.println("Examples:");
+        
+        System.out.println();
+        System.out.println("  View daily Bible readings for specific day:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " 12-03-2010");
+        
+        System.out.println();
+        System.out.println("  Download daily Bible readings for two months ahead:");
+        System.out.println();
+        System.out.println("\t" + CommandParserLauncher.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " 2");
 
     }
 
@@ -66,9 +91,9 @@ public class DailyReadingsCommandParser extends CommandParser {
     public static void main(String[] args) throws SQLException, IOException, BibleStorageException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	DailyReadingsCommandParser p = new DailyReadingsCommandParser(storage);
-	String[] params = { "29.2.2000" };
+	String[] params = { "-down", "2" };
 	p.parse(params);
-	p.getDailyReadings();
+	//System.out.println(p.getDailyReadings());
     }
 
 }
