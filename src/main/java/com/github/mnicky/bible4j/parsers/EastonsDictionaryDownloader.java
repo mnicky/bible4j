@@ -15,6 +15,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+//TODO add more similar dictionary downloaders and ability to choose between them
 public class EastonsDictionaryDownloader implements DictionaryDownloader {
     
     private static final String TITLE = "Easton's Bible Dictionary";

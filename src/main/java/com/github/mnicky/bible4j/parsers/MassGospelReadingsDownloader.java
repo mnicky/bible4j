@@ -1,7 +1,6 @@
 package com.github.mnicky.bible4j.parsers;
 
 import hirondelle.date4j.DateTime;
-import hirondelle.date4j.DateTime.DayOverflow;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,7 +16,7 @@ import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
-
+//TODO add more similar readings downloaders and ability to choose between them
 public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     
     private static final String TITLE = "Catholic Mass Gospel Readings";
