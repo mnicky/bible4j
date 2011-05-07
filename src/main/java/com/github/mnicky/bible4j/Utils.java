@@ -4,17 +4,20 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import net.htmlparser.jericho.Source;
 
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.Position;
 
 public final class Utils {
     
-    //FIXME: repair filepath
     private static final String BIBLE_BOOK_ABBRS_FILE = "/bibleBookAbbrs.conf";
     private static final String COMMENT_CHAR = "#";
     private static final String SPLIT_CHAR = ":";
@@ -23,6 +26,40 @@ public final class Utils {
      * This is static library class, therefore it is not possible to instantiate it.
      */
     private Utils() {}
+    
+    /**
+     * Tries to get Source from URL for 'tryTimes' times, sleeping for 'sleepMilis' and then throws an exception.
+     */
+    //Ugly but useful :-)
+    public static Source getSource(URL url, int tryTimes, int sleepMilis) {
+	Source source = null;
+	int tryCountDown = tryTimes;
+	boolean success = false;
+
+	while (!success && tryCountDown > 0) {
+	    try {
+		source = new Source(url);
+		success = true;
+	    } catch (IOException e) {
+		
+		tryCountDown--;
+		if (tryCountDown <= 0)
+		    throw new RuntimeException(e);
+		
+		else {
+		    e.printStackTrace();
+		    
+		    try {
+			Thread.sleep(sleepMilis);
+		    } catch (InterruptedException e1) {
+			e1.printStackTrace();
+		    }
+		}
+		
+	    }
+	}
+	return source;
+    }
     
     public static BibleBook getBibleBookNameByAbbr(String abbr) {
 	
@@ -33,7 +70,7 @@ public final class Utils {
 	    throw new RuntimeException("BibleBook name could not be retrieved.", e);
 	}
 	
-	BibleBook book = bookNames.get(abbr);
+	BibleBook book = bookNames.get(abbr.toLowerCase(new Locale("en")));
 	
 	if (book == null)
 	    throw new IllegalArgumentException("Bible book abbreviation '" + abbr + "' is unknown.");
@@ -185,7 +222,7 @@ public final class Utils {
         	String[] numberRangeEnds = numberRange.split("-");
         	
         	if (numberRangeEnds.length > 2)
-        	    throw new IllegalArgumentException("Bad format of number range.");
+        	    throw new IllegalArgumentException("Bad format of number range: '" + numberRange + "'.");
         	
         	int beginning = Integer.valueOf(numberRangeEnds[0]);
         	int end = Integer.valueOf(numberRangeEnds[1]);

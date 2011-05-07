@@ -11,6 +11,6 @@ public interface ReadingsDownloader {
     
     void setStorage(BibleStorage storage);
     
-    void downloadDictionary(int nextMonths) throws IOException, BibleStorageException;
+    void downloadReadings(int nextMonths) throws IOException, BibleStorageException;
 
 }

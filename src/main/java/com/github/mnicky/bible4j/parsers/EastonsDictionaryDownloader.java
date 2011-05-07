@@ -9,6 +9,7 @@ import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 
+import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
@@ -36,7 +37,7 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
 
     @Override
     public void downloadDictionary() throws BibleStorageException, IOException {
-	Source source = new Source(new URL(START_URL));
+	Source source = Utils.getSource(new URL(START_URL), 3, 1000);
 
 	String nextTerm = null;
 	
@@ -75,7 +76,7 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
 	    System.out.println("downloading '" + name +"'");
 	    storage.insertDictTerm(new DictTerm(name, definition));
 
-	    source = new Source(new URL("http://www2.mf.no/bibelprog/easton?word=" + nextTerm + "&nomo&nomd").openStream());
+	    source = Utils.getSource(new URL("http://www2.mf.no/bibelprog/easton?word=" + nextTerm + "&nomo&nomd"), 3, 1000);
 	    
 	    
 	} while (nextTerm != null);
