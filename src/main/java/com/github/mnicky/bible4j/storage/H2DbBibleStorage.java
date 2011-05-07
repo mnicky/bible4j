@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
@@ -29,7 +33,9 @@ import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
  */
 public final class H2DbBibleStorage implements BibleStorage {
     
-    //FIXME update SQL queries with BIBLE_NAME
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    
+    //TODO update SQL queries with BIBLE_NAME
 
     /**
      * Connection to H2 database.
@@ -55,6 +61,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	try {
 	    this.dbConnection.close();
 	} catch (SQLException e) {
+	    logger.error("Exception caught when closing BibleStorage", e);
 	    throw new BibleStorageException("BibleStorage could not be closed", e);
 	}
     }
@@ -67,9 +74,11 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    con.setAutoCommit(false);
+	    logger.debug("Executing SQL update: {}", st);
 	    rows = st.executeUpdate();
 	    con.commit();
 	} catch (SQLException e) {
+	    logger.error("Exception caught when committing SQL update", e);
 	    if (con != null)
 		con.rollback();
 	    throw e;
@@ -91,9 +100,11 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    con.setAutoCommit(false);
+	    logger.debug("Executing SQL query: {}", st);
 	    result = st.executeQuery();
 	    con.commit();
 	} catch (SQLException e) {
+	    logger.error("Exception caught when committing SQL query", e);
 	    if (con != null)
 		con.rollback();
 	    result = null;
@@ -113,9 +124,11 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    con.setAutoCommit(false);
+	    logger.debug("Executing SQL batch update: {}", st);
 	    rows = st.executeBatch();
 	    con.commit();
 	} catch (SQLException e) {
+	    logger.error("Exception caught when committing SQL batch statement", e);
 	    if (con != null)
 		con.rollback();
 	    throw e;
@@ -157,6 +170,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    else
 	        return false;
 	} catch (SQLException e) {
+	    logger.error("Exception caught when checking is the storage is initialized", e);
 	    throw new BibleStorageException("Could not be checked whether the Bible storage is initialized.", e);
 	}
     }
@@ -245,6 +259,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    columns = commitBatch(st);
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when initializing the BibleStorage", e);
 	    throw new BibleStorageException("BibleStorage could not be initialized", e);
 	}
 
@@ -272,6 +287,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setInt(5, verse.getPosition().getVerseNum());
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the verse", e);
 	    throw new BibleStorageException("Verse could not be inserted", e);
 	}
 
@@ -286,6 +302,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setBoolean(2, book.isDeutero());
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the Bible book", e);
 	    throw new BibleStorageException("Bible book could not be inserted", e);
 	}
     }
@@ -303,6 +320,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setInt(3, position.getVerseNum());
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the Bible position", e);
 	    throw new BibleStorageException("Position could not be inserted", e);
 	}
     }
@@ -317,6 +335,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(3, version.getName());
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the Bible version", e);
 	    throw new BibleStorageException("Bible version could not be inserted", e);
 	}
     }
@@ -338,6 +357,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		version = new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the Bible version", e);
 	    throw new BibleStorageException("Version could not be retrieved", e);
 	} finally {
 	    try {
@@ -346,7 +366,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 	return version;
@@ -354,6 +374,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     
     @Override
     public List<BibleVersion> getAllBibleVersions() throws BibleStorageException {
+	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<BibleVersion> versionList = new ArrayList<BibleVersion>();
 
@@ -363,21 +384,22 @@ public final class H2DbBibleStorage implements BibleStorage {
 			      + "FROM " + VERSIONS
 			      + "ORDER BY " + VERSION_ID_F);
 		
-		ResultSet rs = commitQuery(st);
+		rs = commitQuery(st);
 
 		while (rs.next())
 		    versionList.add(new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3)));
 
-		rs.close();
-
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving all the Bible versions", e);
 	    throw new BibleStorageException("Bible versions could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -412,6 +434,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 			.getString(6)), rs.getInt(5), rs.getInt(4)), new BibleVersion(rs.getString(2), rs.getString(3)));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the verse", e);
 	    throw new BibleStorageException("Verse could not be retrieved", e);
 	} finally {
 	    try {
@@ -420,7 +443,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 	return verse;
@@ -457,13 +480,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    .getString(3))));
 
 	    } catch (SQLException e) {
+		    logger.error("Exception caught when retrieving the verses", e);
 		throw new BibleStorageException("Verses could not be retrieved", e);
 	    } finally {
 		try {
+		    if (rs != null)
+			rs.close();
 		    if (st != null)
 			st.close();
 		} catch (SQLException e) {
-		    e.printStackTrace();
+		    logger.debug("Exception caught when closing", e);
 		}
 	    }
 	}
@@ -500,6 +526,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    .getString(3))));
 
 	    } catch (SQLException e) {
+		    logger.error("Exception caught when retrieving the verses", e);
 		throw new BibleStorageException("Verses could not be retrieved", e);
 	    } finally {
 		try {
@@ -508,7 +535,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    if (st != null)
 			st.close();
 		} catch (SQLException e) {
-		    e.printStackTrace();
+		    logger.debug("Exception caught when closing", e);
 		}
 	    }
 
@@ -518,6 +545,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     @Override
     public List<Position> getChapterList(BibleVersion version) throws BibleStorageException {
 	PreparedStatement st = null;
+	ResultSet rs = null;
 	List<Position> chapterList = new ArrayList<Position>();
 
 	try {
@@ -530,20 +558,23 @@ public final class H2DbBibleStorage implements BibleStorage {
 				    + "WHERE " + VERSION_ABBR_F + " = ?");
 	    	st.setString(1, version.getAbbr());
 		
-		ResultSet rs = commitQuery(st);
+		rs = commitQuery(st);
 
 		while (rs.next())
 		    chapterList.add(new Position(BibleBook.getBibleBookByName(rs.getString(1)),
 		                                 rs.getInt(2), 0));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the chapters", e);
 	    throw new BibleStorageException("Chapters could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 	
@@ -556,6 +587,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     @Override
     public List<BibleVersion> getVersionList() throws BibleStorageException {
 	PreparedStatement st = null;
+	ResultSet rs = null;
 	List<BibleVersion> versionList = new ArrayList<BibleVersion>();
 
 	try {
@@ -563,22 +595,22 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    .prepareStatement("SELECT DISTINCT " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
 				    + " FROM " + VERSIONS + " ORDER BY " + VERSION_ABBR_F);
 		
-		ResultSet rs = commitQuery(st);
+		rs = commitQuery(st);
 
 		while (rs.next())
 		    versionList.add(new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3)));
 
-		if (rs != null)
-		    rs.close();
-
 	} catch (SQLException e) {
-	    throw new BibleStorageException("Chapters could not be retrieved", e);
+	    logger.error("Exception caught when retrieving the list of Bible versions", e);
+	    throw new BibleStorageException("List of Bible versions could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -588,6 +620,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     @Override
     public List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException {
 	PreparedStatement st = null;
+	ResultSet rs = null;
 	List<Verse> verseList = new ArrayList<Verse>();
 
 	try {
@@ -607,7 +640,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		st.setString(3, version.getAbbr());
 		st.setInt(4, position.getVerseNum());
 
-		ResultSet rs = commitQuery(st);
+		rs = commitQuery(st);
 
 		while (rs.next())
 		    verseList.add(new Verse(rs.getString(1), new Position(BibleBook
@@ -616,18 +649,19 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    .getInt(4)), new BibleVersion(rs.getString(2), rs
 			    .getString(3))));
 
-		rs.close();
-
 	    }
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the verses", e);
 	    throw new BibleStorageException("Verses could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -667,13 +701,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 				.getString(3))));
 
 		} catch (SQLException e) {
+		    logger.error("Exception caught when retrieving the verses", e);
 		    throw new BibleStorageException("Verses could not be retrieved", e);
 		} finally {
 		    try {
+			if (rs != null)
+			    rs.close();
 			if (st != null)
 			    st.close();
 		    } catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug("Exception caught when closing", e);
 		    }
 		}
 	    }
@@ -707,6 +744,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(6, bookmark.getName());
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the bookmark", e);
 	    throw new BibleStorageException("Bookmark could not be inserted", e);
 	}
 
@@ -738,13 +776,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 										 .getString(4)))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the bookmarks", e);
 	    throw new BibleStorageException("Bookmarks could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -779,13 +820,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 										 .getString(4)))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the bookmarks", e);
 	    throw new BibleStorageException("Bookmarks could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -812,6 +856,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setInt(5, note.getPosition().getVerseNum());
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the note", e);
 	    throw new BibleStorageException("Note could not be inserted", e);
 	}
 
@@ -841,13 +886,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 						  .getString(5).charAt(0))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the notes", e);
 	    throw new BibleStorageException("Notes could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -878,13 +926,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 						  .getString(5).charAt(0))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the notes", e);
 	    throw new BibleStorageException("Notes could not be retrieved", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -901,6 +952,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(2, term.getDefinition());
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the dictionary term", e);
 	    throw new BibleStorageException("DictTerm could not be inserted", e);
 	}
     }
@@ -920,6 +972,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		term = new DictTerm(rs.getString(1), rs.getString(2));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the dictionary term", e);
 	    throw new BibleStorageException("DictTerm could not be retrieved", e);
 	} finally {
 	    try {
@@ -928,7 +981,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 	return term;
@@ -942,6 +995,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(1, name);
 	    commitUpdate(st);
 	} catch (SQLException e) {
+	    logger.error("Exception caught when inserting the reading list", e);
 	    throw new BibleStorageException("Reading list could not be inserted", e);
 	}
     }
@@ -993,8 +1047,9 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    try {
 		dbConnection.rollback();
 	    } catch (SQLException e1) {
-		e1.printStackTrace();
+		    logger.error("Exception caught when trying to rollback after inserting daily readings", e1);
 	    }
+	    logger.error("Exception caught when inserting the daily readings", e);
 	    throw new BibleStorageException("DailyReading could not be inserted", e);
 	} finally {
 	    try {
@@ -1032,7 +1087,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 	return readingId;
@@ -1090,6 +1145,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    }
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when retrieving the daily readings", e);
 	    throw new BibleStorageException("DailyReadings could not be retrieved", e);
 	} finally {
 	    try {
@@ -1098,7 +1154,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 	return readings;
@@ -1130,13 +1186,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    .getString(3))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when searching the verses", e);
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -1171,13 +1230,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    .getString(3))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when searching the verses", e);
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 	
@@ -1212,13 +1274,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    .getString(3))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when searching the verses", e);
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 
@@ -1254,13 +1319,16 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    .getString(3))));
 
 	} catch (SQLException e) {
+	    logger.error("Exception caught when searching the verses", e);
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
+		if (rs != null)
+		    rs.close();
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		e.printStackTrace();
+		logger.debug("Exception caught when closing", e);
 	    }
 	}
 

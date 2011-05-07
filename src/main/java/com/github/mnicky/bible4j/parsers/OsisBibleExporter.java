@@ -12,6 +12,10 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
@@ -21,6 +25,8 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 public final class OsisBibleExporter implements BibleExporter {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
     
     private BibleStorage storage;
     
@@ -81,13 +87,15 @@ public final class OsisBibleExporter implements BibleExporter {
 	    writer.flush();
 
 	} catch (XMLStreamException e) {
+	    logger.error("Exception caught when exporting Bible.", e);
 	    throw new BibleExporterException("Exporting error", e);
 	} finally {
 	    if (writer != null)
 		try {
 		    writer.close();
 		} catch (XMLStreamException e) {
-		    throw new BibleExporterException("Exporting error", e);
+		    logger.error("Cannot close resources after exporting Bible.", e);
+		    throw new BibleExporterException("Cannot close file.", e);
 		}
 	}
 	
@@ -305,8 +313,10 @@ public final class OsisBibleExporter implements BibleExporter {
 	    return "Jude";
 	if (book == BibleBook.REVELATION)
 	    return "Rev";
-	else
-	    throw new IllegalArgumentException();
+	else {
+	    logger.warn("Unknown BibleBook type when exporting: {}", book);
+	    throw new RuntimeException("Unknown BibleBook type");
+	}
 
     }
 

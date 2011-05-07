@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Note.NoteType;
@@ -16,6 +20,8 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 public class NotesCommandRunner extends CommandRunner {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
     
     private List<Position> positions;
     
@@ -60,12 +66,16 @@ public class NotesCommandRunner extends CommandRunner {
 
     private void retrieveOrAddNote() throws BibleStorageException {
 	
-	if (positions.isEmpty())
+	if (positions.isEmpty()) {
+	    logger.error("List of positions for notes is empty");
 	    throw new IllegalArgumentException("Coordinate of note not specified");
+	}
 	
 	if (textOfNote != null) {
-	    if (Utils.isWholeChapter(positions.get(0)))
+	    if (Utils.isWholeChapter(positions.get(0))) {
+		logger.error("Whole chapters provided in Bible coordinates for notes.");
 		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
+	    }
 	    bibleStorage.insertNote(new Note(textOfNote, positions.get(0), NoteType.USER_NOTE));
 	    System.out.println("Note inserted.");
 	}

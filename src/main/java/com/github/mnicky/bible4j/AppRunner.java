@@ -14,5 +14,8 @@ public final class AppRunner {
 	CommandParser cp = new CommandParser(new H2DbBibleStorageFactory());
 	cp.launch(args);
     }
+    
+    //used as Logger for SLF4J
+    public static class Logger {}
 
 }

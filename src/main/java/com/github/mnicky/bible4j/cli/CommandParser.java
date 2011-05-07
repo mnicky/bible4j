@@ -3,6 +3,10 @@ package com.github.mnicky.bible4j.cli;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.parsers.BibleExporterException;
 import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
@@ -10,6 +14,8 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.BibleStorageFactory;
 
 public class CommandParser {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
 
     private final BibleStorage storage;
 
@@ -32,7 +38,7 @@ public class CommandParser {
 	    storage.initializeStorage();
     }
 
-    public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
+    public void launch(String[] args) {
 
 	try {
 	    CommandRunner runner = getCommandRunner(args);
@@ -50,15 +56,24 @@ public class CommandParser {
 		printProgramInfo();
 		printMainHelp();
 	    }
+	    
 	} catch (IllegalArgumentException argEx) {
+	    //for user
 	    System.out.println("Error: " + argEx.getMessage());
 	    System.out.println("       Use command '" + HELP_COMMAND + "' for help");
-	    //argEx.printStackTrace();
-	}  catch (RuntimeException runEx) {
+	    //for log
+	    logger.warn("Probably bad format of input", argEx);
+	}  catch (Exception runEx) {
+	    //for user
 	    System.out.println("Error: " + runEx.getMessage());
-	    //runEx.printStackTrace();
+	    //for log
+	    logger.error("Exception caught", runEx);
 	} finally {
-	    storage.close();
+	    try {
+		storage.close();
+	    } catch (BibleStorageException e) {
+		logger.error("Bible storage could not be closed", e);
+	    }
 	}
     }
 
@@ -128,7 +143,7 @@ public class CommandParser {
     static void printProgramInfo() {
 	System.out.println();
         System.out.println(" bible4j - Simple Bible viewer for Java");
-        System.out.println("        - by Marek Srank (xmnicky@gmail.com, http://mnicky.github.com)");
+        System.out.println("         - by Marek Srank (xmnicky@gmail.com, http://mnicky.github.com)");
         System.out.println();
         System.out.println(" License - The MIT License (http://www.opensource.org/licenses/mit-license.php)");
         System.out.println(" Bugs    - Probably. Please, send bug reports to the email above.");

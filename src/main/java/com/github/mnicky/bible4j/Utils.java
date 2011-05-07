@@ -13,10 +13,15 @@ import java.util.Map;
 
 import net.htmlparser.jericho.Source;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.Position;
 
 public final class Utils {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
     
     private static final String BIBLE_BOOK_ABBRS_FILE = "/bibleBookAbbrs.conf";
     private static final String COMMENT_CHAR = "#";
@@ -41,10 +46,12 @@ public final class Utils {
 		source = new Source(url);
 		success = true;
 	    } catch (IOException e) {
-		
+		logger.warn("Exception caught whet getting the source from URl", e);
 		tryCountDown--;
-		if (tryCountDown <= 0)
+		if (tryCountDown <= 0) {
+		    logger.warn("Number of retries to get source has run out.");
 		    throw new RuntimeException(e);
+		}
 		
 		else {
 		    e.printStackTrace();
@@ -52,7 +59,7 @@ public final class Utils {
 		    try {
 			Thread.sleep(sleepMilis);
 		    } catch (InterruptedException e1) {
-			e1.printStackTrace();
+			logger.error("Exception caught when trying to sleep", e1);
 		    }
 		}
 		
@@ -67,13 +74,16 @@ public final class Utils {
 	try {
 	    bookNames = getAbbrBookMap();
 	} catch (IOException e) {
+	    logger.error("Exception caught when trying to get book abbreviation Map", e);
 	    throw new RuntimeException("BibleBook name could not be retrieved.", e);
 	}
 	
 	BibleBook book = bookNames.get(abbr.toLowerCase(new Locale("en")));
 	
-	if (book == null)
+	if (book == null) {
+	    logger.error("Book abbreviation '{}' not found in the Map of book abbreviations", abbr);
 	    throw new IllegalArgumentException("Bible book abbreviation '" + abbr + "' is unknown.");
+	}
 	
 	return book;
 	
@@ -90,8 +100,11 @@ public final class Utils {
 	    while ((line = r.readLine()) != null) {
 		if (line.length() > 0 && !line.startsWith(COMMENT_CHAR)) {
 		    String[] abbrAndName = line.split(SPLIT_CHAR);
-		    if (abbrAndName.length > 2)
+		    if (abbrAndName.length != 2) {
+			logger.error("Not one '{}' for line in conf. file {} for books abbr mapping", SPLIT_CHAR, BIBLE_BOOK_ABBRS_FILE);
 			throw new RuntimeException("Bad format in configuration file " + BIBLE_BOOK_ABBRS_FILE);
+		    }
+
 		    //System.out.println(abbrAndName[0] + " " + abbrAndName[1]);
 		    bookNames.put(abbrAndName[0], BibleBook.getBibleBookByName(abbrAndName[1]));
 		}
@@ -114,8 +127,10 @@ public final class Utils {
 	    while ((line = r.readLine()) != null) {
 		if (line.length() > 0 && !line.startsWith(COMMENT_CHAR)) {
 		    String[] abbrAndName = line.split(SPLIT_CHAR);
-		    if (abbrAndName.length > 2)
+		    if (abbrAndName.length != 2) {
+			logger.error("Not one '{}' for line in conf. file {} for books abbr mapping", SPLIT_CHAR, BIBLE_BOOK_ABBRS_FILE);
 			throw new RuntimeException("Bad format in configuration file " + BIBLE_BOOK_ABBRS_FILE);
+		    }
 		    bookNames.put(BibleBook.getBibleBookByName(abbrAndName[1]), abbrAndName[0]);
 		}
 	    }
@@ -132,8 +147,10 @@ public final class Utils {
 
     // TODO add support for rare and complex position definitions with verse precision through more chapters (e.g. Mk1,3-3,4 or Lk1,1-4.4,14-21)
     public static List<Position> parsePositions(String posDef) {	
-	if (posDef == null)
+	if (posDef == null) {
+	    logger.error("Position definition is null when parsing positions");
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	}
         
         if (posDef.contains(":")) {
             posDef = posDef.replace(",", ".");
@@ -141,8 +158,10 @@ public final class Utils {
         }
         
         //TODO remove this restriction by improving coordinate parsing
-        if (posDef.contains(",") && posDef.indexOf(',') != posDef.lastIndexOf(','))
-            throw new IllegalArgumentException("Bible coordinate cannot contain more chapter delimiters.");
+        if (posDef.contains(",") && posDef.indexOf(',') != posDef.lastIndexOf(',')) {
+            logger.error("Bible coordinate '{}' contains more chapter-verse delimiters", posDef);
+            throw new IllegalArgumentException("Bible coordinate cannot contain more chapter-verse delimiters.");
+        }
         
         BibleBook book = extractBibleBook(posDef);
         List<Integer> chapters = parseChapters(posDef);
@@ -155,8 +174,10 @@ public final class Utils {
     }
 
     private static List<Position> getPositions(BibleBook book, List<Integer> chapters, List<Integer> verses) {
-	if (book == null || chapters == null)
+	if (book == null || chapters == null) {
+	    logger.error("Book or chapter list is null. Book list: {}, chapter list: {}", book, chapters);
 	    throw new IllegalArgumentException("Books or chapters not provided.");
+	}
 	
         List<Position> positionList = new ArrayList<Position>();
         
@@ -177,8 +198,10 @@ public final class Utils {
     }
 
     private static List<Integer> parseVerses(String posDef) {
-	if (posDef == null)
+	if (posDef == null) {
+	    logger.error("Position definition is null when parsing verses");
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	}
 	
         List<Integer> verses;
         String verseDef = posDef.substring(posDef.indexOf(",") + 1);
@@ -197,8 +220,10 @@ public final class Utils {
     }
 
     private static List<Integer> parseChapters(String posDef) {
-	if (posDef == null)
+	if (posDef == null) {
+	    logger.error("Position definition is null when parsing chapters");
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	}
 	
         List<Integer> chapters;
         String chaptDef = posDef.substring(getPositionAfterBookName(posDef));
@@ -206,7 +231,12 @@ public final class Utils {
         //contains also verse numbers (i.e.: Jn3,4-6)
         if (chaptDef.contains(",")) {
             chapters = new ArrayList<Integer>(1);
-            chapters.add(Integer.valueOf(chaptDef.substring(0, chaptDef.indexOf(","))));
+	    try {
+		chapters.add(Integer.valueOf(chaptDef.substring(0, chaptDef.indexOf(","))));
+	    } catch (NumberFormatException e) {
+		logger.error("Exception caught when trying to parse chapter value from coordinate", e);
+		throw new IllegalArgumentException("Bad format of chapter provided: '" + chaptDef + "'");
+	    }
         }
         
         //contains only chapter numbers  (i.e.: Mk4-6)
@@ -222,15 +252,19 @@ public final class Utils {
             chapters = parseNumberRanges(chaptRanges);
         }
         
-        if (chapters.size() < 1)
+        if (chapters.size() < 1) {
+            logger.error("Number of chapters parsed out of definition is < 1. The number is: {}", chapters.size());
             throw new IllegalArgumentException("Bible coordinate doesn't contain chapter number(s).");
+        }
         
         return chapters;
     }
 
     private static List<Integer> parseNumberRanges(String[] numberRanges) {
-	if (numberRanges == null || numberRanges.length < 1)
+	if (numberRanges == null || numberRanges.length < 1) {
+	    logger.error("Number of number ranges in Bible coordinates is null or < 1. The number is: {}", numberRanges.length);
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	}
 	
         List<Integer> numbers = new ArrayList<Integer>();
         
@@ -239,8 +273,10 @@ public final class Utils {
             //contains more numbers (i.e.: Mt13-15)
             if (numberRange.contains("-")) {
         	String[] numberRangeEnds = numberRange.split("-");
-        	if (numberRangeEnds.length > 2)
+        	if (numberRangeEnds.length != 2) {
+        	    logger.error("Number of number-range ends in the Bible coordinate != 2. The number range ends are: {}", numberRangeEnds);
         	    throw new IllegalArgumentException("Bad format of number range: '" + numberRange + "'.");
+        	}
 
 		int beginning = -2;
 		int end = -1;
@@ -248,11 +284,14 @@ public final class Utils {
 		    beginning = Integer.valueOf(numberRangeEnds[0]);
 		    end = Integer.valueOf(numberRangeEnds[1]);
 		} catch (NumberFormatException e) {
+		    logger.error("Exception caught when trying to parse number ranges of Bible coordinate", e);
 		    throw new IllegalArgumentException("Bad format of number range: '" + numberRange + "'.");
 		}
         	
-        	if (beginning > end)
+        	if (beginning > end) {
+        	    logger.error("Beginning in number range is > than end. Beginning: {}, end: {}", beginning, end);
         	    throw new IllegalArgumentException("Beginning of interval is greater than end in nuber range: " + numberRange);
+        	}
         	
         	for (int i = beginning; i <= end; i++)
         	    numbers.add(i);
@@ -261,23 +300,32 @@ public final class Utils {
             
             //contains only one number (i.e.: Jn15)
             else
-        	numbers.add(Integer.valueOf(numberRange));
+		try {
+		    numbers.add(Integer.valueOf(numberRange));
+		} catch (NumberFormatException e) {
+		    logger.error("Exception caught when trying to parse number ranges of bible coordinate", e);
+		    throw new IllegalArgumentException("Bad format of number range: '" + numberRange + "'.");
+		}
         }
         
         return numbers;
     }
 
     private static BibleBook extractBibleBook(String posDef) {
-	if (posDef == null)
+	if (posDef == null) {
+	    logger.error("Position definition is null");
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	}
 	
         String bookNameDef = extractFirstWord(posDef);
         return Utils.getBibleBookNameByAbbr(bookNameDef);
     }
 
     private static int getPositionAfterBookName(String posDef) {
-	if (posDef == null)
+	if (posDef == null) {
+	    logger.error("Position definition is null");
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	}
         
         if (Character.isDigit(posDef.charAt(0)))
             return getPositionOfFirstNonLetter(posDef.substring(1)) + 1;
@@ -286,13 +334,16 @@ public final class Utils {
     }
 
     private static int getPositionOfFirstNonLetter(String posDef) {
-	if (posDef == null)
+	if (posDef == null) {
+	    logger.error("Position definition is null");
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
+	}
 
 	for (int i = 0; i < posDef.length(); i++)
 	    if (!Character.isLetter(posDef.charAt(i)))
 		return i;
 
+	logger.error("No non-letter character in position definition: {}", posDef);
 	throw new IllegalArgumentException("Bible coordinate doesn't contain chapter number(s).");
     }
 

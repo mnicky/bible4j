@@ -4,6 +4,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.parsers.BibleImporter;
 import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.parsers.OsisBibleImporter;
@@ -11,6 +15,8 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 public class ImportCommandRunner extends CommandRunner {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
 
     InputStream input;
     
@@ -28,6 +34,7 @@ public class ImportCommandRunner extends CommandRunner {
 	try {
 	    input = parseInputStream(args);
 	} catch (FileNotFoundException e) {
+	    logger.error("Exception caught when parsing the filename - probably the file not found. Provided arguments: {}", args);
 	    throw new BibleImporterException("Specified file not found", e);
 	}
 

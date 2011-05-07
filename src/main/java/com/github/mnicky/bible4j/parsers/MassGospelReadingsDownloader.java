@@ -8,10 +8,14 @@ import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.storage.BibleStorage;
@@ -20,6 +24,8 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 //TODO add more similar readings downloaders and ability to choose between them
 public final class MassGospelReadingsDownloader implements ReadingsDownloader {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
     
     private static final String TITLE = "Catholic Mass Gospel Readings";
     
@@ -63,7 +69,8 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
 		    storage.insertDailyReading(new DailyReading(TITLE, new DateTime(nextReadingDate), Utils.parsePositions(bibleCoords)));
 		} catch (IllegalArgumentException e) {
 		    //we don't want to stop downloading the readings because of one malformed
-		    e.printStackTrace();
+		    System.out.println("Error occured when downloading readings: " + e.getMessage() + " Skipping...");
+		    logger.warn("Exception caught when downloading readings (date: {}). Probably bad format on the page.", nextReadingDate);
 		}
 	    }	    
 	    bibleCoords = null;

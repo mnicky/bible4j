@@ -12,6 +12,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
@@ -23,6 +27,8 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 //TODO add unit tests for this class
 
 public final class OsisBibleImporter implements BibleImporter {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
     
     private BibleStorage storage;
 
@@ -291,8 +297,10 @@ public final class OsisBibleImporter implements BibleImporter {
 	    return BibleBook.JUDE;
 	if (bookAbbr.equals("Rev"))
 	    return BibleBook.REVELATION;
-	else
+	else {
+	    logger.error("Unknown BibleBook type specified: {}", bookAbbr);
 	    throw new IllegalArgumentException("Unknown BibleBook type specified.");
+	}
 
     }
 	

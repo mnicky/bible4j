@@ -7,6 +7,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.data.Verse;
@@ -17,6 +21,8 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 public class DailyReadingsCommandRunner extends CommandRunner {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
 
     private DateTime date = new DateTime("0000-00-00");
     boolean downloading = false;
@@ -89,6 +95,7 @@ public class DailyReadingsCommandRunner extends CommandRunner {
 	    String[] dateArray = date.split("-");
 	    dateTime = new DateTime(Integer.valueOf(dateArray[2]), Integer.valueOf(dateArray[1]), Integer.valueOf(dateArray[0]), 0, 0, 0, 0);
 	} catch (RuntimeException e) {
+	    logger.error("Error caught when parsing the date '{}'", date);
 	    throw new IllegalArgumentException("Probably bad date format specified.", e);
 	}
 	return dateTime;

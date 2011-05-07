@@ -110,6 +110,13 @@
 			<scope>system</scope>
 			<systemPath>${my.jericho-html.location}</systemPath>
 		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

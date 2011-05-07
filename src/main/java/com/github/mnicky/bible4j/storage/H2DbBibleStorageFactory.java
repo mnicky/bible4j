@@ -3,7 +3,14 @@ package com.github.mnicky.bible4j.storage;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
+
 public final class H2DbBibleStorageFactory implements BibleStorageFactory {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
     
     //private String url = "jdbc:h2:tcp://localhost/test";
     private String url = "jdbc:h2:~/bible4j;MVCC=TRUE";
@@ -33,14 +40,16 @@ public final class H2DbBibleStorageFactory implements BibleStorageFactory {
 	    if (System.getProperty("h2.pwd") != null)
 		password = System.getProperty("h2.pwd");
 	    
-	    //workaround for some buggy JVMs, that don't load the driver automatically
+	    //workaround for some buggy JVMs, that don't load the driver automatically (like GCJ)
 	    Class.forName("org.h2.Driver");
 	    
 	    return new H2DbBibleStorage(DriverManager.getConnection(url, user, password));
 	
 	} catch (SQLException e) {
+	    logger.error("Exception caught when creating H2DbBibleStorage", e);
 	    throw new BibleStorageException("BibleStorage could not be created", e);
 	} catch (ClassNotFoundException e) {
+	    logger.error("Exception caught when creating H2DbBibleStorage", e);
 	    throw new BibleStorageException("BibleStorage could not be created", e);
 	}
     }

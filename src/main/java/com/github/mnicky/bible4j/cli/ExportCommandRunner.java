@@ -4,6 +4,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.parsers.BibleExporter;
 import com.github.mnicky.bible4j.parsers.BibleExporterException;
@@ -12,6 +16,8 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 public class ExportCommandRunner extends CommandRunner {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
     
     OutputStream output;
     private BibleVersion version;
@@ -25,6 +31,7 @@ public class ExportCommandRunner extends CommandRunner {
 	    try {
 		output = parseOutputStream(args);
 	    } catch (FileNotFoundException e) {
+		logger.error("Exception caught when parsing the filename - probably the file not found. Provided arguments: {}", args);
 		throw new BibleExporterException("File not found.", e);
 	    }
 	    version = parseVersionsAndReturnFirstIfEmpty(args).get(0);

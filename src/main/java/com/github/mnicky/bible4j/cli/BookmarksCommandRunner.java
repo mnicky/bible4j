@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
@@ -18,6 +22,8 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 public class BookmarksCommandRunner extends CommandRunner {
+    
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
 
     private List<Position> positions;
     
@@ -66,13 +72,19 @@ public class BookmarksCommandRunner extends CommandRunner {
     private void retrieveOrAddBkmarks() throws BibleStorageException {
 	
 	if (nameOfBkmark != null) {
-	    if (positions.isEmpty())
-		    throw new IllegalArgumentException("Coordinate of bookmark not specified");
-	    if (versions.isEmpty())
-		    throw new IllegalArgumentException("Bible version of bookmark not specified");
-	    if (isWholeChapter(positions.get(0)))
+	    if (positions.isEmpty()) {
+		logger.error("Empty list of Bible coordinates");
+		throw new IllegalArgumentException("Coordinate of bookmark not specified");
+	    }
+	    if (versions.isEmpty()) {
+		logger.error("Empty list of Bible versions");
+		throw new IllegalArgumentException("Bible version of bookmark not specified");
+	    }
+	    if (isWholeChapter(positions.get(0))) {
+		logger.error("Whole chapters are specified in the coordinates for notes: {}", positions);
 		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
-	    
+	    }
+
 	    bibleStorage.insertBookmark(new Bookmark(nameOfBkmark, new Verse("", positions.get(0), versions.get(0))));
 	    System.out.println("Bookmark inserted.");
 	}
