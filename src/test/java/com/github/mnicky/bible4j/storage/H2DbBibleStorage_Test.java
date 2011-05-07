@@ -108,6 +108,10 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getString(1);
 		actual[i++] = rs.getBoolean(2);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -140,6 +144,10 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getInt(2);
 		actual[i++] = rs.getInt(3);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -170,6 +178,10 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getString(1);
 		actual[i++] = rs.getString(2);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -214,6 +226,10 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getInt(4);
 		actual[i++] = rs.getString(5);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -603,6 +619,10 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getString(1);
 		actual[i++] = rs.getString(2);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -762,6 +782,10 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getInt(4);
 		actual[i++] = rs.getString(5);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -826,6 +850,10 @@ public final class H2DbBibleStorage_Test {
 		actual[i++] = rs.getString(1);
 		actual[i++] = rs.getString(2);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -878,6 +906,10 @@ public final class H2DbBibleStorage_Test {
 	    while (rs.next()) {
 		actual = rs.getString(1);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -925,6 +957,10 @@ public final class H2DbBibleStorage_Test {
 	    while (rs.next()) {
 		actual[i++] = rs.getString(1);
 	    }
+	    if (rs != null)
+		rs.close();
+	    if (st != null)
+		st.close();
 
 	} catch (Exception e) {
 	    e.printStackTrace();

@@ -53,20 +53,8 @@ public class BibleVersion_Test {
         boolean b2 = bv1.equals(bv4);
         Assert.assertEquals(b1 && b2, false);
     }
-    
-    @Test
-    public void testEqualsForNull() { 
-        boolean b = bv1.equals(null);
-        Assert.assertEquals(b, false);
-    }
-    
-    @Test
-    public void testEqualsWithAnotherType() {
-        String s = "";
-        boolean b = bv1.equals(s);
-        Assert.assertEquals(b, false);
-    }
-    
+   
+   
     @Test
     public void testHashCodeForConsistency() {
         int h1 = bv1.hashCode();

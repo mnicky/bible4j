@@ -921,6 +921,9 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setDate(1, new Date(reading.getDate().getMilliseconds(TimeZone.getDefault())));
 	    st.setString(2, reading.getReadingListName());
 	    st.executeUpdate();
+	    
+	    if (st != null)
+		st.close();
 
 	    // insert verses of this reading
 	    int readingId = getThisReadingId(reading);

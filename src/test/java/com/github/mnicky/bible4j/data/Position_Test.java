@@ -55,20 +55,8 @@ public class Position_Test {
         boolean b2 = pos1.equals(pos4);
         Assert.assertEquals(b1 && b2, false);
     }
-    
-    @Test
-    public void testEqualsForNull() { 
-        boolean b = pos1.equals(null);
-        Assert.assertEquals(b, false);
-    }
-    
-    @Test
-    public void testEqualsWithAnotherType() {
-        String s = "";
-        boolean b = pos1.equals(s);
-        Assert.assertEquals(b, false);
-    }
-    
+   
+   
     @Test
     public void testHashCodeForConsistency() {
         int h1 = pos1.hashCode();
