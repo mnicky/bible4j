@@ -52,6 +52,8 @@ public interface BibleStorage {
     List<Verse> getChapter(Position chapter, BibleVersion version) throws BibleStorageException;
     
     List<Position> getChapterList(BibleVersion version) throws BibleStorageException;
+    
+    List<BibleVersion> getVersionList() throws BibleStorageException;
 
     List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException;
 

@@ -493,6 +493,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 		throw new BibleStorageException("Verses could not be retrieved", e);
 	    } finally {
 		try {
+		    if (rs != null)
+		    rs.close();
 		    if (st != null)
 			st.close();
 		} catch (SQLException e) {
@@ -524,8 +526,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    chapterList.add(new Position(BibleBook.getBibleBookByName(rs.getString(1)),
 		                                 rs.getInt(2), 0));
 
-		rs.close();
-
 	} catch (SQLException e) {
 	    throw new BibleStorageException("Chapters could not be retrieved", e);
 	} finally {
@@ -540,6 +540,39 @@ public final class H2DbBibleStorage implements BibleStorage {
 	Collections.sort(chapterList);
 
 	return chapterList;
+    }
+
+
+    @Override
+    public List<BibleVersion> getVersionList() throws BibleStorageException {
+	PreparedStatement st = null;
+	List<BibleVersion> versionList = new ArrayList<BibleVersion>();
+
+	try {
+	    st = dbConnection
+		    .prepareStatement("SELECT DISTINCT " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+				    + " FROM " + VERSIONS + " ORDER BY " + VERSION_ABBR_F);
+		
+		ResultSet rs = commitQuery(st);
+
+		while (rs.next())
+		    versionList.add(new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3)));
+
+		if (rs != null)
+		    rs.close();
+
+	} catch (SQLException e) {
+	    throw new BibleStorageException("Chapters could not be retrieved", e);
+	} finally {
+	    try {
+		if (st != null)
+		    st.close();
+	    } catch (SQLException e) {
+		e.printStackTrace();
+	    }
+	}
+
+	return versionList;
     }
 
     @Override
