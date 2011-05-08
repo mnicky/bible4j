@@ -262,7 +262,7 @@ public final class Utils {
 
     private static List<Integer> parseNumberRanges(String[] numberRanges) {
 	if (numberRanges == null || numberRanges.length < 1) {
-	    logger.error("Number of number ranges in Bible coordinates is null or < 1. The number is: {}", numberRanges.length);
+	    logger.error("Number of number ranges in Bible coordinates is null or < 1.");
 	    throw new IllegalArgumentException("Bible coordinates not provided.");
 	}
 	

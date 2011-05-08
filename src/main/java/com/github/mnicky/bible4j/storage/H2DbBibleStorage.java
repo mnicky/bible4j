@@ -83,7 +83,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 		con.rollback();
 	    throw e;
 	} finally {
-	    if (st != null)
 		st.close();
 	    if (con != null)
 		con.setAutoCommit(true);
@@ -134,7 +133,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 		con.rollback();
 	    throw e;
 	} finally {
-	    if (st != null)
 		st.close();
 	    if (con != null)
 		con.setAutoCommit(true);
