@@ -772,16 +772,18 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     //TODO add unit test
     @Override
-    public void deleteBookmark(String bookmarkName) throws BibleStorageException {
+    public int deleteBookmark(String bookmarkName) throws BibleStorageException {
+	int bookmarksDeleted = 0;
 	try {
 	    PreparedStatement st = dbConnection
 			    .prepareStatement("DELETE FROM " + BKMARKS + " WHERE " + BKMARK_NAME_F + " = ?");
 	    st.setString(1, bookmarkName);
-	    commitUpdate(st);
+	    bookmarksDeleted = commitUpdate(st);
 	} catch (SQLException e) {
 	    logger.error("Exception caught when deleting bookmark", e);
 	    throw new BibleStorageException("Bookmark could not be deleted", e);
 	}
+	return bookmarksDeleted;
     }
 
     @Override
@@ -898,7 +900,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     //TODO add unit test
     @Override
-    public void deleteNote(Position position) throws BibleStorageException {
+    public int deleteNote(Position position) throws BibleStorageException {
+	int notesDeleted = 0;
 	try {
 	    PreparedStatement st = dbConnection
 		.prepareStatement("DELETE FROM " + NOTES
@@ -908,11 +911,12 @@ public final class H2DbBibleStorage implements BibleStorage {
     st.setString(1, position.getBook().getName());
     st.setInt(2, position.getChapterNum());
     st.setInt(3, position.getVerseNum());
-	    commitUpdate(st);
+	    notesDeleted = commitUpdate(st);
 	} catch (SQLException e) {
 	    logger.error("Exception caught when deleting note", e);
 	    throw new BibleStorageException("Note could not be deleted", e);
 	}
+	return notesDeleted;
     }
 
     @Override

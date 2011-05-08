@@ -66,7 +66,7 @@ public interface BibleStorage {
 
     void insertNote(Note note) throws BibleStorageException;
 
-    void deleteNote(Position position) throws BibleStorageException;
+    int deleteNote(Position position) throws BibleStorageException;
     
     List<Note> getNotes(Position position) throws BibleStorageException;
     
@@ -74,7 +74,7 @@ public interface BibleStorage {
 
     void insertBookmark(Bookmark bookmark) throws BibleStorageException;
     
-    void deleteBookmark(String bookmarkName) throws BibleStorageException;
+    int deleteBookmark(String bookmarkName) throws BibleStorageException;
 
     List<Bookmark> getBookmarks() throws BibleStorageException;
 

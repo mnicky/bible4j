@@ -65,9 +65,10 @@ class NotesCommandRunner extends CommandRunner {
 	    throw new IllegalArgumentException("Notes of whole chapters cannot be deleted.");
 	}
 	else {
+	    int notesDeleted = 0;
 	    for (Position position : positions)
-		bibleStorage.deleteNote(position);
-	    System.out.println("Note(s) deleted.");
+		notesDeleted += bibleStorage.deleteNote(position);
+	    System.out.println(notesDeleted + " note(s) deleted.");
 	}
     }
 
@@ -94,6 +95,10 @@ class NotesCommandRunner extends CommandRunner {
     }
 
     private void checkIfPositionsExists() {
+	if (positions == null) {
+            logger.error("List of positions for notes is null");
+            throw new IllegalArgumentException("Probably bad format of coordinate provided");
+        }   
         if (positions.isEmpty()) {
             logger.error("List of positions for notes is empty");
             throw new IllegalArgumentException("Coordinate of note not specified");

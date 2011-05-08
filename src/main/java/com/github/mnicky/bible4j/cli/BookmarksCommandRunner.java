@@ -56,7 +56,7 @@ class BookmarksCommandRunner extends CommandRunner {
     void doAction() throws BibleStorageException {
 	if (nameOfBookmark != null) {
 	    if (deletingRequested)
-		deleteBookmark();
+		deleteBookmarks();
 	    else
 		insertBookmark();
 	}
@@ -67,13 +67,13 @@ class BookmarksCommandRunner extends CommandRunner {
     }
 
     private void insertBookmark() throws BibleStorageException {
-	if (positions.isEmpty()) {
+	if (positions == null || positions.isEmpty()) {
 	    logger.error("Empty list of Bible coordinates for Bookmark");
-	    throw new IllegalArgumentException("Coordinate of bookmark not specified");
+	    throw new IllegalArgumentException("Coordinate of bookmark not specified or in bad format");
 	}
-	if (versions.isEmpty()) {
+	if (versions == null || versions.isEmpty()) {
 	    logger.error("Empty list of Bible versions for Bookmark");
-	    throw new IllegalArgumentException("Bible version of bookmark not specified");
+	    throw new IllegalArgumentException("Bible version of bookmark not specified or in bad format");
 	}
 	if (isWholeChapter(positions.get(0))) {
 	    logger.error("Whole chapters are specified in the coordinates for notes: {}", positions);
@@ -84,9 +84,9 @@ class BookmarksCommandRunner extends CommandRunner {
 	System.out.println("Bookmark inserted.");
     }
 
-    private void deleteBookmark() throws BibleStorageException {
-	bibleStorage.deleteBookmark(nameOfBookmark);
-	System.out.println("Bookmark deleted.");
+    private void deleteBookmarks() throws BibleStorageException {
+	int bookmarksDeleted = bibleStorage.deleteBookmark(nameOfBookmark);
+	System.out.println(bookmarksDeleted + " bookmark(s) deleted.");
     }
 
     private void retrieveBookmarks() throws BibleStorageException {

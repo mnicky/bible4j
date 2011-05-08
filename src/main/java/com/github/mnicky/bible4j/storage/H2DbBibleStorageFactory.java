@@ -20,6 +20,10 @@ public final class H2DbBibleStorageFactory implements BibleStorageFactory {
     //TODO password as char array
     private String password = "";
     
+    private static final String URL_PROPERTY_NAME = "h2.url";
+    private static final String USER_PROPERTY_NAME = "h2.user";
+    private static final String PASSWORD_PROPERTY_NAME = "h2.pwd";
+    
     /**
      * The url, username and password for h2 database can be set by setter methods of this factory.
      * This factory method checks for presence of system properties 'h2.url',
@@ -31,14 +35,14 @@ public final class H2DbBibleStorageFactory implements BibleStorageFactory {
     public BibleStorage createBibleStorage() throws BibleStorageException {
 	try {
 	    
-	    if (System.getProperty("h2.url") != null)
-		url = System.getProperty("h2.url");
+	    if (System.getProperty(URL_PROPERTY_NAME) != null)
+		url = System.getProperty(URL_PROPERTY_NAME);
 	    
-	    if (System.getProperty("h2.user") != null)
-		user = System.getProperty("h2.user");
+	    if (System.getProperty(USER_PROPERTY_NAME) != null)
+		user = System.getProperty(USER_PROPERTY_NAME);
 	    
-	    if (System.getProperty("h2.pwd") != null)
-		password = System.getProperty("h2.pwd");
+	    if (System.getProperty(PASSWORD_PROPERTY_NAME) != null)
+		password = System.getProperty(PASSWORD_PROPERTY_NAME);
 	    
 	    //workaround for some buggy JVMs, that don't load the driver automatically (like GCJ)
 	    Class.forName("org.h2.Driver");

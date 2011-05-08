@@ -81,7 +81,7 @@ public final class Utils {
 	BibleBook book = bookNames.get(abbr.toLowerCase(new Locale("en")));
 	
 	if (book == null) {
-	    logger.error("Book abbreviation '{}' not found in the Map of book abbreviations", abbr);
+	    logger.warn("Book abbreviation '{}' not found in the Map of book abbreviations", abbr);
 	    throw new IllegalArgumentException("Bible book abbreviation '" + abbr + "' is unknown.");
 	}
 	
