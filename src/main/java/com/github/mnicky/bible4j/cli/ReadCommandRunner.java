@@ -16,7 +16,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public final class ReadCommandRunner extends CommandRunner {
+final class ReadCommandRunner extends CommandRunner {
 
     private List<Position> positions;
     

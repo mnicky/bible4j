@@ -25,7 +25,7 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 //TODO add more similar readings downloaders and ability to choose between them
 public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
     
     private static final String TITLE = "Catholic Mass Gospel Readings";
     

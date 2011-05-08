@@ -11,7 +11,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class DictionaryCommandRunner extends CommandRunner {
+class DictionaryCommandRunner extends CommandRunner {
     
     private DictTerm dictTerm = null;
     boolean downloading = false;

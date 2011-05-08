@@ -15,9 +15,9 @@ import com.github.mnicky.bible4j.parsers.OsisBibleExporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
-public class ExportCommandRunner extends CommandRunner {
+class ExportCommandRunner extends CommandRunner {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
     
     OutputStream output;
     private BibleVersion version;

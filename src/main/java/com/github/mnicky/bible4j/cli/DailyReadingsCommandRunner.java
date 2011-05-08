@@ -20,9 +20,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class DailyReadingsCommandRunner extends CommandRunner {
+class DailyReadingsCommandRunner extends CommandRunner {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
 
     private DateTime date = new DateTime("0000-00-00");
     boolean downloading = false;

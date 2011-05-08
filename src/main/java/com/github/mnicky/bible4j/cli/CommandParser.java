@@ -15,7 +15,7 @@ import com.github.mnicky.bible4j.storage.BibleStorageFactory;
 
 public class CommandParser {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
 
     private final BibleStorage storage;
 
@@ -34,8 +34,10 @@ public class CommandParser {
 
     public CommandParser(BibleStorageFactory factory) throws BibleStorageException {
 	this.storage = factory.createBibleStorage();
-	if (!storage.isStorageInitialized())
+	if (!storage.isStorageInitialized()) {
+	    logger.debug("BibleStorage not initialized yet. Initializing.");
 	    storage.initializeStorage();
+	}
     }
 
     public void launch(String[] args) {

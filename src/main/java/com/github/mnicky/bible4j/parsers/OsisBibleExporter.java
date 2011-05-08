@@ -26,7 +26,7 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 public final class OsisBibleExporter implements BibleExporter {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
     
     private BibleStorage storage;
     

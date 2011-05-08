@@ -14,9 +14,9 @@ import com.github.mnicky.bible4j.parsers.OsisBibleImporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
-public class ImportCommandRunner extends CommandRunner {
+class ImportCommandRunner extends CommandRunner {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
 
     InputStream input;
     

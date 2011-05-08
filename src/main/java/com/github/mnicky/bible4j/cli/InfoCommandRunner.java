@@ -9,7 +9,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public final class InfoCommandRunner extends CommandRunner {
+final class InfoCommandRunner extends CommandRunner {
     
     private List<BibleVersion> versions;
 

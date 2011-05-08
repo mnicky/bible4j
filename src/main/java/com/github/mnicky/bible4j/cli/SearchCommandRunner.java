@@ -13,7 +13,7 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
-public class SearchCommandRunner extends CommandRunner {
+class SearchCommandRunner extends CommandRunner {
     
     private static final String BIBLE_BOOK_PARAMETER = "-b";
     private List<BibleVersion> versions;

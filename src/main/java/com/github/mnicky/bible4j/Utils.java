@@ -21,7 +21,7 @@ import com.github.mnicky.bible4j.data.Position;
 
 public final class Utils {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
     
     private static final String BIBLE_BOOK_ABBRS_FILE = "/bibleBookAbbrs.conf";
     private static final String COMMENT_CHAR = "#";

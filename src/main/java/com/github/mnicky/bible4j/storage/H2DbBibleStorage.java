@@ -33,7 +33,7 @@ import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
  */
 public final class H2DbBibleStorage implements BibleStorage {
     
-    private final static Logger logger = LoggerFactory.getLogger(AppRunner.Logger.class);
+    private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
     
     //TODO update SQL queries with BIBLE_NAME
 
