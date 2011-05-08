@@ -37,7 +37,6 @@ class ImportCommandRunner extends CommandRunner {
 	    logger.error("Exception caught when parsing the filename - probably the file not found. Provided arguments: {}", args);
 	    throw new BibleImporterException("Specified file not found", e);
 	}
-
     }
     
     public void importBible() throws BibleImporterException, BibleStorageException {

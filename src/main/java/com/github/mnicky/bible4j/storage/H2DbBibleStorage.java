@@ -266,6 +266,22 @@ public final class H2DbBibleStorage implements BibleStorage {
 	return columns;
     }
 
+    /**
+     * Backs up the H2 Bible storage files into a zip file. 
+     */
+    @Override
+    public void doBackup(String fileName) throws BibleStorageException {
+		try {
+		    PreparedStatement st = dbConnection
+			    .prepareStatement("BACKUP TO ?");
+		    st.setString(1, fileName);
+		    commitUpdate(st);
+		} catch (SQLException e) {
+		    logger.error("Exception caught when creating the backup", e);
+		    throw new BibleStorageException("Backup not be created.", e);
+		}
+    }
+
     @Override
     public void insertVerse(Verse verse) throws BibleStorageException {
 	try {

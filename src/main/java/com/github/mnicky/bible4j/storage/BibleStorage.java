@@ -30,6 +30,8 @@ public interface BibleStorage {
     
     //TODO: change createStorage() to return void
     int[] initializeStorage() throws BibleStorageException;
+    
+    void doBackup(String fileName) throws BibleStorageException;
 
     void insertVerse(Verse verse) throws BibleStorageException;
 

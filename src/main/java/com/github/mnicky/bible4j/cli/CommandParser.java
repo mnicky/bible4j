@@ -23,6 +23,7 @@ public class CommandParser {
 
     static final String BIBLE_READ_COMMAND = "read";
     static final String BIBLE_SEARCH_COMMAND = "search";
+    static final String BACKUP_COMMAND = "backup";
     static final String IMPORT_COMMAND = "import";
     static final String EXPORT_COMMAND = "export";
     static final String NOTES_COMMAND = "note";
@@ -40,7 +41,7 @@ public class CommandParser {
 	}
     }
 
-    public void launch(String[] args) {
+    public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 
 	try {
 	    CommandRunner runner = getCommandRunner(args);
@@ -59,22 +60,17 @@ public class CommandParser {
 		printMainHelp();
 	    }
 	    
-	} catch (IllegalArgumentException argEx) {
+	} catch (IllegalArgumentException e) {
 	    //for user
-	    System.out.println("Error: " + argEx.getMessage());
+	    System.out.println("Error: " + e.getMessage());
 	    System.out.println("       Use command '" + HELP_COMMAND + "' for help");
-	    //for log
-	    logger.warn("Probably bad format of input", argEx);
-	}  catch (Exception runEx) {
-	    //for user
-	    System.out.println("Error: " + runEx.getMessage());
-	    //for log
-	    logger.error("Exception caught", runEx);
+	    //log
+	    logger.warn("Probably bad format of input", e);
 	} finally {
 	    try {
 		storage.close();
 	    } catch (BibleStorageException e) {
-		logger.error("Bible storage could not be closed", e);
+		logger.debug("Bible storage could not be closed", e);
 	    }
 	}
     }
@@ -93,6 +89,9 @@ public class CommandParser {
 
 	else if (args[0].equalsIgnoreCase(BIBLE_SEARCH_COMMAND))
 	    return new SearchCommandRunner(storage);
+
+	else if (args[0].equalsIgnoreCase(BACKUP_COMMAND))
+	    return new BackupCommandRunner(storage);
 
 	else if (args[0].equalsIgnoreCase(IMPORT_COMMAND))
 	    return new ImportCommandRunner(storage);
@@ -136,6 +135,7 @@ public class CommandParser {
 	System.out.println(" " + DICTIONARY_COMMAND + "\t look up a word in a Biblical dictionary");
 	System.out.println(" " + IMPORT_COMMAND + "\t import the Bible");
 	System.out.println(" " + EXPORT_COMMAND + "\t export the Bible");
+	System.out.println(" " + BACKUP_COMMAND + "\t create backup to zip file");
 	System.out.println(" " + INFO_COMMAND + "\t view informations about program and available Bible versions");
 	System.out.println();
 	System.out.println(" Use '" + HELP_COMMAND + " COMMAND' to see help for specific command.");
