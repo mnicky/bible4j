@@ -164,6 +164,7 @@ public final class OsisBibleExporter implements BibleExporter {
 	writeEndElement(writer);
     }
     
+    //TODO change method of obtaining OSIS Book abbreviations to be shorter
     private String getOsisAbbrFromBibleBook(BibleBook book) {
 	if (book == BibleBook.GENESIS)
 	    return "Gen";

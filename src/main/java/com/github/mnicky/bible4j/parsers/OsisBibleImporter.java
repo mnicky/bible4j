@@ -148,6 +148,7 @@ public final class OsisBibleImporter implements BibleImporter {
 	return new Position(getBibleBookByOsisAbbr(positionArray[0]), Integer.valueOf(positionArray[1]), Integer.valueOf(positionArray[2]));
     }
 
+    //TODO change method of obtaining Book from OSIS abbreviations to be shorter
     private BibleBook getBibleBookByOsisAbbr(String bookAbbr) {
 	if (bookAbbr.equals("Gen"))
 	    return BibleBook.GENESIS;
