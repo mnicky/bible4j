@@ -109,6 +109,7 @@ final class ReadCommandRunner extends CommandRunner {
 
     @Override
     public void printHelp() {
+	System.out.println();
         System.out.println("Usage:");
         System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " POSITION [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
         
@@ -169,6 +170,7 @@ final class ReadCommandRunner extends CommandRunner {
         System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " 1Jn2-3");
         System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Exodus1-2.4-7.9");
         System.out.println("\t" + CommandParser.BIBLE_READ_COMMAND + " Deut3-6.10-15.33 " + BIBLE_VERSION_ARGUMENT + " esv asv");
+        System.out.println();
     }
 
     //for testing purposes

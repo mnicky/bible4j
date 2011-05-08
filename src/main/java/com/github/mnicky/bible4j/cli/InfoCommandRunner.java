@@ -41,10 +41,12 @@ final class InfoCommandRunner extends CommandRunner {
 	System.out.println("-------------------------------------------------------------------");
 	for (BibleVersion version : versions)
 	    System.out.println(version.getAbbr() + " \t\t " + version.getLanguage() + " \t\t " + version.getName());
+	System.out.println();
     }
 
     @Override
     public void printHelp() {
+	System.out.println();
 	System.out.println("Usage:");
         System.out.println("\t" + CommandParser.INFO_COMMAND);
         
@@ -55,7 +57,7 @@ final class InfoCommandRunner extends CommandRunner {
         System.out.println("  View informations about program and available Bible versions:");
         System.out.println();
         System.out.println("\t" + CommandParser.HELP_COMMAND);
-
+        System.out.println();
     }
     
     

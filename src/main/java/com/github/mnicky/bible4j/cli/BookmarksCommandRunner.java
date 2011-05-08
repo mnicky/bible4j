@@ -27,11 +27,13 @@ class BookmarksCommandRunner extends CommandRunner {
 
     private List<Position> positions;
     
-    private String nameOfBkmark = null;
+    private String nameOfBookmark = null;
     
     private List<BibleVersion> versions;
     
     private List<Bookmark> bookmarks = null;
+    
+    private boolean deletingRequested;
 
     public BookmarksCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
@@ -42,17 +44,63 @@ class BookmarksCommandRunner extends CommandRunner {
 	if (args.length > 0 && !isArgument(args[0]))
 	    positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
 	if (isArgumentPresent(ADD_ARGUMENT, args)) 
-	    nameOfBkmark = parseAddText(args);
+	    nameOfBookmark = getFirstValueOfArgument(ADD_ARGUMENT, args);
+	if (isArgumentPresent(DELETE_ARGUMENT, args)) {
+	    nameOfBookmark = getFirstValueOfArgument(DELETE_ARGUMENT, args);
+	    deletingRequested = true;
+	}
 	versions = parseVersionsAndReturnNoneIfEmpty(args);
     }
     
     @Override
     void doAction() throws BibleStorageException {
-        retrieveOrAddBkmarks();
-        displayBkmarks();
+	if (nameOfBookmark != null) {
+	    if (deletingRequested)
+		deleteBookmark();
+	    else
+		insertBookmark();
+	}
+	else {
+	    retrieveBookmarks();
+	    displayBookmarks();
+	}
     }
 
-    private void displayBkmarks() {
+    private void insertBookmark() throws BibleStorageException {
+	if (positions.isEmpty()) {
+	    logger.error("Empty list of Bible coordinates for Bookmark");
+	    throw new IllegalArgumentException("Coordinate of bookmark not specified");
+	}
+	if (versions.isEmpty()) {
+	    logger.error("Empty list of Bible versions for Bookmark");
+	    throw new IllegalArgumentException("Bible version of bookmark not specified");
+	}
+	if (isWholeChapter(positions.get(0))) {
+	    logger.error("Whole chapters are specified in the coordinates for notes: {}", positions);
+	    throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
+	}
+
+	bibleStorage.insertBookmark(new Bookmark(nameOfBookmark, new Verse("", positions.get(0), versions.get(0))));
+	System.out.println("Bookmark inserted.");
+    }
+
+    private void deleteBookmark() throws BibleStorageException {
+	bibleStorage.deleteBookmark(nameOfBookmark);
+	System.out.println("Bookmark deleted.");
+    }
+
+    private void retrieveBookmarks() throws BibleStorageException {
+	bookmarks = new ArrayList<Bookmark>();
+
+	if (versions.isEmpty())
+	    bookmarks.addAll(bibleStorage.getBookmarks());
+	else
+	    for (BibleVersion version : versions)
+		if (version != null)
+		    bookmarks.addAll(bibleStorage.getBookmarks(version));
+    }
+
+    private void displayBookmarks() {
 	if (bookmarks == null)
 	    return;
 	
@@ -69,42 +117,13 @@ class BookmarksCommandRunner extends CommandRunner {
 	    System.out.println(bkmark.getVerse().getBibleVersion().getAbbr() + " \t " + bkmark.getVerse().getPosition() + " \t " + bkmark.getName());
     }
 
-    private void retrieveOrAddBkmarks() throws BibleStorageException {
-	
-	if (nameOfBkmark != null) {
-	    if (positions.isEmpty()) {
-		logger.error("Empty list of Bible coordinates");
-		throw new IllegalArgumentException("Coordinate of bookmark not specified");
-	    }
-	    if (versions.isEmpty()) {
-		logger.error("Empty list of Bible versions");
-		throw new IllegalArgumentException("Bible version of bookmark not specified");
-	    }
-	    if (isWholeChapter(positions.get(0))) {
-		logger.error("Whole chapters are specified in the coordinates for notes: {}", positions);
-		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
-	    }
-
-	    bibleStorage.insertBookmark(new Bookmark(nameOfBkmark, new Verse("", positions.get(0), versions.get(0))));
-	    System.out.println("Bookmark inserted.");
-	}
-	else {
-	    bookmarks = new ArrayList<Bookmark>();
-	    
-	    if (versions.isEmpty())
-		bookmarks.addAll(bibleStorage.getBookmarks());
-	    else
-		for (BibleVersion version : versions) 
-		    if (version != null)
-		    bookmarks.addAll(bibleStorage.getBookmarks(version));
-	}
-    }
-
     @Override
     public void printHelp() {
+	System.out.println();
 	System.out.println("Usage:");
         System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION...]");
         System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " POSITION " + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION " + ADD_ARGUMENT + " BOOKMARK_NAME");
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " " + DELETE_ARGUMENT + " BOOKMARK_NAME");
         
         System.out.println();
         System.out.println("\tBIBLE_VERSION \t Bible version abbreviation");
@@ -114,6 +133,7 @@ class BookmarksCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("\tTo view bookmarks for some Bible version(s) only,  use argument '" + BIBLE_VERSION_ARGUMENT + "' and specify one or more Bible versions.");
         System.out.println("\tTo add bookmark, specify Bible version and name of bookmark with arguments '" + BIBLE_VERSION_ARGUMENT + "' and '" + ADD_ARGUMENT + "'.");
+        System.out.println("\tTo delete bookmark, specify the name of the bookmark with argument '" + DELETE_ARGUMENT + "'. All bookmarks with specified name will be deleted.");
         System.out.println("\tBookmarks can only be added to one verse. If more verses are specified, the first one is used.");
         System.out.println("\tSee '" + CommandParser.HELP_COMMAND + " " + CommandParser.BIBLE_READ_COMMAND + "' for description of how to define Bible coordinates.");
         
@@ -135,7 +155,12 @@ class BookmarksCommandRunner extends CommandRunner {
         System.out.println("  Add bookmark to verse:");
         System.out.println();
         System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " Lk3:12 " + " " + BIBLE_VERSION_ARGUMENT + " kjv " + ADD_ARGUMENT + " \"This is bookmark name\"");    
-	
+        
+        System.out.println();
+        System.out.println("  Delete bookmark:");
+        System.out.println();
+        System.out.println("\t" + CommandParser.BOOKMARKS_COMMAND + " " + DELETE_ARGUMENT + " \"The bookmark name\"");    
+        System.out.println();
     }
 
 

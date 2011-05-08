@@ -114,7 +114,7 @@ class DailyReadingsCommandRunner extends CommandRunner {
 
     @Override
     public void printHelp() {
-	
+	System.out.println();
 	System.out.println("Usage:");
         System.out.println("\t" + CommandParser.DAILY_READINGS_COMMAND + " DD-MM-YYYY");
         System.out.println("\t" + CommandParser.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " NUMBER_OF_MONTHS");
@@ -140,7 +140,7 @@ class DailyReadingsCommandRunner extends CommandRunner {
         System.out.println("  Download daily Bible readings for two months ahead:");
         System.out.println();
         System.out.println("\t" + CommandParser.DAILY_READINGS_COMMAND + " " + DOWNLOAD_ARGUMENT + " 2");
-
+        System.out.println();
     }
 
     // for testing purposes

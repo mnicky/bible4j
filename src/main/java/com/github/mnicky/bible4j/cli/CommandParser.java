@@ -130,7 +130,7 @@ public class CommandParser {
 	System.out.println(" " + BIBLE_READ_COMMAND + "\t read the Bible");
 	System.out.println(" " + BIBLE_SEARCH_COMMAND + "\t search the Bible");
 	System.out.println(" " + NOTES_COMMAND + "\t add notes to the Bible text");
-	System.out.println(" " + BOOKMARKS_COMMAND + "\t bookmark Bible passage");
+	System.out.println(" " + BOOKMARKS_COMMAND + "\t bookmark a Bible passage");
 	System.out.println(" " + DAILY_READINGS_COMMAND + "\t view daily readings");
 	System.out.println(" " + DICTIONARY_COMMAND + "\t look up a word in a Biblical dictionary");
 	System.out.println(" " + IMPORT_COMMAND + "\t import the Bible");

@@ -83,9 +83,10 @@ public final class H2DbBibleStorage implements BibleStorage {
 		con.rollback();
 	    throw e;
 	} finally {
+	    if (st != null)
+		st.close();
 	    if (con != null)
 		con.setAutoCommit(true);
-	    st.close();
 	}
 
 	return rows;
@@ -133,6 +134,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 		con.rollback();
 	    throw e;
 	} finally {
+	    if (st != null)
+		st.close();
 	    if (con != null)
 		con.setAutoCommit(true);
 	    st.close();
@@ -267,19 +270,20 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     /**
-     * Backs up the H2 Bible storage files into a zip file. 
+     * Backs up the H2 Bible storage files into a zip file.
      */
+    //TODO add unit test
     @Override
-    public void doBackup(String fileName) throws BibleStorageException {
-		try {
-		    PreparedStatement st = dbConnection
+    public void createBackup(String fileName) throws BibleStorageException {
+	try {
+	    PreparedStatement st = dbConnection
 			    .prepareStatement("BACKUP TO ?");
-		    st.setString(1, fileName);
-		    commitUpdate(st);
-		} catch (SQLException e) {
-		    logger.error("Exception caught when creating the backup", e);
-		    throw new BibleStorageException("Backup not be created.", e);
-		}
+	    st.setString(1, fileName);
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    logger.error("Exception caught when creating the backup", e);
+	    throw new BibleStorageException("Backup not be created.", e);
+	}
     }
 
     @Override
@@ -766,6 +770,20 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     }
 
+    //TODO add unit test
+    @Override
+    public void deleteBookmark(String bookmarkName) throws BibleStorageException {
+	try {
+	    PreparedStatement st = dbConnection
+			    .prepareStatement("DELETE FROM " + BKMARKS + " WHERE " + BKMARK_NAME_F + " = ?");
+	    st.setString(1, bookmarkName);
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    logger.error("Exception caught when deleting bookmark", e);
+	    throw new BibleStorageException("Bookmark could not be deleted", e);
+	}
+    }
+
     @Override
     public List<Bookmark> getBookmarks() throws BibleStorageException {
 	ResultSet rs = null;
@@ -878,6 +896,25 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     }
 
+    //TODO add unit test
+    @Override
+    public void deleteNote(Position position) throws BibleStorageException {
+	try {
+	    PreparedStatement st = dbConnection
+		.prepareStatement("DELETE FROM " + NOTES
+		                  + " WHERE " + NOTE_COORD_F + " = (SELECT DISTINCT " + COORD_ID_F + " FROM " + COORDS
+			+ " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+			+ " WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ? AND " + COORD_VERSE_F + "= ?) LIMIT 1");
+    st.setString(1, position.getBook().getName());
+    st.setInt(2, position.getChapterNum());
+    st.setInt(3, position.getVerseNum());
+	    commitUpdate(st);
+	} catch (SQLException e) {
+	    logger.error("Exception caught when deleting note", e);
+	    throw new BibleStorageException("Note could not be deleted", e);
+	}
+    }
+
     @Override
     public List<Note> getNotes(Position position) throws BibleStorageException {
 	ResultSet rs = null;
@@ -888,9 +925,9 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st = dbConnection
 			.prepareStatement("SELECT " + NOTE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", "
 					  + COORD_VERSE_F + ", " + NOTE_TYPE_F + "FROM " + NOTES
-				+ "INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
-				+ "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ? AND " + COORD_VERSE_F + "= ?");
+				+ " INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
+				+ " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+				+ " WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ? AND " + COORD_VERSE_F + "= ?");
 	    st.setString(1, position.getBook().getName());
 	    st.setInt(2, position.getChapterNum());
 	    st.setInt(3, position.getVerseNum());
@@ -929,9 +966,9 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st = dbConnection
 			.prepareStatement("SELECT " + NOTE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", "
 					  + COORD_VERSE_F + ", " + NOTE_TYPE_F + "FROM " + NOTES
-				+ "INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
-				+ "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-				+ "WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ?");
+				+ " INNER JOIN " + COORDS + " ON " + NOTE_COORD_F + " = " + COORD_ID_F + " "
+				+ " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+				+ " WHERE " + BOOK_NAME_F + " = ? AND " + COORD_CHAPT_F + " = ?");
 	    st.setString(1, chapter.getBook().getName());
 	    st.setInt(2, chapter.getChapterNum());
 	    rs = commitQuery(st);

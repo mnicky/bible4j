@@ -57,6 +57,7 @@ class DictionaryCommandRunner extends CommandRunner {
 
     @Override
     public void printHelp() {
+	System.out.println();
 	System.out.println("Usage:");
         System.out.println("\t" + CommandParser.DICTIONARY_COMMAND + " TERM_NAME");
         System.out.println("\t" + CommandParser.DICTIONARY_COMMAND + " " + DOWNLOAD_ARGUMENT);
@@ -79,7 +80,7 @@ class DictionaryCommandRunner extends CommandRunner {
         System.out.println("  Download the Bible dictionary:");
         System.out.println();
         System.out.println("\t" + CommandParser.DICTIONARY_COMMAND + " " + DOWNLOAD_ARGUMENT);
-	
+        System.out.println();
     }
     
     

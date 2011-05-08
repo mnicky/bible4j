@@ -28,6 +28,8 @@ class NotesCommandRunner extends CommandRunner {
     private String textOfNote = null;
     
     private List<Note> notes;
+    
+    private boolean deletingRequested;
 
     public NotesCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);
@@ -37,16 +39,67 @@ class NotesCommandRunner extends CommandRunner {
     public void parseCommandLine(String[] args) {
 	positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
 	if (isArgumentPresent(ADD_ARGUMENT, args)) 
-	    textOfNote = parseAddText(args);
+	    textOfNote = getFirstValueOfArgument(ADD_ARGUMENT, args);
+	if (isArgumentPresent(DELETE_ARGUMENT, args))
+	    deletingRequested = true;
     }
     
     @Override
     void doAction() throws BibleStorageException {
-	retrieveOrAddNote();
-	displayNotes();
-        
+	if (textOfNote != null)
+	    addNote();
+	else {
+	    if (deletingRequested)
+		deleteNotes();
+	    else {
+		retrieveNotes();
+		displayNotes();
+	    }
+	}
     }
     
+    private void deleteNotes() throws BibleStorageException {
+	checkIfPositionsExists();
+	if (Utils.isWholeChapter(positions.get(0))) {
+	    logger.error("Whole chapters provided in Bible coordinates for notes when deleting.");
+	    throw new IllegalArgumentException("Notes of whole chapters cannot be deleted.");
+	}
+	else {
+	    for (Position position : positions)
+		bibleStorage.deleteNote(position);
+	    System.out.println("Note(s) deleted.");
+	}
+    }
+
+    private void addNote() throws BibleStorageException {
+	checkIfPositionsExists();
+	if (Utils.isWholeChapter(positions.get(0))) {
+	    logger.error("Whole chapters provided in Bible coordinates for notes when adding.");
+	    throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
+	}
+	bibleStorage.insertNote(new Note(textOfNote, positions.get(0), NoteType.USER_NOTE));
+	System.out.println("Note inserted.");
+    }
+
+    private void retrieveNotes() throws BibleStorageException {
+        checkIfPositionsExists();
+        notes = new ArrayList<Note>();
+    
+        if (Utils.isWholeChapter(positions.get(0)))
+            for (Position position : positions)
+        	notes.addAll(bibleStorage.getNotesForChapter(position));
+        else
+            for (Position position : positions)
+        	notes.addAll(bibleStorage.getNotes(position));
+    }
+
+    private void checkIfPositionsExists() {
+        if (positions.isEmpty()) {
+            logger.error("List of positions for notes is empty");
+            throw new IllegalArgumentException("Coordinate of note not specified");
+        }
+    }
+
     private void displayNotes() {
 	if (notes == null)
 	    return;
@@ -64,42 +117,15 @@ class NotesCommandRunner extends CommandRunner {
 	    System.out.println(note.getPosition() + " \t " + note.getText());
     }
 
-    private void retrieveOrAddNote() throws BibleStorageException {
-	
-	if (positions.isEmpty()) {
-	    logger.error("List of positions for notes is empty");
-	    throw new IllegalArgumentException("Coordinate of note not specified");
-	}
-	
-	if (textOfNote != null) {
-	    if (Utils.isWholeChapter(positions.get(0))) {
-		logger.error("Whole chapters provided in Bible coordinates for notes.");
-		throw new IllegalArgumentException("Notes cannot be added to whole chapters.");
-	    }
-	    bibleStorage.insertNote(new Note(textOfNote, positions.get(0), NoteType.USER_NOTE));
-	    System.out.println("Note inserted.");
-	}
-	else {
-	    notes = new ArrayList<Note>();
-	    
-	    if (Utils.isWholeChapter(positions.get(0)))
-    	    	for (Position position : positions) 
-    	    	    notes.addAll(bibleStorage.getNotesForChapter(position));
-	    else
-		for (Position position : positions) 
-    	    	    notes.addAll(bibleStorage.getNotes(position));
-	}
-	    
-    }
-    
     public List<Note> getNotes() {
 	return notes;
     }
 
     @Override
     public void printHelp() {
+	System.out.println();
 	System.out.println("Usage:");
-        System.out.println("\t" + CommandParser.NOTES_COMMAND + " POSITION [" + ADD_ARGUMENT + " NOTE_TEXT]");
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " POSITION [" + ADD_ARGUMENT + " NOTE_TEXT | " + DELETE_ARGUMENT + "]");
         
         System.out.println();
         System.out.println("\tPOSITION \t Bible coordinates without spaces");
@@ -109,6 +135,8 @@ class NotesCommandRunner extends CommandRunner {
         System.out.println("\tTo view notes, enter just Bible coordinates.");
         System.out.println("\tTo add note, use argument '" + ADD_ARGUMENT + "' and specify the text of note.");
         System.out.println("\tNotes can only be added to one verse. If more verses are specified, the first one is used.");
+        System.out.println("\tTo delete notes, use argument '" + DELETE_ARGUMENT + "'. All notes for the specified positions will be deleted.");
+        System.out.println("\tWhen deleting notes, the Bible POSITION cannot contain chapters without verse numbers (e.g. Mk3 or Jn3-6).");
         System.out.println("\tSee '" + CommandParser.HELP_COMMAND + " " + CommandParser.BIBLE_READ_COMMAND + "' for description of how to define Bible coordinates.");
         
         System.out.println();
@@ -131,6 +159,12 @@ class NotesCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("\t" + CommandParser.NOTES_COMMAND + " Lk3:12 " + ADD_ARGUMENT + " \"This is note text\"");    
         
+        System.out.println();
+        System.out.println("  Delete note:");
+        System.out.println();
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " 1Col2:5 " + DELETE_ARGUMENT);
+        System.out.println("\t" + CommandParser.NOTES_COMMAND + " Rom7,1-6 " + DELETE_ARGUMENT);    
+        System.out.println();
     }
     
     

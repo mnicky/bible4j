@@ -15,6 +15,7 @@ abstract class CommandRunner {
     protected static final String BIBLE_VERSION_ARGUMENT = "-v";
     protected static final String BIBLE_BOOK_ARGUMENT = "-b";
     protected static final String ADD_ARGUMENT = "-add";
+    protected static final String DELETE_ARGUMENT = "-del";
     protected static final String DOWNLOAD_ARGUMENT = "-down";
     
     protected final BibleStorage bibleStorage;

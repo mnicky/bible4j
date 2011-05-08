@@ -53,6 +53,7 @@ class ImportCommandRunner extends CommandRunner {
 
     @Override
     public void printHelp() {
+	System.out.println();
 	System.out.println("Usage:");
         System.out.println("\t" + CommandParser.IMPORT_COMMAND + " PATH_TO_FILE");
         
@@ -64,7 +65,7 @@ class ImportCommandRunner extends CommandRunner {
         
         System.out.println();
         System.out.println("\t" + CommandParser.IMPORT_COMMAND + " kjv-osis-bible.xml");
-	
+        System.out.println();
     }
 
 }

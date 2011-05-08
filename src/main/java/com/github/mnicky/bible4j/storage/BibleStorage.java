@@ -31,7 +31,7 @@ public interface BibleStorage {
     //TODO: change createStorage() to return void
     int[] initializeStorage() throws BibleStorageException;
     
-    void doBackup(String fileName) throws BibleStorageException;
+    void createBackup(String fileName) throws BibleStorageException;
 
     void insertVerse(Verse verse) throws BibleStorageException;
 
@@ -66,11 +66,15 @@ public interface BibleStorage {
 
     void insertNote(Note note) throws BibleStorageException;
 
+    void deleteNote(Position position) throws BibleStorageException;
+    
     List<Note> getNotes(Position position) throws BibleStorageException;
     
     List<Note> getNotesForChapter(Position chapter) throws BibleStorageException;
 
     void insertBookmark(Bookmark bookmark) throws BibleStorageException;
+    
+    void deleteBookmark(String bookmarkName) throws BibleStorageException;
 
     List<Bookmark> getBookmarks() throws BibleStorageException;
 
