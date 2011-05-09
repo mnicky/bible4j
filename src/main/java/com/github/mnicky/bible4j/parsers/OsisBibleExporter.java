@@ -24,6 +24,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ * Class providing the export of Bible to the OSIS format {@link "http://bibletechnologies.net"}
+ */
 public final class OsisBibleExporter implements BibleExporter {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -164,7 +167,7 @@ public final class OsisBibleExporter implements BibleExporter {
 	writeEndElement(writer);
     }
     
-    //TODO change method of obtaining OSIS Book abbreviations to be shorter
+    //TODO change this method of obtaining OSIS Book abbreviations to be shorter
     private String getOsisAbbrFromBibleBook(BibleBook book) {
 	if (book == BibleBook.GENESIS)
 	    return "Gen";

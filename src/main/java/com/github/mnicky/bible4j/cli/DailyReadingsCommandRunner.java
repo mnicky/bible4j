@@ -20,6 +20,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ *  This class invokes and controls the application functionality of viewing and downloading daily Bible readings.
+ */
 class DailyReadingsCommandRunner extends CommandRunner {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -47,7 +50,7 @@ class DailyReadingsCommandRunner extends CommandRunner {
     }
 
     @Override
-    void doAction() throws BibleStorageException {
+    void doRequestedAction() throws BibleStorageException {
 	if (downloading)
 	    return;
 	verses = getReading();
@@ -150,7 +153,7 @@ class DailyReadingsCommandRunner extends CommandRunner {
 	//String[] params = { "-down", "2" };
 	String[] params = { "09-05-2011"};
 	p.parseCommandLine(params);
-	p.doAction();
+	p.doRequestedAction();
     }
 
 }

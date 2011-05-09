@@ -3,6 +3,10 @@ package com.github.mnicky.bible4j.cli;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
+/**
+ * This class controls the backup functionality of the application.
+ *
+ */
 public class BackupCommandRunner extends CommandRunner {
     
     String backupLocation;
@@ -17,7 +21,7 @@ public class BackupCommandRunner extends CommandRunner {
     }
 
     @Override
-    void doAction() throws BibleStorageException {
+    void doRequestedAction() throws BibleStorageException {
 	System.out.println("Backing up the Bible storage to zip file '" + backupLocation + "'...");
 	bibleStorage.createBackup(backupLocation);
 	System.out.println("Backup file created.");

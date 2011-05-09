@@ -10,6 +10,9 @@ import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
+/**
+ * This is abstract class, containig mathods to be overriden by concrete functionality control classes.
+ */
 abstract class CommandRunner {
     
     protected static final String BIBLE_VERSION_ARGUMENT = "-v";
@@ -26,10 +29,13 @@ abstract class CommandRunner {
 
     abstract void parseCommandLine(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException;
     
+    /**
+     * Do action requested by the user.
+     */
+    abstract void doRequestedAction() throws BibleStorageException, BibleExporterException, BibleImporterException;
+    
     abstract public void printHelp();
 
-    abstract void doAction() throws BibleStorageException, BibleExporterException, BibleImporterException;
-    
     protected boolean isArgumentPresent(String arg, String[] args) {
 	
 	for (String a : args)
@@ -76,14 +82,6 @@ abstract class CommandRunner {
 	throw new IllegalArgumentException("Argument " + arg + " not present or without value.");
     }
     
-    private int getArgumentIndex(String arg, String[] args) {
-	for (int i = 0; i < args.length; i++)
-	    if (args[i].equalsIgnoreCase(arg))
-		return i;
-
-	throw new IllegalArgumentException("Argument " + arg + " not present.");
-    }
-    
     protected List<String> getAllValuesOfArgument(String arg, String[] args) {
 	int argPosition = getArgumentIndex(arg, args);
 	List<String> argValues = new ArrayList<String>();
@@ -124,6 +122,14 @@ abstract class CommandRunner {
         return versionList;
     }
 
+    private int getArgumentIndex(String arg, String[] args) {
+        for (int i = 0; i < args.length; i++)
+            if (args[i].equalsIgnoreCase(arg))
+        	return i;
+    
+        throw new IllegalArgumentException("Argument " + arg + " not present.");
+    }
+
     private List<BibleVersion> retrieveAllVersions() throws BibleStorageException {
 	List<BibleVersion> versionsRetrieved = bibleStorage.getAllBibleVersions();
 	if (versionsRetrieved.size() < 1)
@@ -140,15 +146,6 @@ abstract class CommandRunner {
 	}
 	if (versionList.size() < 1)
 	    throw new RuntimeException("No Bible version found.");
-    }
-
-    //TODO merge with method getFirsValueOfArgument() and remove side effects
-    protected String parseAddText(String[] args) {
-        List<String> text = getAllValuesOfArgument(ADD_ARGUMENT , args);
-        if (text.isEmpty())
-            return null;
-        else
-            return text.get(0);
     }
     
     

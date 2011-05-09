@@ -16,6 +16,9 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 //TODO add more similar dictionary downloaders and ability to choose between them
+/**
+ * Class providing the download of The Easton's bible dictionary. 
+ */
 public class EastonsDictionaryDownloader implements DictionaryDownloader {
     
     private static final String TITLE = "Easton's Bible Dictionary";
@@ -65,7 +68,7 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
 
 		if (definitionStarted && segmentIsText(segment))
 		    definitionBuilder.append(segment);
-		if (isStartOfDefinition(segment))
+		if (isStartOfTermDefinition(segment))
 		    definitionStarted = true;
 
 		prev = segment;
@@ -95,7 +98,7 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
 	return source.getNextElement(0, "h3").getTextExtractor().toString().split(":")[1].trim();
     }
 
-    private boolean isStartOfDefinition(Segment segment) {
+    private boolean isStartOfTermDefinition(Segment segment) {
 	return segment.toString().equalsIgnoreCase("</h3>");
     }
 

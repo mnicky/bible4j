@@ -21,6 +21,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ *  This class controls the part of the application functionality which works with Bookmarks. 
+ */
 class BookmarksCommandRunner extends CommandRunner {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -53,7 +56,7 @@ class BookmarksCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doAction() throws BibleStorageException {
+    void doRequestedAction() throws BibleStorageException {
 	if (nameOfBookmark != null) {
 	    if (deletingRequested)
 		deleteBookmarks();
@@ -172,7 +175,7 @@ class BookmarksCommandRunner extends CommandRunner {
 //	String[] params = {"Jn1,1", ADD_ARGUMENT, "Jn 1,1 bookmark", BIBLE_VERSION_ARGUMENT, "kjv"};
 	String[] params2 = {"-v", "czecep", "kjv"};
 	p.parseCommandLine(params2);
-	p.doAction();
+	p.doRequestedAction();
     }
 
 }

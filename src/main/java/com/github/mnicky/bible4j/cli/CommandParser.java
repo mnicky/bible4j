@@ -13,6 +13,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.BibleStorageFactory;
 
+/**
+ * This class parses the first user argument and starts the requested functionality according to it.
+ */
 public class CommandParser {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -41,6 +44,9 @@ public class CommandParser {
 	}
     }
 
+    /**
+     * Launches the functionality requested by the user.
+     */
     public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
 
 	try {
@@ -50,21 +56,23 @@ public class CommandParser {
 		if (helpRequested)
 		    // print specific help
 		    runner.printHelp();
-		else
+		else {
 		    // run the application
-		    runCommandRunner(runner, args);
+		    runner.parseCommandLine(Arrays.copyOfRange(args, 1, args.length));
+		    runner.doRequestedAction();
+		}
 	    }
 	    else {
 		// print main help
 		printProgramInfo();
 		printMainHelp();
 	    }
-	    
+
 	} catch (IllegalArgumentException e) {
-	    //for user
+	    // for user
 	    System.out.println("Error: " + e.getMessage());
 	    System.out.println("       Use command '" + HELP_COMMAND + "' for help");
-	    //log
+	    // log
 	    logger.warn("Probably bad format of input", e);
 	} finally {
 	    try {
@@ -75,11 +83,9 @@ public class CommandParser {
 	}
     }
 
-    private void runCommandRunner(CommandRunner runner, String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
-	runner.parseCommandLine(Arrays.copyOfRange(args, 1, args.length));
-	runner.doAction();
-    }
-
+    /**
+     * Returns CommandRunner for the action (functionality) requested by the user.
+     */
     private CommandRunner getCommandRunner(String[] args) {
 	if (args.length < 1)
 	    return null;
@@ -136,7 +142,7 @@ public class CommandParser {
 	System.out.println(" " + IMPORT_COMMAND + "\t import the Bible");
 	System.out.println(" " + EXPORT_COMMAND + "\t export the Bible");
 	System.out.println(" " + BACKUP_COMMAND + "\t create backup to zip file");
-	System.out.println(" " + INFO_COMMAND + "\t view informations about program and available Bible versions");
+	System.out.println(" " + INFO_COMMAND + "\t view informations about program and stored Bible versions");
 	System.out.println();
 	System.out.println(" Use '" + HELP_COMMAND + " COMMAND' to see help for specific command.");
 	System.out.println();

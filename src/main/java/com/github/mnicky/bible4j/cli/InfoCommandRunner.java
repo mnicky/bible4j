@@ -9,6 +9,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ *  This class invokes and controls the application functionality of displaying the info about program and stored Bible versions.
+ */
 final class InfoCommandRunner extends CommandRunner {
     
     private List<BibleVersion> versions;
@@ -23,7 +26,7 @@ final class InfoCommandRunner extends CommandRunner {
     }
 
     @Override
-    void doAction() {
+    void doRequestedAction() {
 	CommandParser.printProgramInfo();
         printVersionsInfo();
     }
@@ -56,7 +59,7 @@ final class InfoCommandRunner extends CommandRunner {
         System.out.println();
         System.out.println("  View informations about program and available Bible versions:");
         System.out.println();
-        System.out.println("\t" + CommandParser.HELP_COMMAND);
+        System.out.println("\t" + CommandParser.INFO_COMMAND);
         System.out.println();
     }
     
@@ -68,7 +71,7 @@ final class InfoCommandRunner extends CommandRunner {
 	//storage.insertDictTerm(new DictTerm("Jehovah", "Hebrew 'name' for God, meaning 'I am'"));
 	String[] params = {""};
 	p.parseCommandLine(params);
-	p.doAction();
+	p.doRequestedAction();
     }
 
 }

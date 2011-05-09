@@ -16,6 +16,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ *  This class invokes and controls the application functionality of reading the Bible text.
+ */
 final class ReadCommandRunner extends CommandRunner {
 
     private List<Position> positions;
@@ -34,7 +37,7 @@ final class ReadCommandRunner extends CommandRunner {
     }
 
     @Override
-    void doAction() throws BibleStorageException {
+    void doRequestedAction() throws BibleStorageException {
         verses = getVerses();
         displayVerses();
     }
@@ -67,6 +70,7 @@ final class ReadCommandRunner extends CommandRunner {
 	    }
 	    System.out.println(verse.getPosition().getVerseNum() + "  " + verse.getText());
 	}
+	System.out.println();
     }
 
     private List<Verse> getVerses() throws BibleStorageException {
@@ -185,7 +189,7 @@ final class ReadCommandRunner extends CommandRunner {
 	ReadCommandRunner p2 = new ReadCommandRunner(storage);
 	String[] params2 = {"1Jn1,6-7.9", BIBLE_VERSION_ARGUMENT, "czeb21", "kjv"};
 	p2.parseCommandLine(params2);
-	p2.doAction();
+	p2.doRequestedAction();
 	
     }
 

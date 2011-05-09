@@ -15,6 +15,9 @@ import com.github.mnicky.bible4j.parsers.OsisBibleExporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
+/**
+ *  This class invokes and controls the application functionality of exporting the Bible.
+ */
 class ExportCommandRunner extends CommandRunner {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -38,7 +41,7 @@ class ExportCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doAction() throws BibleStorageException, BibleExporterException {
+    void doRequestedAction() throws BibleStorageException, BibleExporterException {
         exportBible();
     }
 
@@ -58,7 +61,7 @@ class ExportCommandRunner extends CommandRunner {
     public void printHelp() {
 	System.out.println();
 	System.out.println("Usage:");
-        System.out.println("\t" + CommandParser.EXPORT_COMMAND + " PATH_TO_FILE [" + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION]");
+        System.out.println("\t" + CommandParser.EXPORT_COMMAND + " PATH_TO_FILE " + BIBLE_VERSION_ARGUMENT + " BIBLE_VERSION");
         
         System.out.println();
         System.out.println("\tPATH_TO_FILE \t path to OSIS file containing the Bible");

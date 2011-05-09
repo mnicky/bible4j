@@ -19,6 +19,10 @@ import org.slf4j.LoggerFactory;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.Position;
 
+/**
+ * Static library class containing various functions for parsing Bible coordinates.
+ *
+ */
 public final class Utils {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -68,6 +72,9 @@ public final class Utils {
 	return source;
     }
     
+    /**
+     * Returns BibleBook confirming the specified abbreviation.
+     */
     public static BibleBook getBibleBookNameByAbbr(String abbr) {
 	
 	Map<String, BibleBook> bookNames;

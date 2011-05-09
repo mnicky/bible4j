@@ -6,6 +6,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for Position class.
+ */
 public class Position_Test {
     
     private Position pos1, pos2, pos3, pos4; 

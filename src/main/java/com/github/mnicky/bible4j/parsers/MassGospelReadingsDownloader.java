@@ -23,6 +23,9 @@ import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 //TODO add more similar readings downloaders and ability to choose between them
+/**
+ * Class providing the download of the Catholic Mass Gospel Readings.
+ */
 public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);

@@ -26,6 +26,9 @@ import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 //TODO add unit tests for this class
 
+/**
+ * Class providing the import of Bible from the OSIS format {@link "http://bibletechnologies.net"}
+ */
 public final class OsisBibleImporter implements BibleImporter {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -148,7 +151,7 @@ public final class OsisBibleImporter implements BibleImporter {
 	return new Position(getBibleBookByOsisAbbr(positionArray[0]), Integer.valueOf(positionArray[1]), Integer.valueOf(positionArray[2]));
     }
 
-    //TODO change method of obtaining Book from OSIS abbreviations to be shorter
+    //TODO change this method of obtaining Book from OSIS abbreviations to be shorter
     private BibleBook getBibleBookByOsisAbbr(String bookAbbr) {
 	if (bookAbbr.equals("Gen"))
 	    return BibleBook.GENESIS;

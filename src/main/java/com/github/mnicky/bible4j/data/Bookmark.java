@@ -1,5 +1,8 @@
 package com.github.mnicky.bible4j.data;
 
+/**
+ * Represents the Bookmark.
+ */
 public final class Bookmark implements Comparable<Bookmark> {
     
     private final String name;

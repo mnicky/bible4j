@@ -1,5 +1,8 @@
 package com.github.mnicky.bible4j.storage;
 
+/**
+ * Interface of factory providing the BibleStorage.
+ */
 public interface BibleStorageFactory {
 
     public BibleStorage createBibleStorage() throws BibleStorageException;

@@ -1,5 +1,8 @@
 package com.github.mnicky.bible4j.data;
 
+/**
+ * Represents a dictionary term.
+ */
 public final class DictTerm {
     
     private final String name;

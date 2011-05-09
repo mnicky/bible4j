@@ -13,6 +13,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ *  This class invokes and controls the application functionality of searching the Bible text.
+ */
 class SearchCommandRunner extends CommandRunner {
     
     private static final String BIBLE_BOOK_PARAMETER = "-b";
@@ -33,7 +36,7 @@ class SearchCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doAction() throws BibleStorageException {
+    void doRequestedAction() throws BibleStorageException {
 	verses = getVerses();
 	displayFoundVerses();
     }
@@ -161,7 +164,7 @@ class SearchCommandRunner extends CommandRunner {
 	SearchCommandRunner p = new SearchCommandRunner(storage);
 	String[] params2 = {"light of life", BIBLE_BOOK_ARGUMENT, "john", "ps", BIBLE_VERSION_ARGUMENT, "kjv", "asv", "rsv", "web"};
 	p.parseCommandLine(params2);
-	p.doAction();
+	p.doRequestedAction();
 	
     }
 

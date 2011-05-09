@@ -5,6 +5,9 @@ import hirondelle.date4j.DateTime;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents the daily Bible reading.
+ */
 public final class DailyReading {
     
     private final String readingListName;

@@ -14,7 +14,7 @@ import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 
 /**
- * Interface representing storage for Bibles.
+ * Interface representing a storage for Bibles.
  */
 public interface BibleStorage {
 

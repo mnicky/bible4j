@@ -14,6 +14,9 @@ import com.github.mnicky.bible4j.parsers.OsisBibleImporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
+/**
+ *  This class invokes and controls the application functionality of importing the Bible.
+ */
 class ImportCommandRunner extends CommandRunner {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -25,7 +28,7 @@ class ImportCommandRunner extends CommandRunner {
     }
 
     @Override
-    void doAction() throws BibleImporterException, BibleStorageException {
+    void doRequestedAction() throws BibleImporterException, BibleStorageException {
         importBible();        
     }
 

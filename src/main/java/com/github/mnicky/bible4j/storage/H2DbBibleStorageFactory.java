@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.github.mnicky.bible4j.AppRunner;
 
+/**
+ * BibleFactory factory, providing the H2DbBibleStorage - a BibleStorage backed by the H2 database.
+ */
 public final class H2DbBibleStorageFactory implements BibleStorageFactory {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -15,19 +18,19 @@ public final class H2DbBibleStorageFactory implements BibleStorageFactory {
     //private String url = "jdbc:h2:tcp://localhost/test";
     private String url = "jdbc:h2:~/bible4j;MVCC=TRUE";
     
-    private String user = "test";
+    private String user = "bible4j";
     
     //TODO password as char array
     private String password = "";
     
-    private static final String URL_PROPERTY_NAME = "h2.url";
-    private static final String USER_PROPERTY_NAME = "h2.user";
-    private static final String PASSWORD_PROPERTY_NAME = "h2.pwd";
+    private static final String URL_PROPERTY_NAME = "db.url";
+    private static final String USER_PROPERTY_NAME = "db.user";
+    private static final String PASSWORD_PROPERTY_NAME = "db.pwd";
     
     /**
      * The url, username and password for h2 database can be set by setter methods of this factory.
-     * This factory method checks for presence of system properties 'h2.url',
-     * 'h2.user' and 'h2.pwd' and if exists, their value overrides values set by setters and 
+     * This factory method checks for presence of system properties 'db.url',
+     * 'db.user' and 'db.pwd' and if exists, their value overrides values set by setters and 
      * is used when creating the storage. If the values aren't set neither by setter methods
      * nor by the properties, the factory's default values are used.
      */

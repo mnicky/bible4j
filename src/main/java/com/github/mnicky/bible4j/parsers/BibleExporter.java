@@ -6,6 +6,9 @@ import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 
+/**
+ * Interface for classes providing exporting Bible to various formats.
+ */
 public interface BibleExporter {
     
     void setStorage(BibleStorage storage);

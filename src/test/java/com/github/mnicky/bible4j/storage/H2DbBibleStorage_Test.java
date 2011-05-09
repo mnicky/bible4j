@@ -28,6 +28,9 @@ import com.github.mnicky.bible4j.data.Note.NoteType;
 
 import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
 
+/**
+ * Unit tests for H2DbBibleStorage class.
+ */
 public final class H2DbBibleStorage_Test {
 
     private Connection conn;

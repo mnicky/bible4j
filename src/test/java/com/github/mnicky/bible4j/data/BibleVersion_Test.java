@@ -4,6 +4,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for BibleVersion class.
+ */
 public class BibleVersion_Test {
     
     private BibleVersion bv1, bv2, bv3, bv4; 

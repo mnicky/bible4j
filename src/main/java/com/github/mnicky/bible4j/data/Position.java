@@ -2,7 +2,7 @@ package com.github.mnicky.bible4j.data;
 
 
 /**
- * Class representing position (coordinates) in the Bible.
+ * Class representing position (coordinates) in the Bible. If verse number is not set, it represents the whole chapter.
  */
 public final class Position implements Comparable<Position> {
     

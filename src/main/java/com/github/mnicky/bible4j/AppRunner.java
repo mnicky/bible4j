@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import com.github.mnicky.bible4j.cli.CommandParser;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorageFactory;
 
+/**
+ * Main class of the application, which starts the application.
+ *
+ */
 public final class AppRunner {
     
     private final static org.slf4j.Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -21,6 +25,10 @@ public final class AppRunner {
      */
     private AppRunner() {}
     
+    /**
+     * Main method of the application, collecting commandline Arguments and starting the Application 
+     * @param args commandline arguments
+     */
     public static void main(String[] args) {
 
 	try {
@@ -36,7 +44,11 @@ public final class AppRunner {
 
     }
 
-    // used as Logger for SLF4J
+    /**
+     * Name of this class is used as Logger name for all classes of this Application and this class is also responsible for setting the Logger level
+     * and logging handler.
+     *
+     */
     public static class AppLogger {
 	
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);

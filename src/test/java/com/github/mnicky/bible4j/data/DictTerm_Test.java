@@ -6,6 +6,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for DictTerm class.
+ */
 public final class DictTerm_Test {
 
     private DictTerm t1, t2, t3;

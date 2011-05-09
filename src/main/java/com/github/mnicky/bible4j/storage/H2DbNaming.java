@@ -2,9 +2,19 @@ package com.github.mnicky.bible4j.storage;
 
 import java.util.Locale;
 
+/**
+ * Class defining the names of the databases and columns used in H2DbBibleStorage.
+ */
 final class H2DbNaming {
 
-    // database tables
+    /**
+     * This is a static library class, so cannot be instantiated.
+     */
+    private H2DbNaming() {
+
+    }
+
+    // database tables names
 
     static final String VERSIONS_BARE = "BIBLE_VERSIONS";
     static final String VERSIONS = "`" + VERSIONS_BARE.toLowerCase(new Locale("en")) + "`";
@@ -101,12 +111,5 @@ final class H2DbNaming {
     static final String TERM_NAME_F = TERMS + "." + TERM_NAME;
     static final String TERM_DEF = "`def`";
     static final String TERM_DEF_F = TERMS + "." + TERM_DEF;
-
-    /**
-     * This is a static library class, so cannot be instantiated.
-     */
-    private H2DbNaming() {
-
-    }
 
 }

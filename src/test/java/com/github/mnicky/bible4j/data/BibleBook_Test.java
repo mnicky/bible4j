@@ -5,6 +5,9 @@ import org.testng.annotations.Test;
 
 import com.github.mnicky.bible4j.data.BibleBook.Testament;
 
+/**
+ * Unit tests for BibleBook class.
+ */
 public class BibleBook_Test {
     
     @Test

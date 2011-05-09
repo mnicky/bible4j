@@ -19,6 +19,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ *  This class invokes and controls the application functionality of working with notes.
+ */
 class NotesCommandRunner extends CommandRunner {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
@@ -45,7 +48,7 @@ class NotesCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doAction() throws BibleStorageException {
+    void doRequestedAction() throws BibleStorageException {
 	if (textOfNote != null)
 	    addNote();
 	else {
@@ -122,10 +125,6 @@ class NotesCommandRunner extends CommandRunner {
 	    System.out.println(note.getPosition() + " \t " + note.getText());
     }
 
-    public List<Note> getNotes() {
-	return notes;
-    }
-
     @Override
     public void printHelp() {
 	System.out.println();
@@ -184,7 +183,7 @@ class NotesCommandRunner extends CommandRunner {
 	
 	String[] params2 = {"Jn1"};
 	p.parseCommandLine(params2);
-	p.doAction();
+	p.doRequestedAction();
 	
     }
 

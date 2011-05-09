@@ -10,6 +10,9 @@ import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.Note.NoteType;
 import com.github.mnicky.bible4j.data.Position;
 
+/**
+ * Unit tests for Note class.
+ */
 public final class Note_Test {
 
     private Note n1, n2, n3;

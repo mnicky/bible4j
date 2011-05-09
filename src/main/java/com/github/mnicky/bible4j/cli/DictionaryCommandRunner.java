@@ -11,6 +11,9 @@ import com.github.mnicky.bible4j.storage.BibleStorage;
 import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
+/**
+ *  This class invokes and controls the application functionality of downloading and viewing the dictionary terms.
+ */
 class DictionaryCommandRunner extends CommandRunner {
     
     private DictTerm dictTerm = null;
@@ -31,7 +34,7 @@ class DictionaryCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doAction() {
+    void doRequestedAction() {
 	if (downloading)
 	    return;
         displayDictTerm();
@@ -91,7 +94,7 @@ class DictionaryCommandRunner extends CommandRunner {
 	//String[] params = {"aaron"};
 	String[] params = {"-down"};
 	p.parseCommandLine(params);
-	p.doAction();
+	p.doRequestedAction();
     }
 
 }

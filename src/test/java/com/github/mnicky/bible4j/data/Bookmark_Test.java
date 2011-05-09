@@ -10,6 +10,9 @@ import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.Bookmark;
 import com.github.mnicky.bible4j.data.Position;
 
+/**
+ * Unit tests for Bookmark class.
+ */
 public final class Bookmark_Test {
 
     private Bookmark b2, b3, b4;

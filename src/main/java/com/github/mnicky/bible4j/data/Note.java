@@ -1,5 +1,8 @@
 package com.github.mnicky.bible4j.data;
 
+/**
+ * Represents note.
+ */
 public final class Note implements Comparable<Note> {
 
     public enum NoteType {
