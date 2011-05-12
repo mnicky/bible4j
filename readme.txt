@@ -1,4 +1,3 @@
-
 About
 =======
 Bible4j is a simple Bible viewer for command line.
@@ -69,7 +68,7 @@ How to run
 ============
 
 Maven will create two files in the 'target/' directory:
-    - bible4j-VERSION                  - app without external dependencies
+    - bible4j-VERSION.jar              - app without external dependencies
     - bible4j-VERSION-with-depends.jar - with external dependencies, ready to run
 
 
