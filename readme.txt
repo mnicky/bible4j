@@ -9,7 +9,7 @@ Information
 
 - Author: Marek Srank (aka Mnicky)
 - E-mail: xmnicky [at] gmail.com
-- Web:	  http://mnicky.github.com
+- Web:    http://mnicky.github.com
 
 - License: The MIT License (http://www.opensource.org/licenses/mit-license.php)
 
