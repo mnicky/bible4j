@@ -93,8 +93,6 @@ public enum BibleBook {
      */
     private final boolean isDeuterocanonical;
     
-    //TODO add bible book abbreviation?
-    
     /**
      * Private constructor for instances of this enum.
      * @param testament Bible testament this book is in
