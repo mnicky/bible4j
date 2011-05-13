@@ -34,7 +34,7 @@ public final class Bookmark_Test {
     @Test
     public void testToString() {
 	String exp = "joel: "
-		+ "But this is that which was spoken by the prophet Joel; - ACTS 2,16; KJV (en)";
+		+ "But this is that which was spoken by the prophet Joel; - ACTS 2,16;  (KJV, en)";
 
 	String tested = b3.toString();
 	assertEquals(tested, exp);
@@ -82,6 +82,13 @@ public final class Bookmark_Test {
 	int h4 = b4.hashCode();
 	boolean b = b2.equals(b4);
 	Assert.assertEquals(h2 == h4, b);
+    }
+    
+    @Test
+    public void shouldCompareBookmarksByPositionsOfTheirVerses() {
+	assertEquals(b2.compareTo(b3), -1);
+	assertEquals(b3.compareTo(b2), 1);
+	assertEquals(b2.compareTo(b2), 0);
     }
 
 }
