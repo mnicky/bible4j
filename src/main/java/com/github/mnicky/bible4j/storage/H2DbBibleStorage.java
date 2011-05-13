@@ -255,7 +255,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    + TERM_DEF + " VARCHAR(20000) NOT NULL)");
 
 	    // TODO make constants from strings
-	    st.addBatch("CALL FT_CREATE_INDEX('PUBLIC', 'VERSES', 'TEXT');");
+	    st.addBatch("CALL FT_CREATE_INDEX('PUBLIC', '" + VERSES_BARE + "', 'TEXT');");
 
 	    columns = commitBatch(st);
 
