@@ -15,13 +15,14 @@ import com.github.mnicky.bible4j.data.Position;
  */
 public final class Note_Test {
 
-    private Note n1, n2, n3;
+    private Note n1, n2, n3, n4;
 
     @BeforeMethod
     public void beforeMethod() {
 	n1 = new Note("some note text", new Position(BibleBook.ACTS, 2, 8), NoteType.COMMENTARY);
 	n2 = new Note("some note text", new Position(BibleBook.ACTS, 2, 8), NoteType.USER_NOTE);
 	n3 = new Note("some note text", new Position(BibleBook.ACTS, 2, 8), NoteType.USER_NOTE);
+	n4 = new Note("some note text", new Position(BibleBook.ACTS, 2, 9), NoteType.USER_NOTE);
 
     }
 
@@ -75,6 +76,25 @@ public final class Note_Test {
 	int h3 = n3.hashCode();
 	boolean b = n1.equals(n3);
 	Assert.assertEquals(h1 == h3, b);
+    }
+    
+    @Test
+    public void compareToShouldCompareNotesByTheirPositions() {
+	Assert.assertEquals(n4.compareTo(n3), 1);
+	Assert.assertEquals(n3.compareTo(n4), -1);
+	Assert.assertEquals(n3.compareTo(n3), 0);
+    }
+    
+    @Test
+    public void shouldReturnNoteTypeConformingSpecifiedChar() {
+	Assert.assertEquals(Note.getNoteTypeByChar('c'), Note.NoteType.COMMENTARY);
+	Assert.assertEquals(Note.getNoteTypeByChar('U'), Note.NoteType.USER_NOTE);
+    }
+    
+    @Test
+    public void shouldReturnFirstCharOfSpecifiedNoteType() {
+	Assert.assertEquals(Note.NoteType.COMMENTARY.getSpecifyingChar(), 'c');
+	Assert.assertEquals(Note.NoteType.USER_NOTE.getSpecifyingChar(), 'u');
     }
 
 }
