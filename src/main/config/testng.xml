@@ -4,6 +4,10 @@
     <classes>
         <class name="com.github.mnicky.bible4j.data.BibleBook_Test"></class>
         <class name="com.github.mnicky.bible4j.data.BibleVersion_Test"></class>
+        <class name="com.github.mnicky.bible4j.data.Bookmark_Test"></class>
+        <class name="com.github.mnicky.bible4j.data.DailyReading_Test"></class>
+        <class name="com.github.mnicky.bible4j.data.DictTerm_Test"></class>
+        <class name="com.github.mnicky.bible4j.data.Note_Test"></class>
         <class name="com.github.mnicky.bible4j.data.Position_Test"></class>
     </classes>
   </test>
