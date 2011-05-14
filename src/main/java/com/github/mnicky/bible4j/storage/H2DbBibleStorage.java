@@ -34,8 +34,6 @@ import static com.github.mnicky.bible4j.storage.H2DbNaming.*;
 public final class H2DbBibleStorage implements BibleStorage {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
-    
-    //TODO update SQL queries with BIBLE_NAME
 
     /**
      * Connection to H2 database.
@@ -61,7 +59,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	try {
 	    this.dbConnection.close();
 	} catch (SQLException e) {
-	    logger.error("Exception caught when closing BibleStorage", e);
+	    logger.error("Exception caught when closing this BibleStorage:", this, e);
 	    throw new BibleStorageException("BibleStorage could not be closed", e);
 	}
     }
@@ -78,7 +76,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    rows = st.executeUpdate();
 	    con.commit();
 	} catch (SQLException e) {
-	    logger.error("Exception caught when committing SQL update", e);
+	    logger.error("Exception caught when committing this SQL update: {}", st, e);
 	    if (con != null)
 		con.rollback();
 	    throw e;
@@ -104,7 +102,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    result = st.executeQuery();
 	    con.commit();
 	} catch (SQLException e) {
-	    logger.error("Exception caught when committing SQL query", e);
+	    logger.error("Exception caught when committing this SQL query: {}", st, e);
 	    if (con != null)
 		con.rollback();
 	    result = null;
@@ -128,7 +126,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    rows = st.executeBatch();
 	    con.commit();
 	} catch (SQLException e) {
-	    logger.error("Exception caught when committing SQL batch statement", e);
+	    logger.error("Exception caught when committing this SQL batch statement: {}", st, e);
 	    if (con != null)
 		con.rollback();
 	    throw e;
@@ -171,7 +169,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    else
 	        return false;
 	} catch (SQLException e) {
-	    logger.error("Exception caught when checking is the storage is initialized", e);
+	    logger.error("Exception caught when checking if the storage is initialized", e);
 	    throw new BibleStorageException("Could not be checked whether the Bible storage is initialized.", e);
 	}
     }
@@ -260,7 +258,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    columns = commitBatch(st);
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when initializing the BibleStorage", e);
+	    logger.error("Exception caught when initializing this BibleStorage: {}", this, e);
 	    throw new BibleStorageException("BibleStorage could not be initialized", e);
 	}
 
@@ -305,7 +303,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setInt(5, verse.getPosition().getVerseNum());
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the verse", e);
+	    logger.error("Exception caught when inserting the verse {}:", verse, e);
 	    throw new BibleStorageException("Verse could not be inserted", e);
 	}
 
@@ -320,7 +318,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setBoolean(2, book.isDeutero());
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the Bible book", e);
+	    logger.error("Exception caught when inserting this Bible book: {}",book, e);
 	    throw new BibleStorageException("Bible book could not be inserted", e);
 	}
     }
@@ -338,7 +336,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setInt(3, position.getVerseNum());
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the Bible position", e);
+	    logger.error("Exception caught when inserting this Bible position: {}", position, e);
 	    throw new BibleStorageException("Position could not be inserted", e);
 	}
     }
@@ -353,7 +351,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(3, version.getName());
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the Bible version", e);
+	    logger.error("Exception caught when inserting this Bible version: {}", version, e);
 	    throw new BibleStorageException("Bible version could not be inserted", e);
 	}
     }
@@ -375,7 +373,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		version = new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the Bible version", e);
+	    logger.error("Exception caught when retrieving the Bible version for this abbreviation: {}", abbr, e);
 	    throw new BibleStorageException("Version could not be retrieved", e);
 	} finally {
 	    try {
@@ -400,7 +398,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st = dbConnection
 	    .prepareStatement("SELECT " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
 			      + "FROM " + VERSIONS
-			      + "ORDER BY " + VERSION_ID_F);
+			      + "ORDER BY " + VERSION_ABBR_F);
 		
 		rs = commitQuery(st);
 
@@ -433,14 +431,13 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-			    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", "
-			    + BOOK_NAME_F
-				      + "FROM " + VERSIONS
-				      + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
-				      + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
-				      + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-				      + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
+		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+		                      + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+				      + " FROM " + VERSIONS
+				      + " INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+				      + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+				      + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+				      + " WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
 			    + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 	    st.setInt(1, position.getChapterNum());
 	    st.setString(2, position.getBook().getName());
@@ -449,10 +446,10 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    rs = commitQuery(st);
 	    while (rs.next())
 		verse = new Verse(rs.getString(1), new Position(BibleBook.getBibleBookByName(rs
-			.getString(6)), rs.getInt(5), rs.getInt(4)), new BibleVersion(rs.getString(2), rs.getString(3)));
+			.getString(2)), rs.getInt(3), rs.getInt(4)), new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7)));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the verse", e);
+		logger.error("Exception caught when retrieving the verse for the position: {} and Bible version: {}", new Object[] {position, version, e});    
 	    throw new BibleStorageException("Verse could not be retrieved", e);
 	} finally {
 	    try {
@@ -477,28 +474,26 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    try {
 		st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
-					    + "FROM " + VERSIONS
-					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
-					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
-					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_ABBR_F
-					    + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
+		.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+		                      + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+				      + " FROM " + VERSIONS
+				      + " INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+				      + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+				      + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+				      + " WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
+			    + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 		st.setInt(1, position.getChapterNum());
 		st.setString(2, position.getBook().getName());
 		st.setString(3, version.getAbbr());
 		st.setInt(4, position.getVerseNum());
 		rs = commitQuery(st);
 		while (rs.next())
-		    verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-			    .getBibleBookByName(rs
-				    .getString(6)), rs.getInt(5), rs
-			    .getInt(4)), new BibleVersion(rs.getString(2), rs
-			    .getString(3))));
+		    verseList.add(new Verse(rs.getString(1),
+		                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+		                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 	    } catch (SQLException e) {
-		    logger.error("Exception caught when retrieving the verses", e);
+		logger.error("Exception caught when retrieving the verse for the position: {} and Bible version: {}", new Object[] {position, version, e});    
 		throw new BibleStorageException("Verses could not be retrieved", e);
 	    } finally {
 		try {
@@ -524,27 +519,24 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	    try {
 		st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
-					    + "FROM " + VERSIONS
-					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
-					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
-					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_ABBR_F
-					    + " = ?");
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+			                      + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+					      + " FROM " + VERSIONS
+					      + " INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+					      + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+					      + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+					      + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND " + VERSION_ABBR_F + " = ?");
 		st.setInt(1, chapter.getChapterNum());
 		st.setString(2, chapter.getBook().getName());
 		st.setString(3, version.getAbbr());
 		rs = commitQuery(st);
 		while (rs.next())
-		    verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-			    .getBibleBookByName(rs
-				    .getString(6)), rs.getInt(5), rs
-			    .getInt(4)), new BibleVersion(rs.getString(2), rs
-			    .getString(3))));
+		    verseList.add(new Verse(rs.getString(1),
+		                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+		                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 	    } catch (SQLException e) {
-		    logger.error("Exception caught when retrieving the verses", e);
+		logger.error("Exception caught when retrieving the verses for the chapter: {} and Bible version: {}", new Object[] {chapter, version, e});
 		throw new BibleStorageException("Verses could not be retrieved", e);
 	    } finally {
 		try {
@@ -583,7 +575,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		                                 rs.getInt(2), 0));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the chapters", e);
+	    logger.error("Exception caught when retrieving the chapters for Bible version: {}", version, e);
 	    throw new BibleStorageException("Chapters could not be retrieved", e);
 	} finally {
 	    try {
@@ -603,39 +595,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 
     @Override
-    public List<BibleVersion> getVersionList() throws BibleStorageException {
-	PreparedStatement st = null;
-	ResultSet rs = null;
-	List<BibleVersion> versionList = new ArrayList<BibleVersion>();
-
-	try {
-	    st = dbConnection
-		    .prepareStatement("SELECT DISTINCT " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
-				    + " FROM " + VERSIONS + " ORDER BY " + VERSION_ABBR_F);
-		
-		rs = commitQuery(st);
-
-		while (rs.next())
-		    versionList.add(new BibleVersion(rs.getString(1), rs.getString(2), rs.getString(3)));
-
-	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the list of Bible versions", e);
-	    throw new BibleStorageException("List of Bible versions could not be retrieved", e);
-	} finally {
-	    try {
-		if (rs != null)
-		    rs.close();
-		if (st != null)
-		    st.close();
-	    } catch (SQLException e) {
-		logger.debug("Exception caught when closing", e);
-	    }
-	}
-
-	return versionList;
-    }
-
-    @Override
     public List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException {
 	PreparedStatement st = null;
 	ResultSet rs = null;
@@ -643,13 +602,13 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-			    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
-				    + "FROM " + VERSIONS
-				    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
-				    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
-				    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-				    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
+		    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+		                      + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+				      + " FROM " + VERSIONS
+				      + " INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+				      + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+				      + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+				      + " WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? AND "
 				    + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 	    for (BibleVersion version : versions) {
 
@@ -661,16 +620,14 @@ public final class H2DbBibleStorage implements BibleStorage {
 		rs = commitQuery(st);
 
 		while (rs.next())
-		    verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-			    .getBibleBookByName(rs
-				    .getString(6)), rs.getInt(5), rs
-			    .getInt(4)), new BibleVersion(rs.getString(2), rs
-			    .getString(3))));
+		    verseList.add(new Verse(rs.getString(1),
+		                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+		                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 	    }
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the verses", e);
+		logger.error("Exception caught when retrieving the verses for the position: {} and Bible versions: {}", new Object[] {position, versions, e});    
 	    throw new BibleStorageException("Verses could not be retrieved", e);
 	} finally {
 	    try {
@@ -697,29 +654,26 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    for (Position position : positions) {
 		try {
 		    st = dbConnection
-			    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-				    + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
-					    + "FROM " + VERSIONS
-					    + "INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
-					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
-					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
-					    + "WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F
-					    + " = ? AND " + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F
-					    + " = ? LIMIT 1");
+			    .prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+			                      + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
+					      + " FROM " + VERSIONS
+					      + " INNER JOIN " + VERSES + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+					      + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+					      + " INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F + " "
+					      + " WHERE " + COORD_CHAPT_F + " = ? AND " + BOOK_NAME_F + " = ? "
+					      + " AND " + VERSION_ABBR_F + " = ? AND " + COORD_VERSE_F + " = ? LIMIT 1");
 		    st.setInt(1, position.getChapterNum());
 		    st.setString(2, position.getBook().getName());
 		    st.setString(3, version.getAbbr());
 		    st.setInt(4, position.getVerseNum());
 		    rs = commitQuery(st);
 		    while (rs.next())
-			verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-				.getBibleBookByName(rs
-					.getString(6)), rs.getInt(5), rs
-				.getInt(4)), new BibleVersion(rs.getString(2), rs
-				.getString(3))));
+			    verseList.add(new Verse(rs.getString(1),
+			                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+			                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 		} catch (SQLException e) {
-		    logger.error("Exception caught when retrieving the verses", e);
+			logger.error("Exception caught when retrieving the verse for the position: {} and Bible version: {}", new Object[] {position, version, e});    
 		    throw new BibleStorageException("Verses could not be retrieved", e);
 		} finally {
 		    try {
@@ -745,8 +699,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 			    + "(" + BKMARK_VERSE + ", " + BKMARK_NAME + ") VALUES"
 			    + "((SELECT DISTINCT " + VERSE_ID_F + " FROM " + VERSES + " WHERE "
 					+ VERSE_VERSION_F + " = (SELECT DISTINCT " + VERSION_ID_F + " FROM " + VERSIONS + " WHERE "
-									+ VERSION_ABBR_F + " = ? AND "
-									+ VERSION_LANG_F + " = ?) AND "
+									+ VERSION_ABBR_F + " = ?) AND "
 					+ VERSE_COORD_F + " = (SELECT DISTINCT " + COORD_ID_F + " FROM " + COORDS + " WHERE"
 									+ COORD_BOOK_F + " = (SELECT DISTINCT "
 											+ BOOK_ID_F + " FROM " + BOOKS + " WHERE "
@@ -755,14 +708,13 @@ public final class H2DbBibleStorage implements BibleStorage {
 									+ COORD_VERSE_F + " = ?))" + ", ?)");
 
 	    st.setString(1, bookmark.getVerse().getBibleVersion().getAbbr());
-	    st.setString(2, bookmark.getVerse().getBibleVersion().getLanguage());
-	    st.setString(3, bookmark.getVerse().getPosition().getBook().getName());
-	    st.setInt(4, bookmark.getVerse().getPosition().getChapterNum());
-	    st.setInt(5, bookmark.getVerse().getPosition().getVerseNum());
-	    st.setString(6, bookmark.getName());
+	    st.setString(2, bookmark.getVerse().getPosition().getBook().getName());
+	    st.setInt(3, bookmark.getVerse().getPosition().getChapterNum());
+	    st.setInt(4, bookmark.getVerse().getPosition().getVerseNum());
+	    st.setString(5, bookmark.getName());
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the bookmark", e);
+	    logger.error("Exception caught when inserting the bookmark: {}", bookmark, e);
 	    throw new BibleStorageException("Bookmark could not be inserted", e);
 	}
 
@@ -778,7 +730,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(1, bookmarkName);
 	    bookmarksDeleted = commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when deleting bookmark", e);
+	    logger.error("Exception caught when deleting the bookmark with name: {}",bookmarkName, e);
 	    throw new BibleStorageException("Bookmark could not be deleted", e);
 	}
 	return bookmarksDeleted;
@@ -792,25 +744,22 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F + "FROM " + BKMARKS
+			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", "
+				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+				+ "FROM " + BKMARKS
 					    + "INNER JOIN " + VERSES + " ON " + BKMARK_VERSE_F + " = " + VERSE_ID_F + " "
 					    + "INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
 					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
 					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F);
 	    rs = commitQuery(st);
 	    while (rs.next())
-		bookmarkList.add(new Bookmark(rs.getString(1), new Verse(rs.getString(2),
-									 new Position(BibleBook
-										 .getBibleBookByName(rs
-											 .getString(7)), rs
-										 .getInt(6), rs
-										 .getInt(5)),
-									 new BibleVersion(rs.getString(3), rs
-										 .getString(4)))));
+		bookmarkList.add(new Bookmark(rs.getString(1),
+		                              new Verse(rs.getString(2),
+		                                        new Position(BibleBook.getBibleBookByName(rs.getString(8)), rs.getInt(7), rs.getInt(6)),
+		                                        new BibleVersion(rs.getString(3), rs.getString(4), rs.getString(5)))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the bookmarks", e);
+	    logger.error("Exception caught when retrieving all the bookmarks", e);
 	    throw new BibleStorageException("Bookmarks could not be retrieved", e);
 	} finally {
 	    try {
@@ -834,27 +783,24 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-				+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F + "FROM " + BKMARKS
-					    + "INNER JOIN " + VERSES + " ON " + BKMARK_VERSE_F + " = " + VERSE_ID_F + " "
-					    + "INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
-					    + "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
-					    + "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
-					    + "WHERE " + VERSION_ABBR_F + " = ?");
+			.prepareStatement("SELECT " + BKMARK_NAME_F + ", " + VERSE_TEXT_F + ", " + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", "
+						+ VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+						+ "FROM " + BKMARKS
+						+ "INNER JOIN " + VERSES + " ON " + BKMARK_VERSE_F + " = " + VERSE_ID_F + " "
+						+ "INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
+						+ "INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F + " "
+						+ "INNER JOIN " + BOOKS + " ON " + COORD_BOOK_F + " = " + BOOK_ID_F
+						+ "WHERE " + VERSION_ABBR_F + " = ?");
 	    st.setString(1, version.getAbbr());
 	    rs = commitQuery(st);
 	    while (rs.next())
-		bookmarkList.add(new Bookmark(rs.getString(1), new Verse(rs.getString(2),
-									 new Position(BibleBook
-										 .getBibleBookByName(rs
-											 .getString(7)), rs
-										 .getInt(6), rs
-										 .getInt(5)),
-									 new BibleVersion(rs.getString(3), rs
-										 .getString(4)))));
+		bookmarkList.add(new Bookmark(rs.getString(1),
+		                              new Verse(rs.getString(2),
+		                                        new Position(BibleBook.getBibleBookByName(rs.getString(8)), rs.getInt(7), rs.getInt(6)),
+		                                        new BibleVersion(rs.getString(3), rs.getString(4), rs.getString(5)))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the bookmarks", e);
+	    logger.error("Exception caught when retrieving the bookmarks for the Bible version: {}", version, e);
 	    throw new BibleStorageException("Bookmarks could not be retrieved", e);
 	} finally {
 	    try {
@@ -890,7 +836,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setInt(5, note.getPosition().getVerseNum());
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the note", e);
+	    logger.error("Exception caught when inserting the note: {}", note, e);
 	    throw new BibleStorageException("Note could not be inserted", e);
 	}
 
@@ -911,7 +857,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     st.setInt(3, position.getVerseNum());
 	    notesDeleted = commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when deleting note", e);
+	    logger.error("Exception caught when deleting note for position: {}", position, e);
 	    throw new BibleStorageException("Note could not be deleted", e);
 	}
 	return notesDeleted;
@@ -941,7 +887,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 						  .getString(5).charAt(0))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the notes", e);
+	    logger.error("Exception caught when retrieving the notes for position: {}", position, e);
 	    throw new BibleStorageException("Notes could not be retrieved", e);
 	} finally {
 	    try {
@@ -981,7 +927,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 						  .getString(5).charAt(0))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the notes", e);
+	    logger.error("Exception caught when retrieving the notes for chapter: {}", chapter, e);
 	    throw new BibleStorageException("Notes could not be retrieved", e);
 	} finally {
 	    try {
@@ -1007,7 +953,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(2, term.getDefinition());
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the dictionary term", e);
+	    logger.error("Exception caught when inserting the dictionary term: {}", term, e);
 	    throw new BibleStorageException("DictTerm could not be inserted", e);
 	}
     }
@@ -1027,7 +973,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		term = new DictTerm(rs.getString(1), rs.getString(2));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the dictionary term", e);
+	    logger.error("Exception caught when retrieving the dictionary term with name: {}", name, e);
 	    throw new BibleStorageException("DictTerm could not be retrieved", e);
 	} finally {
 	    try {
@@ -1050,7 +996,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(1, name);
 	    commitUpdate(st);
 	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the reading list", e);
+	    logger.error("Exception caught when inserting the reading list with name: {}", name, e);
 	    throw new BibleStorageException("Reading list could not be inserted", e);
 	}
     }
@@ -1104,7 +1050,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    } catch (SQLException e1) {
 		    logger.error("Exception caught when trying to rollback after inserting daily readings", e1);
 	    }
-	    logger.error("Exception caught when inserting the daily readings", e);
+	    logger.error("Exception caught when inserting the daily reading: {}", reading, e);
 	    throw new BibleStorageException("DailyReading could not be inserted", e);
 	} finally {
 	    try {
@@ -1142,7 +1088,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 		if (st != null)
 		    st.close();
 	    } catch (SQLException e) {
-		logger.debug("Exception caught when closing", e);
+		logger.debug("Exception caught when closing the resultSet and statement", e);
 	    }
 	}
 	return readingId;
@@ -1200,7 +1146,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    }
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the daily readings", e);
+	    logger.error("Exception caught when retrieving the daily readings for date: {}", date, e);
 	    throw new BibleStorageException("DailyReadings could not be retrieved", e);
 	} finally {
 	    try {
@@ -1223,8 +1169,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+			                    + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
 					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
 					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
 					    + " INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " "
@@ -1234,14 +1180,12 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(1, text);
 	    rs = commitQuery(st);
 	    while (rs.next())
-		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-			    .getBibleBookByName(rs
-				    .getString(6)), rs.getInt(5), rs
-			    .getInt(4)), new BibleVersion(rs.getString(2), rs
-			    .getString(3))));
+		    verseList.add(new Verse(rs.getString(1),
+		                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+		                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when searching the verses", e);
+	    logger.error("Exception caught when searching the verses for the text: {}", text, e);
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
@@ -1266,8 +1210,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+			                    + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
 					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
 					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
 					    + " INNER JOIN " + VERSIONS + " ON " + VERSE_VERSION_F + " = " + VERSION_ID_F + " AND" + VERSION_ABBR_F + " = ?"
@@ -1278,14 +1222,12 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(2, version.getAbbr());
 	    rs = commitQuery(st);
 	    while (rs.next())
-		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-			    .getBibleBookByName(rs
-				    .getString(6)), rs.getInt(5), rs
-			    .getInt(4)), new BibleVersion(rs.getString(2), rs
-			    .getString(3))));
+		    verseList.add(new Verse(rs.getString(1),
+		                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+		                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when searching the verses", e);
+	    logger.error("Exception caught when searching the verses for the text: {} in Bible version: {}", new Object[] {text, version, e});
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
@@ -1310,8 +1252,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+			                    + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
 					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
 					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
 					    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
@@ -1322,14 +1264,12 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(2, book.getName());
 	    rs = commitQuery(st);
 	    while (rs.next())
-		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-			    .getBibleBookByName(rs
-				    .getString(6)), rs.getInt(5), rs
-			    .getInt(4)), new BibleVersion(rs.getString(2), rs
-			    .getString(3))));
+		    verseList.add(new Verse(rs.getString(1),
+		                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+		                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when searching the verses", e);
+	    logger.error("Exception caught when searching the verses for the text: {} in Bible book: {}", new Object[] {text, book, e});
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
@@ -1354,8 +1294,8 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 	try {
 	    st = dbConnection
-			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + VERSION_ABBR_F + ", "
-					  + VERSION_LANG_F + ", " + COORD_VERSE_F + ", " + COORD_CHAPT_F + ", " + BOOK_NAME_F
+			.prepareStatement("SELECT " + VERSE_TEXT_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", " + COORD_VERSE_F + ", "
+			                    + VERSION_NAME_F + ", " + VERSION_ABBR_F + ", " + VERSION_LANG_F
 					    + " FROM FT_SEARCH_DATA(?, 0, 0) FT"
 					    + " INNER JOIN " + VERSES + " ON FT.TABLE = 'VERSES' AND " + VERSE_ID_F + " = FT.KEYS[0]"
 					    + " INNER JOIN " + COORDS + " ON " + VERSE_COORD_F + " = " + COORD_ID_F
@@ -1367,14 +1307,12 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    st.setString(3, version.getAbbr());
 	    rs = commitQuery(st);
 	    while (rs.next())
-		verseList.add(new Verse(rs.getString(1), new Position(BibleBook
-			    .getBibleBookByName(rs
-				    .getString(6)), rs.getInt(5), rs
-			    .getInt(4)), new BibleVersion(rs.getString(2), rs
-			    .getString(3))));
+		    verseList.add(new Verse(rs.getString(1),
+		                            new Position(BibleBook.getBibleBookByName(rs.getString(2)), rs.getInt(3), rs.getInt(4)),
+		                            new BibleVersion(rs.getString(5), rs.getString(6), rs.getString(7))));
 
 	} catch (SQLException e) {
-	    logger.error("Exception caught when searching the verses", e);
+	    logger.error("Exception caught when searching the verses for the text: {} in Bible book: {} and Bible version: {}", new Object[] {text, book, version, e});
 	    throw new BibleStorageException("Verses could not be searched", e);
 	} finally {
 	    try {
