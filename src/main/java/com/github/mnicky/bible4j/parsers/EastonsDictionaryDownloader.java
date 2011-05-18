@@ -41,6 +41,8 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
 
     @Override
     public void downloadDictionary() throws BibleStorageException, IOException {
+	
+	//TODO change to URI(START_URL).toURL()
 	Source source = Utils.getSource(new URL(START_URL), 3, 1000);
 
 	String nextTerm = null;

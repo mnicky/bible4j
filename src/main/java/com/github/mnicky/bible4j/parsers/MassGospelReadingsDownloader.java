@@ -52,6 +52,7 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     @Override
     public void downloadReadings(int nextMonths) throws IOException, BibleStorageException {
 		
+	//TODO change to URI(START_URL).toURL() 
 	Source source = Utils.getSource(new URL(START_URL), 3, 1000);
 	
 	int monthCount = 0;
