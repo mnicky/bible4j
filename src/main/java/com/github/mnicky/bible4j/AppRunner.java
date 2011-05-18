@@ -70,14 +70,14 @@ public final class AppRunner {
 	    getLoggingProperties();
 	    
 	    //reset logger
-	    Logger logger = Logger.getLogger(AppRunner.AppLogger.class.getName());
+	    Logger appLogger = Logger.getLogger(AppRunner.AppLogger.class.getName());
 	    LogManager.getLogManager().reset();
 	    
 	    //set logger settings
-	    logger.setLevel(level);
+	    appLogger.setLevel(level);
 	    handler.setLevel(level);
-	    logger.addHandler(handler);
-	    LogManager.getLogManager().addLogger(logger);
+	    appLogger.addHandler(handler);
+	    LogManager.getLogManager().addLogger(appLogger);
 	}
 
 	private static void getLoggingProperties() {
