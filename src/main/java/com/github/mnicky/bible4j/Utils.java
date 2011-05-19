@@ -129,7 +129,7 @@ public final class Utils {
 	String line;
 
 	try {
-	    r = new BufferedReader(new InputStreamReader(new FileInputStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
+	    r = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
 
 	    while ((line = r.readLine()) != null) {
 		if (line.length() > 0 && !line.startsWith(COMMENT_CHAR)) {
