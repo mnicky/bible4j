@@ -1,11 +1,11 @@
 package com.github.mnicky.bible4j;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -120,7 +120,7 @@ public final class Utils {
 	    r.close();
 	}
 
-	return bookNames;
+	return Collections.unmodifiableMap(bookNames);
     }
     
     public static Map<BibleBook, String> getBookAbbrMap() throws IOException {
@@ -145,7 +145,7 @@ public final class Utils {
 	    r.close();
 	}
 
-	return bookNames;
+	return Collections.unmodifiableMap(bookNames);
     }
 
     public static boolean isWholeChapter(Position position) {
