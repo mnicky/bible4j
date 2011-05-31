@@ -15,8 +15,7 @@ public final class H2DbBibleStorageFactory implements BibleStorageFactory {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
     
-    //private String url = "jdbc:h2:tcp://localhost/test";
-    private String url = "jdbc:h2:~/bible4j;MVCC=TRUE";
+    private String url = "jdbc:h2:~/bible4j";
     
     private String user = "bible4j";
     
