@@ -144,7 +144,7 @@ public class CommandParser {
     static void printProgramInfo() {
 	System.out.println();
         System.out.println(" bible4j - Simple Bible viewer for Java");
-        System.out.println("         - by Marek Srank (xmnicky@gmail.com, http://mnicky.github.com)");
+        System.out.println("         - by mnicky (xmnicky@gmail.com, http://mnicky.github.com)");
         System.out.println();
         System.out.println(" License - The MIT License (http://www.opensource.org/licenses/mit-license.php)");
         System.out.println(" Bugs    - Probably. Please, send bug reports to the email above.");
