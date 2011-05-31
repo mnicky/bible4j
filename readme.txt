@@ -1,4 +1,3 @@
-
 About
 =======
 Bible4j is a simple Bible viewer for command line.
@@ -7,7 +6,7 @@ Bible4j is a simple Bible viewer for command line.
 Information
 =============
 
-- Author: Marek Srank (aka Mnicky)
+- Author: mnicky
 - E-mail: xmnicky [at] gmail.com
 - Web:    http://mnicky.github.com
 
