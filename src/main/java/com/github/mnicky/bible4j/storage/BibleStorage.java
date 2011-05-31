@@ -21,79 +21,77 @@ public interface BibleStorage {
     /**
      * Close this BibleStorage.
      * 
-     * @throws BibleStorageException
-     *             when BibleStorage could not be closed
+     * @throws BibleStorageException when BibleStorage could not be closed
      */
-    void close() throws BibleStorageException;
+    void close();
 
-    public boolean isStorageInitialized() throws BibleStorageException;
+    public boolean isStorageInitialized();
     
     //TODO: change createStorage() to return void
-    int[] initializeStorage() throws BibleStorageException;
+    int[] initializeStorage();
     
-    void createBackup(String fileName) throws BibleStorageException;
+    void createBackup(String fileName);
 
-    void insertVerse(Verse verse) throws BibleStorageException;
+    void insertVerse(Verse verse);
 
-    void insertBibleVersion(BibleVersion version) throws BibleStorageException;
+    void insertBibleVersion(BibleVersion version);
 
-    void insertPosition(Position position) throws BibleStorageException;
+    void insertPosition(Position position);
 
-    void insertBibleBook(BibleBook book) throws BibleStorageException;
+    void insertBibleBook(BibleBook book);
 
-    BibleVersion getBibleVersion(String abbr) throws BibleStorageException;
+    BibleVersion getBibleVersion(String abbr);
     
-    List<BibleVersion> getAllBibleVersions() throws BibleStorageException;
+    List<BibleVersion> getAllBibleVersions();
 
     // merge these four functionalities into the last one (or the first one)?
-    Verse getVerse(Position position, BibleVersion version) throws BibleStorageException;
+    Verse getVerse(Position position, BibleVersion version);
 
-    List<Verse> getVerses(List<Position> position, BibleVersion version) throws BibleStorageException;
+    List<Verse> getVerses(List<Position> position, BibleVersion version);
 
     //TODO replace fake chapter (which is a Position in fact) with real Chapter object
     
     //chapter is represented by Position object with ignored verse number information
-    List<Verse> getChapter(Position chapter, BibleVersion version) throws BibleStorageException;
+    List<Verse> getChapter(Position chapter, BibleVersion version);
     
-    List<Position> getChapterList(BibleVersion version) throws BibleStorageException;
+    List<Position> getChapterList(BibleVersion version);
 
-    List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException;
+    List<Verse> compareVerses(Position position, List<BibleVersion> versions);
 
-    List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions)
-	    throws BibleStorageException;
+    List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions);
 
-    void insertNote(Note note) throws BibleStorageException;
+    void insertNote(Note note);
 
-    int deleteNote(Position position) throws BibleStorageException;
+    int deleteNote(Position position);
     
-    List<Note> getNotes(Position position) throws BibleStorageException;
+    List<Note> getNotes(Position position);
     
-    List<Note> getNotesForChapter(Position chapter) throws BibleStorageException;
+    List<Note> getNotesForChapter(Position chapter);
 
-    void insertBookmark(Bookmark bookmark) throws BibleStorageException;
+    void insertBookmark(Bookmark bookmark);
     
-    int deleteBookmark(String bookmarkName) throws BibleStorageException;
+    int deleteBookmark(String bookmarkName);
 
-    List<Bookmark> getBookmarks() throws BibleStorageException;
+    List<Bookmark> getBookmarks();
 
-    List<Bookmark> getBookmarks(BibleVersion version) throws BibleStorageException;
+    List<Bookmark> getBookmarks(BibleVersion version);
     
-    void insertDictTerm(DictTerm term) throws BibleStorageException;
+    void insertDictTerm(DictTerm term);
     
-    DictTerm getDictTerm(String name) throws BibleStorageException;
+    DictTerm getDictTerm(String name);
     
-    void insertReadingList(String name) throws BibleStorageException;
+    void insertReadingList(String name);
     
-    void insertDailyReading(DailyReading reading) throws BibleStorageException;
+    void insertDailyReading(DailyReading reading);
     
-    List<DailyReading> getDailyReadings(DateTime date) throws BibleStorageException;
+    List<DailyReading> getDailyReadings(DateTime date);
     
-    List<Verse> searchVersesForText(String text) throws BibleStorageException;
+    List<Verse> searchVersesForText(String text);
     
-    List<Verse> searchVersesForText(String text, BibleVersion version) throws BibleStorageException;
+    List<Verse> searchVersesForText(String text, BibleVersion version);
     
-    List<Verse> searchVersesForText(String text, BibleBook book) throws BibleStorageException;
+    List<Verse> searchVersesForText(String text, BibleBook book);
     
-    List<Verse> searchVersesForText(String text, BibleBook book, BibleVersion version) throws BibleStorageException;
+    List<Verse> searchVersesForText(String text, BibleBook book, BibleVersion version);
 
 }

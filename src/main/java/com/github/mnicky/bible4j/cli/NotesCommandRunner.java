@@ -16,7 +16,6 @@ import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Note.NoteType;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -48,7 +47,7 @@ class NotesCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doRequestedAction() throws BibleStorageException {
+    void doRequestedAction() {
 	if (textOfNote != null)
 	    addNote();
 	else {
@@ -61,7 +60,7 @@ class NotesCommandRunner extends CommandRunner {
 	}
     }
     
-    private void deleteNotes() throws BibleStorageException {
+    private void deleteNotes() {
 	checkIfPositionsExists();
 	if (Utils.isWholeChapter(positions.get(0))) {
 	    logger.error("Whole chapters provided in Bible coordinates for notes when deleting.");
@@ -75,7 +74,7 @@ class NotesCommandRunner extends CommandRunner {
 	}
     }
 
-    private void addNote() throws BibleStorageException {
+    private void addNote() {
 	checkIfPositionsExists();
 	if (Utils.isWholeChapter(positions.get(0))) {
 	    logger.error("Whole chapters provided in Bible coordinates for notes when adding.");
@@ -85,7 +84,7 @@ class NotesCommandRunner extends CommandRunner {
 	System.out.println("Note inserted.");
     }
 
-    private void retrieveNotes() throws BibleStorageException {
+    private void retrieveNotes() {
         checkIfPositionsExists();
         notes = new ArrayList<Note>();
     
@@ -173,7 +172,7 @@ class NotesCommandRunner extends CommandRunner {
     
     
     
-    public static void main(String[] args) throws SQLException, BibleStorageException {
+    public static void main(String[] args) throws SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	NotesCommandRunner p = new NotesCommandRunner(storage);
 	

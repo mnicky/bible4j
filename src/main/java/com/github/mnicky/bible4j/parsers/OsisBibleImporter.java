@@ -21,7 +21,6 @@ import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 //TODO add unit tests for this class
@@ -52,7 +51,7 @@ public final class OsisBibleImporter implements BibleImporter {
     }
 
     @Override
-    public void importBible(InputStream input) throws BibleImporterException, BibleStorageException {
+    public void importBible(InputStream input) {
 	XMLStreamReader reader = null;
 	try {
 	    reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
@@ -94,7 +93,7 @@ public final class OsisBibleImporter implements BibleImporter {
 		try {
 		    reader.close();
 		} catch (XMLStreamException e) {
-		    throw new BibleImporterException("Importing error", e);
+		    throw new BibleImporterException("Import stream could not be closed", e);
 		}
 	}
 
@@ -107,7 +106,7 @@ public final class OsisBibleImporter implements BibleImporter {
 	    bibleVersionInserted = false;	
     }
 
-    private void parseWork(BibleStorage storage, XMLStreamReader reader) throws XMLStreamException, BibleStorageException {
+    private void parseWork(BibleStorage storage, XMLStreamReader reader) throws XMLStreamException {
 	
 	while (reader.hasNext() && (
 		!(reader.getEventType() == XMLEvent.START_ELEMENT && reader.getLocalName().equals("title"))
@@ -309,7 +308,7 @@ public final class OsisBibleImporter implements BibleImporter {
     }
 	
     //for testing purpose
-    public static void main(String[] args) throws FileNotFoundException, BibleImporterException, BibleStorageException, SQLException  {
+    public static void main(String[] args) throws FileNotFoundException, SQLException  {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	storage.initializeStorage();
 	

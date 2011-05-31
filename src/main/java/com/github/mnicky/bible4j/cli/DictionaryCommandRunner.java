@@ -8,7 +8,6 @@ import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.parsers.DictionaryDownloader;
 import com.github.mnicky.bible4j.parsers.EastonsDictionaryDownloader;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -24,7 +23,7 @@ class DictionaryCommandRunner extends CommandRunner {
     }
 
     @Override
-    void parseCommandLine(String[] args) throws BibleStorageException, IOException {
+    void parseCommandLine(String[] args) throws IOException {
 	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT)) {
 	    downloading = true;
 	    downloadDictionary();
@@ -47,14 +46,14 @@ class DictionaryCommandRunner extends CommandRunner {
 	    System.out.println("Term not found.");
     }
 
-    private void downloadDictionary() throws BibleStorageException, IOException {
+    private void downloadDictionary() throws IOException {
 	DictionaryDownloader dictdown = new EastonsDictionaryDownloader(bibleStorage);
 	System.out.println("Downloading " + dictdown.getTitle() + "...");
 	dictdown.downloadDictionary();
 	System.out.println("Dictionary downloaded.");
     }
 
-    private DictTerm parseDictTerm(String name) throws BibleStorageException {
+    private DictTerm parseDictTerm(String name) {
 	return bibleStorage.getDictTerm(name);
     }
 
@@ -87,7 +86,7 @@ class DictionaryCommandRunner extends CommandRunner {
     }
     
     
-    public static void main(String[] args) throws SQLException, BibleStorageException, IOException {
+    public static void main(String[] args) throws SQLException, IOException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	DictionaryCommandRunner p = new DictionaryCommandRunner(storage);
 	//storage.insertDictTerm(new DictTerm("Jehovah", "Hebrew 'name' for God, meaning 'I am'"));

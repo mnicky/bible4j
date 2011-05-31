@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mnicky.bible4j.data.BibleVersion;
-import com.github.mnicky.bible4j.parsers.BibleExporterException;
-import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 /**
  * This is abstract class, containig mathods to be overriden by concrete functionality control classes.
@@ -27,12 +24,12 @@ abstract class CommandRunner {
 	this.bibleStorage = bibleStorage;
     }
 
-    abstract void parseCommandLine(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException;
+    abstract void parseCommandLine(String[] args) throws IOException;
     
     /**
      * Do action requested by the user.
      */
-    abstract void doRequestedAction() throws BibleStorageException, BibleExporterException, BibleImporterException;
+    abstract void doRequestedAction();
     
     abstract public void printHelp();
 
@@ -92,7 +89,7 @@ abstract class CommandRunner {
 	return argValues;
     }
 
-    protected List<BibleVersion> parseVersionsAndReturnFirstIfEmpty(String[] args) throws BibleStorageException {
+    protected List<BibleVersion> parseVersionsAndReturnFirstIfEmpty(String[] args) {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
             retrieveSpecificVersions(args, versionList);
@@ -104,7 +101,7 @@ abstract class CommandRunner {
         return versionList;
     }
     
-    protected List<BibleVersion> parseVersionsAndReturnAllIfEmpty(String[] args) throws BibleStorageException {
+    protected List<BibleVersion> parseVersionsAndReturnAllIfEmpty(String[] args) {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
             retrieveSpecificVersions(args, versionList);
@@ -114,7 +111,7 @@ abstract class CommandRunner {
         return versionList;
     }
     
-    protected List<BibleVersion> parseVersionsAndReturnNoneIfEmpty(String[] args) throws BibleStorageException {
+    protected List<BibleVersion> parseVersionsAndReturnNoneIfEmpty(String[] args) {
         List<BibleVersion> versionList = new ArrayList<BibleVersion>();
         if (isArgumentPresent(BIBLE_VERSION_ARGUMENT, args)) {
             retrieveSpecificVersions(args, versionList);
@@ -130,14 +127,14 @@ abstract class CommandRunner {
         throw new IllegalArgumentException("Argument " + arg + " not present.");
     }
 
-    private List<BibleVersion> retrieveAllVersions() throws BibleStorageException {
+    private List<BibleVersion> retrieveAllVersions() {
 	List<BibleVersion> versionsRetrieved = bibleStorage.getAllBibleVersions();
 	if (versionsRetrieved.size() < 1)
 	    throw new RuntimeException("No Bible version found.");
 	return versionsRetrieved;
     }
 
-    private void retrieveSpecificVersions(String[] args, List<BibleVersion> versionList) throws BibleStorageException {
+    private void retrieveSpecificVersions(String[] args, List<BibleVersion> versionList) {
 	for (String versionAbbr : getAllValuesOfArgument(BIBLE_VERSION_ARGUMENT, args)) {
 	    BibleVersion v = bibleStorage.getBibleVersion(versionAbbr);
 	    if (v == null)

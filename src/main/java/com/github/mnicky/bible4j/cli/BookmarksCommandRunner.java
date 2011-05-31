@@ -18,7 +18,6 @@ import com.github.mnicky.bible4j.data.Bookmark;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -43,7 +42,7 @@ class BookmarksCommandRunner extends CommandRunner {
     }
 
     @Override
-    void parseCommandLine(String[] args) throws BibleStorageException {
+    void parseCommandLine(String[] args) {
 	if (args.length > 0 && !isArgument(args[0]))
 	    positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
 	if (isArgumentPresent(ADD_ARGUMENT, args)) 
@@ -56,7 +55,7 @@ class BookmarksCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doRequestedAction() throws BibleStorageException {
+    void doRequestedAction() {
 	if (nameOfBookmark != null) {
 	    if (deletingRequested)
 		deleteBookmarks();
@@ -69,7 +68,7 @@ class BookmarksCommandRunner extends CommandRunner {
 	}
     }
 
-    private void insertBookmark() throws BibleStorageException {
+    private void insertBookmark() {
 	if (positions == null || positions.isEmpty()) {
 	    logger.error("Empty list of Bible coordinates for Bookmark");
 	    throw new IllegalArgumentException("Coordinate of bookmark not specified or in bad format");
@@ -87,12 +86,12 @@ class BookmarksCommandRunner extends CommandRunner {
 	System.out.println("Bookmark inserted.");
     }
 
-    private void deleteBookmarks() throws BibleStorageException {
+    private void deleteBookmarks() {
 	int bookmarksDeleted = bibleStorage.deleteBookmark(nameOfBookmark);
 	System.out.println(bookmarksDeleted + " bookmark(s) deleted.");
     }
 
-    private void retrieveBookmarks() throws BibleStorageException {
+    private void retrieveBookmarks() {
 	bookmarks = new ArrayList<Bookmark>();
 
 	if (versions.isEmpty())
@@ -168,7 +167,7 @@ class BookmarksCommandRunner extends CommandRunner {
 
 
     //for testing purposes
-    public static void main(String[] args) throws BibleStorageException, SQLException {
+    public static void main(String[] args) throws SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	BookmarksCommandRunner p = new BookmarksCommandRunner(storage);
 	

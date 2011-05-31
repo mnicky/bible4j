@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -21,7 +20,7 @@ final class InfoCommandRunner extends CommandRunner {
     }
 
     @Override
-    void parseCommandLine(String[] args) throws BibleStorageException {
+    void parseCommandLine(String[] args) {
 	versions = getVersions();
     }
 
@@ -31,7 +30,7 @@ final class InfoCommandRunner extends CommandRunner {
         printVersionsInfo();
     }
 
-    private List<BibleVersion> getVersions() throws BibleStorageException {
+    private List<BibleVersion> getVersions() {
 	return bibleStorage.getAllBibleVersions();
     }
 
@@ -65,7 +64,7 @@ final class InfoCommandRunner extends CommandRunner {
     
     
     //for testing purposes
-    public static void main(String[] args) throws BibleStorageException, SQLException {
+    public static void main(String[] args) throws SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	InfoCommandRunner p = new InfoCommandRunner(storage);
 	//storage.insertDictTerm(new DictTerm("Jehovah", "Hebrew 'name' for God, meaning 'I am'"));

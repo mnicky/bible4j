@@ -12,7 +12,6 @@ import com.github.mnicky.bible4j.parsers.BibleImporter;
 import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.parsers.OsisBibleImporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 /**
  *  This class invokes and controls the application functionality of importing the Bible.
@@ -28,12 +27,12 @@ class ImportCommandRunner extends CommandRunner {
     }
 
     @Override
-    void doRequestedAction() throws BibleImporterException, BibleStorageException {
+    void doRequestedAction() {
         importBible();        
     }
 
     @Override
-    void parseCommandLine(String[] args) throws BibleImporterException {
+    void parseCommandLine(String[] args) {
 	try {
 	    input = parseInputStream(args);
 	} catch (FileNotFoundException e) {
@@ -42,7 +41,7 @@ class ImportCommandRunner extends CommandRunner {
 	}
     }
     
-    public void importBible() throws BibleImporterException, BibleStorageException {
+    public void importBible() {
 	BibleImporter importer = new OsisBibleImporter(bibleStorage);
 	System.out.println("Importing the Bible...");
 	importer.importBible(input);

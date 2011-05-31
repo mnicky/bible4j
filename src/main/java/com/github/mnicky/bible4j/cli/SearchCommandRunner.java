@@ -10,7 +10,6 @@ import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -29,14 +28,14 @@ class SearchCommandRunner extends CommandRunner {
     }
 
     @Override
-    void parseCommandLine(String[] args) throws BibleStorageException {
+    void parseCommandLine(String[] args) {
 	versions = parseVersionsAndReturnNoneIfEmpty(args);
 	books = parseBooks(args);
 	searchPhrases = parseSearchPhrases(args);
     }
     
     @Override
-    void doRequestedAction() throws BibleStorageException {
+    void doRequestedAction() {
 	verses = getVerses();
 	displayFoundVerses();
     }
@@ -63,7 +62,7 @@ class SearchCommandRunner extends CommandRunner {
 	return pos.toString();
     }
 
-    private List<Verse> getVerses() throws BibleStorageException {
+    private List<Verse> getVerses() {
 	List<Verse> verseList = new ArrayList<Verse>();
 	
 	if (versions.isEmpty() && books.isEmpty())
@@ -159,7 +158,7 @@ class SearchCommandRunner extends CommandRunner {
     }
     
     
-    public static void main(String[] args) throws BibleStorageException, SQLException {
+    public static void main(String[] args) throws SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	SearchCommandRunner p = new SearchCommandRunner(storage);
 	String[] params2 = {"light of life", BIBLE_BOOK_ARGUMENT, "john", "ps", BIBLE_VERSION_ARGUMENT, "kjv", "asv", "rsv", "web"};

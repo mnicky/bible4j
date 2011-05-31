@@ -13,7 +13,6 @@ import com.github.mnicky.bible4j.parsers.BibleExporter;
 import com.github.mnicky.bible4j.parsers.BibleExporterException;
 import com.github.mnicky.bible4j.parsers.OsisBibleExporter;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 
 /**
  *  This class invokes and controls the application functionality of exporting the Bible.
@@ -30,7 +29,7 @@ class ExportCommandRunner extends CommandRunner {
     }
 
     @Override
-    void parseCommandLine(String[] args) throws BibleExporterException, BibleStorageException {
+    void parseCommandLine(String[] args) {
 	    try {
 		output = parseOutputStream(args);
 	    } catch (FileNotFoundException e) {
@@ -41,11 +40,11 @@ class ExportCommandRunner extends CommandRunner {
     }
     
     @Override
-    void doRequestedAction() throws BibleStorageException, BibleExporterException {
+    void doRequestedAction() {
         exportBible();
     }
 
-    private void exportBible() throws BibleStorageException, BibleExporterException {
+    private void exportBible() {
 	BibleExporter exporter = new OsisBibleExporter(bibleStorage);
 	System.out.println("Exporting the Bible...");
 	exporter.exportBible(version, output);

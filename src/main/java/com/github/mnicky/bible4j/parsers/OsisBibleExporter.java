@@ -21,7 +21,6 @@ import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -42,7 +41,7 @@ public final class OsisBibleExporter implements BibleExporter {
     }
 
     @Override
-    public void exportBible(BibleVersion bible, OutputStream stream) throws BibleExporterException, BibleStorageException {
+    public void exportBible(BibleVersion bible, OutputStream stream) {
 	XMLStreamWriter writer = null;
 	try {
 	    writer = XMLOutputFactory.newInstance().createXMLStreamWriter(stream);
@@ -98,7 +97,7 @@ public final class OsisBibleExporter implements BibleExporter {
 		    writer.close();
 		} catch (XMLStreamException e) {
 		    logger.error("Cannot close resources after exporting Bible.", e);
-		    throw new BibleExporterException("Cannot close file.", e);
+		    throw new BibleExporterException("Exporting stream could not be closed.", e);
 		}
 	}
 	
@@ -325,7 +324,7 @@ public final class OsisBibleExporter implements BibleExporter {
     }
 
     //for testing purpose
-    public static void main(String[] args) throws FileNotFoundException, BibleImporterException, BibleStorageException, SQLException, BibleExporterException  {
+    public static void main(String[] args) throws FileNotFoundException, SQLException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	BibleExporter exporter = new OsisBibleExporter(storage);
 	exporter.exportBible(new BibleVersion("King's James Version", "kjv2", "en"), new FileOutputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/my_kjv.xml"));

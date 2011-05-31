@@ -2,24 +2,22 @@ package com.github.mnicky.bible4j.parsers;
 
 import hirondelle.date4j.DateTime;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.DailyReading;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 //TODO add more similar readings downloaders and ability to choose between them
@@ -50,7 +48,7 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     }
 
     @Override
-    public void downloadReadings(int nextMonths) throws IOException, BibleStorageException {
+    public void downloadReadings(int nextMonths) throws IOException {
 		
 	//TODO change to URI(START_URL).toURL() 
 	Source source = Utils.getSource(new URL(START_URL), 3, 1000);
@@ -160,7 +158,7 @@ public final class MassGospelReadingsDownloader implements ReadingsDownloader {
     
     
     //for testing purposes
-    public static void main(String[] args) throws SQLException, IOException, BibleStorageException {
+    public static void main(String[] args) throws SQLException, IOException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	
 	ReadingsDownloader readD = new MassGospelReadingsDownloader(storage);

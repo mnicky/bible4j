@@ -1,9 +1,9 @@
 package com.github.mnicky.bible4j.parsers;
 
 /**
- * Exception thrown when error occurs in BibleImporter.
+ * Unchecked exception, thrown when error occurs in BibleImporter.
  */
-public class BibleImporterException extends Exception {
+public class BibleImporterException extends RuntimeException {
 
     /**
      * UID used in serialization.

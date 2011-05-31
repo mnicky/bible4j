@@ -17,7 +17,6 @@ import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.parsers.MassGospelReadingsDownloader;
 import com.github.mnicky.bible4j.parsers.ReadingsDownloader;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -38,7 +37,7 @@ class DailyReadingsCommandRunner extends CommandRunner {
     }
 
     @Override
-    void parseCommandLine(String[] args) throws IOException, BibleStorageException {
+    void parseCommandLine(String[] args) throws IOException {
 	if (isArgument(args[0]) && args[0].equalsIgnoreCase(DOWNLOAD_ARGUMENT)) {
 	    downloading = true;
 	    downloadReadings(parseDownloadMonthCount(args));
@@ -50,14 +49,14 @@ class DailyReadingsCommandRunner extends CommandRunner {
     }
 
     @Override
-    void doRequestedAction() throws BibleStorageException {
+    void doRequestedAction() {
 	if (downloading)
 	    return;
 	verses = getReading();
 	printReading();
     }
 
-    private List<Verse> getReading() throws BibleStorageException {
+    private List<Verse> getReading() {
 	List<DailyReading> readings = bibleStorage.getDailyReadings(date);
 	if (readings != null && readings.size() > 0)
 	    return bibleStorage.getVerses(readings.get(0).getPositions(), version);
@@ -108,7 +107,7 @@ class DailyReadingsCommandRunner extends CommandRunner {
 	return Integer.valueOf(getFirstValueOfArgument(DOWNLOAD_ARGUMENT, args));
     }
 
-    private void downloadReadings(int nextMonths) throws IOException, BibleStorageException {
+    private void downloadReadings(int nextMonths) throws IOException {
 	ReadingsDownloader readDown = new MassGospelReadingsDownloader(bibleStorage);
 	System.out.println("Downloading " + readDown.getTitle() + "...");
 	readDown.downloadReadings(nextMonths);
@@ -147,7 +146,7 @@ class DailyReadingsCommandRunner extends CommandRunner {
     }
 
     // for testing purposes
-    public static void main(String[] args) throws SQLException, IOException, BibleStorageException {
+    public static void main(String[] args) throws SQLException, IOException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test", "test", ""));
 	DailyReadingsCommandRunner p = new DailyReadingsCommandRunner(storage);
 	//String[] params = { "-down", "2" };

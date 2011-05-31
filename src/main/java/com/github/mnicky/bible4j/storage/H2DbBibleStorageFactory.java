@@ -33,9 +33,11 @@ public final class H2DbBibleStorageFactory implements BibleStorageFactory {
      * 'db.user' and 'db.pwd' and if exists, their value overrides values set by setters and 
      * is used when creating the storage. If the values aren't set neither by setter methods
      * nor by the properties, the factory's default values are used.
+     * 
+     * @throws BibleStorageException when Bible storage could not be created
      */
     @Override
-    public BibleStorage createBibleStorage() throws BibleStorageException {
+    public BibleStorage createBibleStorage() {
 	try {
 	    
 	    if (System.getProperty(URL_PROPERTY_NAME) != null)

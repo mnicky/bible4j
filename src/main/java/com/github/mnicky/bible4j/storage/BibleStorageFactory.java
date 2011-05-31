@@ -5,7 +5,7 @@ package com.github.mnicky.bible4j.storage;
  */
 public interface BibleStorageFactory {
 
-    public BibleStorage createBibleStorage() throws BibleStorageException;
+    public BibleStorage createBibleStorage();
     
     public void setUrl(String url);
 

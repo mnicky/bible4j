@@ -13,7 +13,6 @@ import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 /**
@@ -31,13 +30,13 @@ final class ReadCommandRunner extends CommandRunner {
 	super(bibleStorage);
     }
 
-    void parseCommandLine(String[] args) throws BibleStorageException {
+    void parseCommandLine(String[] args) {
 	versions = parseVersionsAndReturnFirstIfEmpty(args);
 	positions = Utils.parsePositions(getFirstValue(args).toLowerCase(new Locale("en")));
     }
 
     @Override
-    void doRequestedAction() throws BibleStorageException {
+    void doRequestedAction() {
         verses = getVerses();
         displayVerses();
     }
@@ -73,7 +72,7 @@ final class ReadCommandRunner extends CommandRunner {
 	System.out.println();
     }
 
-    private List<Verse> getVerses() throws BibleStorageException {
+    private List<Verse> getVerses() {
         List<Verse> verseList = new ArrayList<Verse>();
         
         if (versions.size() <= 1 && positions.size() <= 1) {
@@ -178,7 +177,7 @@ final class ReadCommandRunner extends CommandRunner {
     }
 
     //for testing purposes
-    public static void main(String[] args) throws BibleStorageException, SQLException {
+    public static void main(String[] args) throws SQLException {
 	CommandRunner p = new ReadCommandRunner(null);
 	String[] params = {"", " + BIBLE_VERSION_ARGUMENT + ", "kjv", "niv", "esv"};
 	

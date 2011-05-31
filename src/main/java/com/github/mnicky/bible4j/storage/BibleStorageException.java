@@ -3,7 +3,7 @@ package com.github.mnicky.bible4j.storage;
 /**
  * Exception thrown when error occurs in BibleStorage.
  */
-public class BibleStorageException extends Exception {
+public class BibleStorageException extends RuntimeException {
 
     /**
      * UID used in serialization.

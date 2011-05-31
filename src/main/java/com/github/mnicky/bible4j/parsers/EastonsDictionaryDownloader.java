@@ -12,7 +12,6 @@ import net.htmlparser.jericho.StartTag;
 import com.github.mnicky.bible4j.Utils;
 import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.H2DbBibleStorage;
 
 //TODO add more similar dictionary downloaders and ability to choose between them
@@ -40,7 +39,7 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
     }
 
     @Override
-    public void downloadDictionary() throws BibleStorageException, IOException {
+    public void downloadDictionary() throws IOException {
 	
 	//TODO change to URI(START_URL).toURL()
 	Source source = Utils.getSource(new URL(START_URL), 3, 1000);
@@ -114,7 +113,7 @@ public class EastonsDictionaryDownloader implements DictionaryDownloader {
     
     
     //for testing purpose
-    public static void main(String[] args) throws SQLException, BibleImporterException, BibleStorageException, IOException {
+    public static void main(String[] args) throws SQLException, IOException {
 	BibleStorage storage = new H2DbBibleStorage(DriverManager.getConnection("jdbc:h2:tcp://localhost/test;MVCC=TRUE", "test", ""));
 	
 	DictionaryDownloader dImp = new EastonsDictionaryDownloader(storage);

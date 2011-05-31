@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.mnicky.bible4j.AppRunner;
-import com.github.mnicky.bible4j.parsers.BibleExporterException;
-import com.github.mnicky.bible4j.parsers.BibleImporterException;
 import com.github.mnicky.bible4j.storage.BibleStorage;
-import com.github.mnicky.bible4j.storage.BibleStorageException;
 import com.github.mnicky.bible4j.storage.BibleStorageFactory;
 
 /**
@@ -36,7 +33,7 @@ public class CommandParser {
     static final String INFO_COMMAND = "info";
     static final String HELP_COMMAND = "help";
 
-    public CommandParser(BibleStorageFactory factory) throws BibleStorageException {
+    public CommandParser(BibleStorageFactory factory) {
 	this.storage = factory.createBibleStorage();
 	if (!storage.isStorageInitialized()) {
 	    logger.debug("BibleStorage not initialized yet. Initializing.");
@@ -47,7 +44,7 @@ public class CommandParser {
     /**
      * Launches the functionality requested by the user.
      */
-    public void launch(String[] args) throws BibleStorageException, BibleImporterException, BibleExporterException, IOException {
+    public void launch(String[] args) throws IOException {
 
 	try {
 	    CommandRunner runner = getCommandRunner(args);
@@ -75,11 +72,7 @@ public class CommandParser {
 	    // log
 	    logger.warn("Probably bad format of input", e);
 	} finally {
-	    try {
 		storage.close();
-	    } catch (BibleStorageException e) {
-		logger.debug("Bible storage could not be closed", e);
-	    }
 	}
     }
 

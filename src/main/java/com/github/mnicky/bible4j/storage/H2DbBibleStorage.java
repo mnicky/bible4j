@@ -55,7 +55,7 @@ public final class H2DbBibleStorage implements BibleStorage {
      * @throws BibleStorageException when H2DbBibleStorage can't be closed
      */
     @Override
-    public void close() throws BibleStorageException {
+    public void close() {
 	try {
 	    this.dbConnection.close();
 	} catch (SQLException e) {
@@ -161,7 +161,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	return (count > 0);
     }
     
-    public boolean isStorageInitialized() throws BibleStorageException {
+    public boolean isStorageInitialized() {
 	try {	    
 	    if (tableExists(VERSIONS_BARE) && tableExists(BOOKS_BARE) && tableExists(COORDS_BARE) && tableExists(VERSES_BARE)
 	    	&& tableExists(NOTES_BARE) && tableExists(BKMARKS_BARE) && tableExists(RLISTS_BARE) && tableExists(READxCOORDS_BARE))
@@ -175,7 +175,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public int[] initializeStorage() throws BibleStorageException {
+    public int[] initializeStorage() {
 
 	int[] columns;
 
@@ -270,7 +270,7 @@ public final class H2DbBibleStorage implements BibleStorage {
      */
     //TODO add unit test
     @Override
-    public void createBackup(String fileName) throws BibleStorageException {
+    public void createBackup(String fileName) {
 	try {
 	    PreparedStatement st = dbConnection
 			    .prepareStatement("BACKUP TO ?");
@@ -283,7 +283,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertVerse(Verse verse) throws BibleStorageException {
+    public void insertVerse(Verse verse) {
 	try {
 	    PreparedStatement st = dbConnection
 		    .prepareStatement("INSERT INTO " + VERSES + " (" + VERSE_TEXT + ", " + VERSE_VERSION
@@ -310,7 +310,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertBibleBook(BibleBook book) throws BibleStorageException {
+    public void insertBibleBook(BibleBook book) {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement("MERGE INTO " + BOOKS
 		    + "(" + BOOK_NAME + ", " + BOOK_DEUT + ") KEY (" + BOOK_NAME + ") VALUES ( ?, ?)");
@@ -324,7 +324,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertPosition(Position position) throws BibleStorageException {
+    public void insertPosition(Position position) {
 	try {
 	    PreparedStatement st = dbConnection
 		    .prepareStatement("MERGE INTO " + COORDS + "(" + COORD_BOOK + ", " + COORD_CHAPT + ", " + COORD_VERSE + ")"
@@ -342,7 +342,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertBibleVersion(BibleVersion version) throws BibleStorageException {
+    public void insertBibleVersion(BibleVersion version) {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement("MERGE INTO " + VERSIONS + " ("
 		    + VERSION_ABBR + ", " + VERSION_LANG + ", " + VERSION_NAME + ") KEY ( " + VERSION_ABBR + " ) VALUES ( ?, ?, ?)");
@@ -357,7 +357,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
     
     @Override
-    public BibleVersion getBibleVersion(String abbr) throws BibleStorageException {
+    public BibleVersion getBibleVersion(String abbr) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	BibleVersion version = null;
@@ -389,7 +389,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
     
     @Override
-    public List<BibleVersion> getAllBibleVersions() throws BibleStorageException {
+    public List<BibleVersion> getAllBibleVersions() {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<BibleVersion> versionList = new ArrayList<BibleVersion>();
@@ -424,7 +424,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 
     @Override
-    public Verse getVerse(Position position, BibleVersion version) throws BibleStorageException {
+    public Verse getVerse(Position position, BibleVersion version) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	Verse verse = null;
@@ -465,7 +465,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<Verse> getVerses(List<Position> positions, BibleVersion version) throws BibleStorageException {
+    public List<Verse> getVerses(List<Position> positions, BibleVersion version) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
@@ -512,7 +512,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     
     //chapter is represented by Position object with ignored verse number information
     @Override
-    public List<Verse> getChapter(Position chapter, BibleVersion version) throws BibleStorageException {
+    public List<Verse> getChapter(Position chapter, BibleVersion version) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
@@ -553,7 +553,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<Position> getChapterList(BibleVersion version) throws BibleStorageException {
+    public List<Position> getChapterList(BibleVersion version) {
 	PreparedStatement st = null;
 	ResultSet rs = null;
 	List<Position> chapterList = new ArrayList<Position>();
@@ -595,7 +595,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
 
     @Override
-    public List<Verse> compareVerses(Position position, List<BibleVersion> versions) throws BibleStorageException {
+    public List<Verse> compareVerses(Position position, List<BibleVersion> versions) {
 	PreparedStatement st = null;
 	ResultSet rs = null;
 	List<Verse> verseList = new ArrayList<Verse>();
@@ -644,8 +644,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions)
-	    throws BibleStorageException {
+    public List<Verse> compareVerses(List<Position> positions, List<BibleVersion> versions) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
@@ -692,7 +691,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertBookmark(Bookmark bookmark) throws BibleStorageException {
+    public void insertBookmark(Bookmark bookmark) {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement(
 		    "INSERT INTO " + BKMARKS
@@ -722,7 +721,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     //TODO add unit test
     @Override
-    public int deleteBookmark(String bookmarkName) throws BibleStorageException {
+    public int deleteBookmark(String bookmarkName) {
 	int bookmarksDeleted = 0;
 	try {
 	    PreparedStatement st = dbConnection
@@ -737,7 +736,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<Bookmark> getBookmarks() throws BibleStorageException {
+    public List<Bookmark> getBookmarks() {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Bookmark> bookmarkList = new ArrayList<Bookmark>();
@@ -776,7 +775,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<Bookmark> getBookmarks(BibleVersion version) throws BibleStorageException {
+    public List<Bookmark> getBookmarks(BibleVersion version) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Bookmark> bookmarkList = new ArrayList<Bookmark>();
@@ -817,7 +816,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertNote(Note note) throws BibleStorageException {
+    public void insertNote(Note note) {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement(
 		    "INSERT INTO " + NOTES
@@ -844,7 +843,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     //TODO add unit test
     @Override
-    public int deleteNote(Position position) throws BibleStorageException {
+    public int deleteNote(Position position) {
 	int notesDeleted = 0;
 	try {
 	    PreparedStatement st = dbConnection
@@ -864,7 +863,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<Note> getNotes(Position position) throws BibleStorageException {
+    public List<Note> getNotes(Position position) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Note> noteList = new ArrayList<Note>();
@@ -905,7 +904,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     
     //TODO add unit test
     @Override
-    public List<Note> getNotesForChapter(Position chapter) throws BibleStorageException {
+    public List<Note> getNotesForChapter(Position chapter) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Note> noteList = new ArrayList<Note>();
@@ -944,7 +943,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertDictTerm(DictTerm term) throws BibleStorageException {
+    public void insertDictTerm(DictTerm term) {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement(
 		    "MERGE INTO " + TERMS
@@ -959,7 +958,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public DictTerm getDictTerm(String name) throws BibleStorageException {
+    public DictTerm getDictTerm(String name) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	DictTerm term = null;
@@ -989,7 +988,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertReadingList(String name) throws BibleStorageException {
+    public void insertReadingList(String name) {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement(
 		    "MERGE INTO " + RLISTS + "(" + RLIST_NAME + ") KEY (" + RLIST_NAME + ") VALUES (?)");
@@ -1003,7 +1002,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     // TODO refactor this method
     @Override
-    public void insertDailyReading(DailyReading reading) throws BibleStorageException {
+    public void insertDailyReading(DailyReading reading) {
 	PreparedStatement st = null;
 	try {
 	    dbConnection.setAutoCommit(false);
@@ -1063,7 +1062,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
     }
 
-    private int getThisReadingId(DailyReading reading) throws BibleStorageException, SQLException {
+    private int getThisReadingId(DailyReading reading) throws SQLException {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	int readingId = 0;
@@ -1096,7 +1095,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<DailyReading> getDailyReadings(DateTime date) throws BibleStorageException {
+    public List<DailyReading> getDailyReadings(DateTime date) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<DailyReading> readings = new ArrayList<DailyReading>();
@@ -1162,7 +1161,7 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public List<Verse> searchVersesForText(String text) throws BibleStorageException {
+    public List<Verse> searchVersesForText(String text) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
@@ -1203,7 +1202,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     //TODO add unit test
     @Override
-    public List<Verse> searchVersesForText(String text, BibleVersion version) throws BibleStorageException {
+    public List<Verse> searchVersesForText(String text, BibleVersion version) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
@@ -1245,7 +1244,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     //TODO add unit test
     @Override
-    public List<Verse> searchVersesForText(String text, BibleBook book) throws BibleStorageException {
+    public List<Verse> searchVersesForText(String text, BibleBook book) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
@@ -1287,7 +1286,7 @@ public final class H2DbBibleStorage implements BibleStorage {
 
     //TODO add unit test
     @Override
-    public List<Verse> searchVersesForText(String text, BibleBook book, BibleVersion version) throws BibleStorageException {
+    public List<Verse> searchVersesForText(String text, BibleBook book, BibleVersion version) {
 	ResultSet rs = null;
 	PreparedStatement st = null;
 	List<Verse> verseList = new ArrayList<Verse>();
