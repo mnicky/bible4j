@@ -35,7 +35,7 @@ public final class AppRunner {
 	    AppLogger.setUpLoggers(Level.OFF, new ConsoleHandler());
 	    CommandParser cp = new CommandParser(new H2DbBibleStorageFactory());
 	    cp.launch(args);
-	} catch (Exception e) {
+	} catch (Throwable e) {
 	    // for user
 	    System.out.println("Error: " + e.getMessage());
 	    // for log
