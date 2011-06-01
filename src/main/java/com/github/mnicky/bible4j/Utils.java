@@ -124,6 +124,7 @@ public final class Utils {
     }
     
     public static Map<BibleBook, String> getBookAbbrMap() throws IOException {
+	//TODO change HashMap to EnumMap?
 	Map<BibleBook, String> bookNames = new HashMap<BibleBook, String>();
 	BufferedReader r = null;
 	String line;
