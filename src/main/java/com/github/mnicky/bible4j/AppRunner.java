@@ -36,9 +36,7 @@ public final class AppRunner {
 	    CommandParser cp = new CommandParser(new H2DbBibleStorageFactory());
 	    cp.launch(args);
 	} catch (Throwable e) {
-	    // for user
 	    System.out.println("Error: " + e.getMessage());
-	    // for log
 	    logger.error("Exception caught", e);
 	}
 
