@@ -63,10 +63,8 @@ public class CommandParser {
 	    }
 
 	} catch (IllegalArgumentException e) {
-	    // for user
 	    System.out.println("Error: " + e.getMessage());
 	    System.out.println("       Use command '" + HELP_COMMAND + "' for help");
-	    // log
 	    logger.warn("Probably bad format of input", e);
 	} finally {
 		storage.close();
