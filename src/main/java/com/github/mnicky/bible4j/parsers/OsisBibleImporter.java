@@ -54,7 +54,7 @@ public final class OsisBibleImporter implements BibleImporter {
     public void importBible(InputStream input) {
 	XMLStreamReader reader = null;
 	try {
-	    reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
+	    reader = XMLInputFactory.newInstance().createXMLStreamReader(input, "utf-8");
 
 	    while (reader.hasNext()) {
 

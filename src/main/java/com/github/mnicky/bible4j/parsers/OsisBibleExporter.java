@@ -41,10 +41,10 @@ public final class OsisBibleExporter implements BibleExporter {
     }
 
     @Override
-    public void exportBible(BibleVersion bible, OutputStream stream) {
+    public void exportBible(BibleVersion bible, OutputStream output) {
 	XMLStreamWriter writer = null;
 	try {
-	    writer = XMLOutputFactory.newInstance().createXMLStreamWriter(stream);
+	    writer = XMLOutputFactory.newInstance().createXMLStreamWriter(output, "utf-8");
 
 	    writer.writeStartDocument("utf-8", "1.0");
 	    writer.writeCharacters("\n");

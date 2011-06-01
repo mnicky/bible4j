@@ -1,5 +1,6 @@
 package com.github.mnicky.bible4j.cli;
 
+import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -52,7 +53,7 @@ class ExportCommandRunner extends CommandRunner {
     }
 
     private OutputStream parseOutputStream(String[] args) throws FileNotFoundException {
-	FileOutputStream out = new FileOutputStream(getFirstValue(args));
+	BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(getFirstValue(args)));
 	return out;
     }
 

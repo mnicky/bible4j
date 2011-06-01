@@ -1,5 +1,6 @@
 package com.github.mnicky.bible4j.cli;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -49,7 +50,7 @@ class ImportCommandRunner extends CommandRunner {
     }
 
     private InputStream parseInputStream(String[] args) throws FileNotFoundException {
-	FileInputStream in = new FileInputStream(getFirstValue(args));
+	BufferedInputStream in = new BufferedInputStream(new FileInputStream(getFirstValue(args)));
 	return in;
     }
 
