@@ -24,7 +24,7 @@ final class ReadCommandRunner extends CommandRunner {
     
     private List<BibleVersion> versions;
     
-    private List<Verse> verses = null;
+    private List<Verse> verses;
     
     public ReadCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);

@@ -53,8 +53,8 @@ public final class AppRunner {
 	
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
 	
-	private static Level level = null;
-	private static Handler handler = null;
+	private static Level level;
+	private static Handler handler;
 	
 	private static final String LOG_LEVEL_PROPERTY_NAME = "log.level";
 	private static final String LOG_FILE_PROPERTY_NAME = "log.file";

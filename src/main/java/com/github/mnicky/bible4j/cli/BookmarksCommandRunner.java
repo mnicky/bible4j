@@ -29,11 +29,11 @@ class BookmarksCommandRunner extends CommandRunner {
 
     private List<Position> positions;
     
-    private String nameOfBookmark = null;
+    private String nameOfBookmark;
     
     private List<BibleVersion> versions;
     
-    private List<Bookmark> bookmarks = null;
+    private List<Bookmark> bookmarks;
     
     private boolean deletingRequested;
 

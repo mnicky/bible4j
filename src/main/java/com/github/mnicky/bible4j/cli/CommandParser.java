@@ -19,7 +19,7 @@ public class CommandParser {
 
     private final BibleStorage storage;
 
-    private boolean helpRequested = false;
+    private boolean helpRequested;
 
     static final String BIBLE_READ_COMMAND = "read";
     static final String BIBLE_SEARCH_COMMAND = "search";

@@ -27,7 +27,7 @@ class NotesCommandRunner extends CommandRunner {
     
     private List<Position> positions;
     
-    private String textOfNote = null;
+    private String textOfNote;
     
     private List<Note> notes;
     

@@ -1,6 +1,7 @@
 package com.github.mnicky.bible4j;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,7 +29,7 @@ public final class Utils {
     
     private final static Logger logger = LoggerFactory.getLogger(AppRunner.AppLogger.class);
     
-    private static final String BIBLE_BOOK_ABBRS_FILE = "/bibleBookAbbrs.conf";
+    private static final String BIBLE_BOOK_ABBRS_FILE = File.separatorChar + "bibleBookAbbrs.conf";
     private static final String COMMENT_CHAR = "#";
     private static final String SPLIT_CHAR = ":";
     

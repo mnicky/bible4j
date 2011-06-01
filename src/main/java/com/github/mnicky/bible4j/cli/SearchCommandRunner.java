@@ -21,7 +21,7 @@ class SearchCommandRunner extends CommandRunner {
     private List<BibleVersion> versions;
     private List<BibleBook> books;
     private String searchPhrases;
-    private List<Verse> verses = null;
+    private List<Verse> verses;
 
     public SearchCommandRunner(BibleStorage bibleStorage) {
 	super(bibleStorage);

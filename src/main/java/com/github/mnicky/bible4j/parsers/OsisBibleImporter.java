@@ -38,9 +38,9 @@ public final class OsisBibleImporter implements BibleImporter {
 
     private BibleVersion currentBibleVersion = new BibleVersion("unknown", "unknown", "unknown");
 
-    private Position currentPosition = null;
+    private Position currentPosition;
     
-    boolean bibleVersionInserted = false;
+    boolean bibleVersionInserted;
     
     public OsisBibleImporter(BibleStorage storage) {
 	this.storage = storage;
