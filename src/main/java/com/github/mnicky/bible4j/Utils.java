@@ -2,6 +2,7 @@ package com.github.mnicky.bible4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -98,13 +99,12 @@ public final class Utils {
 
     public static Map<String, BibleBook> getAbbrBookMap() throws IOException {
 	Map<String, BibleBook> bookNames = new HashMap<String, BibleBook>();
-	BufferedReader r = null;
+	BufferedReader reader = null;
 	String line;
-	
 	try {	    
-	    r = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
+	    reader = new BufferedReader(new InputStreamReader(getResourceInputStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
 	    
-	    while ((line = r.readLine()) != null) {
+	    while ((line = reader.readLine()) != null) {
 		if (line.length() > 0 && !line.startsWith(COMMENT_CHAR)) {
 		    String[] abbrAndName = line.split(SPLIT_CHAR);
 		    if (abbrAndName.length != 2) {
@@ -112,27 +112,27 @@ public final class Utils {
 			throw new RuntimeException("Bad format in configuration file " + BIBLE_BOOK_ABBRS_FILE);
 		    }
 
-		    //System.out.println(abbrAndName[0] + " " + abbrAndName[1]);
 		    bookNames.put(abbrAndName[0], BibleBook.getBibleBookByName(abbrAndName[1]));
 		}
 	    }
 	} finally {
-	    r.close();
+	    if (reader != null)
+		reader.close();
 	}
 
 	return Collections.unmodifiableMap(bookNames);
     }
-    
+
     public static Map<BibleBook, String> getBookAbbrMap() throws IOException {
 	//TODO change HashMap to EnumMap?
 	Map<BibleBook, String> bookNames = new HashMap<BibleBook, String>();
-	BufferedReader r = null;
+	BufferedReader reader = null;
 	String line;
 
 	try {
-	    r = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
+	    reader = new BufferedReader(new InputStreamReader(getResourceInputStream(BIBLE_BOOK_ABBRS_FILE), "utf-8"));
 
-	    while ((line = r.readLine()) != null) {
+	    while ((line = reader.readLine()) != null) {
 		if (line.length() > 0 && !line.startsWith(COMMENT_CHAR)) {
 		    String[] abbrAndName = line.split(SPLIT_CHAR);
 		    if (abbrAndName.length != 2) {
@@ -143,7 +143,7 @@ public final class Utils {
 		}
 	    }
 	} finally {
-	    r.close();
+	    reader.close();
 	}
 
 	return Collections.unmodifiableMap(bookNames);
@@ -179,6 +179,15 @@ public final class Utils {
             verses = parseVerses(posDef);
         
         return getPositions(book, chapters, verses);	
+    }
+
+    private static InputStream getResourceInputStream(String resourceFileName) {
+        InputStream resourceStream = Utils.class.getResourceAsStream(resourceFileName);
+        if (resourceStream == null) {
+            logger.error("Resource stream is null. Resource file {} not present?", resourceFileName);
+            throw new RuntimeException("Resource file probably not present.");
+        }
+        return resourceStream;
     }
 
     private static List<Position> getPositions(BibleBook book, List<Integer> chapters, List<Integer> verses) {
