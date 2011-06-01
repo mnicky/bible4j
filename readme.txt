@@ -82,13 +82,13 @@ from command line in a standard way like all Java applications, with the command
 Database
 ==========
 Bible4j uses the H2 database (http://h2database.com) as its backing storage.
-The database file named 'bible4j.h.db' is created in the user home directory
+The database file named 'bible4j.h2.db' is created in the user home directory
 by default.
 
 It is possible to use alternative database settings, which can be set using these
 Java system properties at the run time:
 
-    db.url  - database url (dafault is: jdbc:h2:~/bible4j;MVCC=TRUE)
+    db.url  - database url (dafault is: jdbc:h2:~/bible4j)
     db.user - database login (default is 'bible4j')
     db.pwd  - database password (not used by default)
 
