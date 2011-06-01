@@ -157,8 +157,8 @@ public final class H2DbBibleStorage implements BibleStorage {
     
     public boolean isStorageInitialized() {
 	try {	    
-	    if (tableExists(VERSIONS_BARE) && tableExists(BOOKS_BARE) && tableExists(COORDS_BARE) && tableExists(VERSES_BARE)
-	    	&& tableExists(NOTES_BARE) && tableExists(BKMARKS_BARE) && tableExists(RLISTS_BARE) && tableExists(READxCOORDS_BARE))
+	    if (tableExists(VERSIONS_BARE) && tableExists(BOOKS_BARE) && tableExists(COORDS_BARE)
+		    && tableExists(VERSES_BARE) && tableExists(NOTES_BARE) && tableExists(BKMARKS_BARE))
 	        return true;
 	    else
 	        return false;
@@ -223,28 +223,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 		    + BKMARK_NAME + " VARCHAR_IGNORECASE(50) NOT NULL,"
 		    + BKMARK_VERSE + " INT NOT NULL,"
 		    + "FOREIGN KEY (" + BKMARK_VERSE + ") REFERENCES " + VERSES + ")");
-
-	    st.addBatch("CREATE TABLE IF NOT EXISTS " + RLISTS + " ("
-		    + RLIST_ID + " INT IDENTITY NOT NULL,"
-		    + RLIST_NAME + " VARCHAR_IGNORECASE(50) NOT NULL UNIQUE)");
-
-	    st.addBatch("CREATE TABLE IF NOT EXISTS " + READS + " ("
-		    + READ_ID + " INT IDENTITY NOT NULL,"
-		    + READ_DATE + " DATE NOT NULL,"
-		    + READ_LIST + " INT NOT NULL,"
-		    + "FOREIGN KEY (" + READ_LIST + ") REFERENCES " + RLISTS + ")");
-
-	    st.addBatch("CREATE TABLE IF NOT EXISTS " + READxCOORDS + " ("
-		    + READxCOORD_ID + " INT IDENTITY NOT NULL,"
-		    + READxCOORD_COORD + " INT NOT NULL,"
-		    + READxCOORD_READ + " INT NOT NULL,"
-		    + "FOREIGN KEY (" + READxCOORD_COORD + ") REFERENCES " + COORDS + ","
-		    + "FOREIGN KEY (" + READxCOORD_READ + ") REFERENCES " + READS + ")");
-
-	    st.addBatch("CREATE TABLE IF NOT EXISTS " + TERMS + " ("
-		    + TERM_ID + " INT IDENTITY NOT NULL,"
-		    + TERM_NAME + " VARCHAR_IGNORECASE (50) NOT NULL UNIQUE,"
-		    + TERM_DEF + " VARCHAR(20000) NOT NULL)");
 
 	    // TODO make constants from strings
 	    st.addBatch("CALL FT_CREATE_INDEX('PUBLIC', '" + VERSES_BARE + "', 'TEXT');");
@@ -917,19 +895,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
 
 	return noteList;
-    }
-
-    @Override
-    public void insertReadingList(String name) {
-	try {
-	    PreparedStatement st = dbConnection.prepareStatement(
-		    "MERGE INTO " + RLISTS + "(" + RLIST_NAME + ") KEY (" + RLIST_NAME + ") VALUES (?)");
-	    st.setString(1, name);
-	    commitUpdate(st);
-	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the reading list with name: {}", name, e);
-	    throw new BibleStorageException("Reading list could not be inserted", e);
-	}
     }
 
     @Override

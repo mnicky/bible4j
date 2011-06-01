@@ -751,39 +751,6 @@ public final class H2DbBibleStorage_Test {
     }
 
     @Test
-    public void insertReadingListShouldInsertReadingList() {
-	String exp = "reading list";
-	String actual = null;
-
-	try {
-	    // given
-	    bible.initializeStorage();
-
-	    // when
-	    bible.insertReadingList("reading list");
-
-	    Statement st = conn.createStatement();
-	    ResultSet rs = st
-		    .executeQuery("SELECT " + RLIST_NAME_F + " FROM " + RLISTS + " WHERE " + RLIST_NAME_F + " = 'reading list' LIMIT 1");
-
-	    while (rs.next()) {
-		actual = rs.getString(1);
-	    }
-	    if (rs != null)
-		rs.close();
-	    if (st != null)
-		st.close();
-
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    Assert.fail();
-	}
-
-	// then
-	Assert.assertEquals(actual, exp);
-    }
-
-    @Test
     public void searchVersesForTextShouldReturnAllVersesFound() {
 	List<Verse> exp = new ArrayList<Verse>();
 	exp.add(new Verse("search2 textik1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("King's James Version", "KJV", "en")));

@@ -70,8 +70,6 @@ public interface BibleStorage {
 
     List<Bookmark> getBookmarks(BibleVersion version);
     
-    void insertReadingList(String name);
-    
     List<Verse> searchVersesForText(String text);
     
     List<Verse> searchVersesForText(String text, BibleVersion version);

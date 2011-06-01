@@ -78,38 +78,4 @@ final class H2DbNaming {
     static final String BKMARK_VERSE = "`verse_id`";
     static final String BKMARK_VERSE_F = BKMARKS + "." + BKMARK_VERSE;
 
-    static final String RLISTS_BARE = "DAILY_READINGS_LISTS";
-    static final String RLISTS = "`" + RLISTS_BARE.toLowerCase(new Locale("en")) + "`";
-    static final String RLIST_ID = "`id`";
-    static final String RLIST_ID_F = RLISTS + "." + RLIST_ID;
-    static final String RLIST_NAME = "`name`";
-    static final String RLIST_NAME_F = RLISTS + "." + RLIST_NAME;
-
-    static final String READS_BARE = "DAILY_READINGS";
-    static final String READS = "`" + READS_BARE.toLowerCase(new Locale("en")) + "`";
-    static final String READ_ID = "`id`";
-    static final String READ_ID_F = READS + "." + READ_ID;
-    static final String READ_DATE = "`date`";
-    static final String READ_DATE_F = READS + "." + READ_DATE;
-    static final String READ_LIST = "`daily_readings_list_id`";
-    static final String READ_LIST_F = READS + "." + READ_LIST;
-
-    static final String READxCOORDS_BARE = "READINGS_COORDS";
-    static final String READxCOORDS = "`" + READxCOORDS_BARE.toLowerCase(new Locale("en")) + "`";
-    static final String READxCOORD_ID = "`id`";
-    static final String READxCOORD_ID_F = READxCOORDS + "." + READxCOORD_ID;
-    static final String READxCOORD_COORD = "`coord_id`";
-    static final String READxCOORD_COORD_F = READxCOORDS + "." + READxCOORD_COORD;
-    static final String READxCOORD_READ = "`reading_id`";
-    static final String READxCOORD_READ_F = READxCOORDS + "." + READxCOORD_READ;
-
-    static final String TERMS_BARE = "DICT_TERMS";
-    static final String TERMS = "`" + TERMS_BARE.toLowerCase(new Locale("en")) + "`";
-    static final String TERM_ID = "`id`";
-    static final String TERM_ID_F = TERMS + "." + TERM_ID;
-    static final String TERM_NAME = "`name`";
-    static final String TERM_NAME_F = TERMS + "." + TERM_NAME;
-    static final String TERM_DEF = "`def`";
-    static final String TERM_DEF_F = TERMS + "." + TERM_DEF;
-
 }
