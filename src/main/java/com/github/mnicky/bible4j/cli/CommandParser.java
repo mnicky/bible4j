@@ -67,6 +67,7 @@ public class CommandParser {
 	    System.out.println("       Use command '" + HELP_COMMAND + "' for help");
 	    logger.warn("Probably bad format of input", e);
 	} finally {
+	    if (storage != null)
 		storage.close();
 	}
     }
