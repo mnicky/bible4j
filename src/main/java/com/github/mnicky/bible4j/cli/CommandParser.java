@@ -23,12 +23,9 @@ public class CommandParser {
 
     static final String BIBLE_READ_COMMAND = "read";
     static final String BIBLE_SEARCH_COMMAND = "search";
-    static final String BACKUP_COMMAND = "backup";
     static final String IMPORT_COMMAND = "import";
     static final String EXPORT_COMMAND = "export";
     static final String NOTES_COMMAND = "note";
-    static final String DICTIONARY_COMMAND = "dict";
-    static final String DAILY_READINGS_COMMAND = "daily";
     static final String BOOKMARKS_COMMAND = "bkmark";
     static final String INFO_COMMAND = "info";
     static final String HELP_COMMAND = "help";
@@ -89,9 +86,6 @@ public class CommandParser {
 	else if (args[0].equalsIgnoreCase(BIBLE_SEARCH_COMMAND))
 	    return new SearchCommandRunner(storage);
 
-	else if (args[0].equalsIgnoreCase(BACKUP_COMMAND))
-	    return new BackupCommandRunner(storage);
-
 	else if (args[0].equalsIgnoreCase(IMPORT_COMMAND))
 	    return new ImportCommandRunner(storage);
 
@@ -100,12 +94,6 @@ public class CommandParser {
 
 	else if (args[0].equalsIgnoreCase(NOTES_COMMAND))
 	    return new NotesCommandRunner(storage);
-
-	else if (args[0].equalsIgnoreCase(DICTIONARY_COMMAND))
-	    return new DictionaryCommandRunner(storage);
-
-	else if (args[0].equalsIgnoreCase(DAILY_READINGS_COMMAND))
-	    return new DailyReadingsCommandRunner(storage);
 
 	else if (args[0].equalsIgnoreCase(BOOKMARKS_COMMAND))
 	    return new BookmarksCommandRunner(storage);
@@ -130,11 +118,8 @@ public class CommandParser {
 	System.out.println(" " + BIBLE_SEARCH_COMMAND + "\t search the Bible");
 	System.out.println(" " + NOTES_COMMAND + "\t add notes to the Bible text");
 	System.out.println(" " + BOOKMARKS_COMMAND + "\t bookmark a Bible passage");
-	System.out.println(" " + DAILY_READINGS_COMMAND + "\t view daily readings");
-	System.out.println(" " + DICTIONARY_COMMAND + "\t look up a word in a Biblical dictionary");
 	System.out.println(" " + IMPORT_COMMAND + "\t import the Bible");
 	System.out.println(" " + EXPORT_COMMAND + "\t export the Bible");
-	System.out.println(" " + BACKUP_COMMAND + "\t create backup to zip file");
 	System.out.println(" " + INFO_COMMAND + "\t view informations about program and stored Bible versions");
 	System.out.println();
 	System.out.println(" Use '" + HELP_COMMAND + " COMMAND' to see help for specific command.");

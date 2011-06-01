@@ -1,7 +1,5 @@
 package com.github.mnicky.bible4j.storage;
 
-import hirondelle.date4j.DateTime;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -19,8 +17,6 @@ import org.testng.annotations.Test;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
-import com.github.mnicky.bible4j.data.DailyReading;
-import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
@@ -755,65 +751,6 @@ public final class H2DbBibleStorage_Test {
     }
 
     @Test
-    public void insertDictTermShouldInsertDictTerm() {
-	Object[] exp = { "term number one", "term text" };
-	Object[] actual = new Object[2];
-
-	try {
-	    // given
-	    bible.initializeStorage();
-
-	    // when
-	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
-
-	    Statement st = conn.createStatement();
-	    ResultSet rs = st
-		    .executeQuery("SELECT " + TERM_NAME_F + ", " + TERM_DEF_F + " FROM " + TERMS
-				  + " WHERE " + TERM_NAME_F + " = 'term number one' LIMIT 1");
-
-	    int i = 0;
-	    while (rs.next()) {
-		actual[i++] = rs.getString(1);
-		actual[i++] = rs.getString(2);
-	    }
-	    if (rs != null)
-		rs.close();
-	    if (st != null)
-		st.close();
-
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    Assert.fail();
-	}
-
-	// then
-	Assert.assertTrue(Arrays.deepEquals(actual, exp));
-    }
-
-    @Test
-    public void getDictTermShouldRetrieveRequestedTerm() {
-	DictTerm exp = new DictTerm("term number one", "term text");
-	DictTerm retrieved = null;
-
-	try {
-	    // given
-	    bible.initializeStorage();
-	    bible.insertDictTerm(new DictTerm("term number one", "term text"));
-	    bible.insertDictTerm(new DictTerm("term number two", "term text"));
-	    bible.insertDictTerm(new DictTerm("term number three", "term text"));
-
-	    // when
-	    retrieved = bible.getDictTerm("term number one");
-
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    Assert.fail();
-	}
-	// then
-	Assert.assertEquals(retrieved, exp);
-    }
-
-    @Test
     public void insertReadingListShouldInsertReadingList() {
 	String exp = "reading list";
 	String actual = null;
@@ -844,106 +781,6 @@ public final class H2DbBibleStorage_Test {
 
 	// then
 	Assert.assertEquals(actual, exp);
-    }
-
-    @Test
-    public void insertDailyReadingShouldInsertDailyReading() {
-
-	Object[] exp = { "verse text 1", "verse text 2" };
-	Object[] actual = new Object[2];
-
-	try {
-	    // given
-	    bible.initializeStorage();
-	    bible.insertBibleVersion(new BibleVersion("King's James Version", "KJV", "en"));
-	    bible.insertBibleBook(BibleBook.JOHN);
-	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
-	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 7));
-	    bible.insertReadingList("reading list");
-	    bible.insertVerse(new Verse("verse text 1", new Position(BibleBook.JOHN, 1, 6), new BibleVersion("King's James Version", "KJV", "en")));
-	    bible.insertVerse(new Verse("verse text 2", new Position(BibleBook.JOHN, 1, 7), new BibleVersion("King's James Version", "KJV", "en")));
-
-	    List<Position> positions = new ArrayList<Position>();
-	    positions.add(new Position(BibleBook.JOHN, 1, 6));
-	    positions.add(new Position(BibleBook.JOHN, 1, 7));
-
-	    // when
-	    bible.insertDailyReading(new DailyReading("reading list", new DateTime("2011-07-12"), positions));
-
-	    Statement st = conn.createStatement();
-	    ResultSet rs = st
-		    .executeQuery("SELECT " + VERSE_TEXT_F
-			    + " FROM " + VERSES
-			    + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + VERSE_COORD_F
-			    + " INNER JOIN " + READxCOORDS + " ON " + READxCOORD_COORD_F + " = " + COORD_ID_F
-			    + " INNER JOIN " + READS + " ON " + READ_ID_F + " = " + READxCOORD_READ_F
-			    + " WHERE " + READ_DATE_F + " = " + "'2011-07-12'");
-
-	    int i = 0;
-	    while (rs.next()) {
-		actual[i++] = rs.getString(1);
-	    }
-	    if (rs != null)
-		rs.close();
-	    if (st != null)
-		st.close();
-
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    Assert.fail();
-	}
-	// then
-	Assert.assertTrue(Arrays.deepEquals(actual, exp));
-    }
-
-    @Test
-    public void getDailyReadingsShouldRetrieveAllDailyReadingsForSpecifiedDate() {
-	List<DailyReading> exp = new ArrayList<DailyReading>();
-
-	List<Position> positions1 = new ArrayList<Position>();
-	positions1.add(new Position(BibleBook.JOHN, 1, 1));
-	positions1.add(new Position(BibleBook.JOHN, 1, 2));
-
-	List<Position> positions2 = new ArrayList<Position>();
-	positions2.add(new Position(BibleBook.JOHN, 1, 5));
-	positions2.add(new Position(BibleBook.JOHN, 1, 6));
-
-	List<Position> positions3 = new ArrayList<Position>();
-	positions3.add(new Position(BibleBook.JOHN, 1, 5));
-	positions3.add(new Position(BibleBook.JOHN, 1, 6));
-
-	exp.add(new DailyReading("reading list1", new DateTime(2011, 7, 12, 0, 0, 0, 0), positions1));
-	exp.add(new DailyReading("reading list3", new DateTime(2011, 7, 12, 0, 0, 0, 0), positions3));
-
-	List<DailyReading> retrieved = null;
-
-	try {
-	    // given
-	    bible.initializeStorage();
-	    bible.insertBibleVersion(new BibleVersion("King's James Version", "KJV", "en"));
-	    bible.insertBibleBook(BibleBook.JOHN);
-	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 1));
-	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 2));
-	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 5));
-	    bible.insertPosition(new Position(BibleBook.JOHN, 1, 6));
-
-	    bible.insertReadingList("reading list1");
-	    bible.insertReadingList("reading list2");
-	    bible.insertReadingList("reading list3");
-
-	    bible.insertDailyReading(new DailyReading("reading list1", new DateTime("2011-07-12"), positions1));
-	    bible.insertDailyReading(new DailyReading("reading list2", new DateTime("2011-08-12"), positions2));
-	    bible.insertDailyReading(new DailyReading("reading list3", new DateTime("2011-07-12"), positions3));
-
-	    // when
-	    retrieved = bible.getDailyReadings(new DateTime("2011-07-12"));
-
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    Assert.fail();
-	}
-	// then
-	Assert.assertEquals(retrieved, exp);
     }
 
     @Test

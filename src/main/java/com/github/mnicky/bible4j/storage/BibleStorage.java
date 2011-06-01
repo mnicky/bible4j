@@ -1,14 +1,10 @@
 package com.github.mnicky.bible4j.storage;
 
-import hirondelle.date4j.DateTime;
-
 import java.util.List;
 
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
-import com.github.mnicky.bible4j.data.DailyReading;
-import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
@@ -29,8 +25,6 @@ public interface BibleStorage {
     
     //TODO: change createStorage() to return void
     int[] initializeStorage();
-    
-    void createBackup(String fileName);
 
     void insertVerse(Verse verse);
 
@@ -76,15 +70,7 @@ public interface BibleStorage {
 
     List<Bookmark> getBookmarks(BibleVersion version);
     
-    void insertDictTerm(DictTerm term);
-    
-    DictTerm getDictTerm(String name);
-    
     void insertReadingList(String name);
-    
-    void insertDailyReading(DailyReading reading);
-    
-    List<DailyReading> getDailyReadings(DateTime date);
     
     List<Verse> searchVersesForText(String text);
     

@@ -1,9 +1,6 @@
 package com.github.mnicky.bible4j.storage;
 
-import hirondelle.date4j.DateTime;
-
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +17,6 @@ import com.github.mnicky.bible4j.AppRunner;
 import com.github.mnicky.bible4j.data.BibleBook;
 import com.github.mnicky.bible4j.data.BibleVersion;
 import com.github.mnicky.bible4j.data.Bookmark;
-import com.github.mnicky.bible4j.data.DailyReading;
-import com.github.mnicky.bible4j.data.DictTerm;
 import com.github.mnicky.bible4j.data.Note;
 import com.github.mnicky.bible4j.data.Position;
 import com.github.mnicky.bible4j.data.Verse;
@@ -263,23 +257,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 	}
 
 	return columns;
-    }
-
-    /**
-     * Backs up the H2 Bible storage files into a zip file.
-     */
-    //TODO add unit test
-    @Override
-    public void createBackup(String fileName) {
-	try {
-	    PreparedStatement st = dbConnection
-			    .prepareStatement("BACKUP TO ?");
-	    st.setString(1, fileName);
-	    commitUpdate(st);
-	} catch (SQLException e) {
-	    logger.error("Exception caught when creating the backup", e);
-	    throw new BibleStorageException("Backup not be created.", e);
-	}
     }
 
     @Override
@@ -943,51 +920,6 @@ public final class H2DbBibleStorage implements BibleStorage {
     }
 
     @Override
-    public void insertDictTerm(DictTerm term) {
-	try {
-	    PreparedStatement st = dbConnection.prepareStatement(
-		    "MERGE INTO " + TERMS
-			    + "(" + TERM_NAME + ", " + TERM_DEF + ") KEY (" + TERM_NAME + ") VALUES (?, ?)");
-	    st.setString(1, term.getName());
-	    st.setString(2, term.getDefinition());
-	    commitUpdate(st);
-	} catch (SQLException e) {
-	    logger.error("Exception caught when inserting the dictionary term: {}", term, e);
-	    throw new BibleStorageException("DictTerm could not be inserted", e);
-	}
-    }
-
-    @Override
-    public DictTerm getDictTerm(String name) {
-	ResultSet rs = null;
-	PreparedStatement st = null;
-	DictTerm term = null;
-
-	try {
-	    st = dbConnection
-		    .prepareStatement("SELECT " + TERM_NAME_F + ", " + TERM_DEF_F + " FROM " + TERMS + " WHERE " + TERM_NAME_F + " = ? LIMIT 1");
-	    st.setString(1, name);
-	    rs = commitQuery(st);
-	    while (rs.next())
-		term = new DictTerm(rs.getString(1), rs.getString(2));
-
-	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the dictionary term with name: {}", name, e);
-	    throw new BibleStorageException("DictTerm could not be retrieved", e);
-	} finally {
-	    try {
-		if (rs != null)
-		    rs.close();
-		if (st != null)
-		    st.close();
-	    } catch (SQLException e) {
-		logger.debug("Exception caught when closing", e);
-	    }
-	}
-	return term;
-    }
-
-    @Override
     public void insertReadingList(String name) {
 	try {
 	    PreparedStatement st = dbConnection.prepareStatement(
@@ -998,166 +930,6 @@ public final class H2DbBibleStorage implements BibleStorage {
 	    logger.error("Exception caught when inserting the reading list with name: {}", name, e);
 	    throw new BibleStorageException("Reading list could not be inserted", e);
 	}
-    }
-
-    // TODO refactor this method
-    @Override
-    public void insertDailyReading(DailyReading reading) {
-	PreparedStatement st = null;
-	try {
-	    dbConnection.setAutoCommit(false);
-
-	    // insert reading
-	    st = dbConnection.prepareStatement(
-		    "INSERT INTO " + READS
-			    + "(" + READ_DATE + ", " + READ_LIST + ") VALUES (?, "
-			    + "(SELECT DISTINCT " + RLIST_ID_F + " FROM " + RLISTS
-			    + "WHERE " + RLIST_NAME_F + " = ?))");
-	    st.setDate(1, new Date(reading.getDate().getMilliseconds(TimeZone.getDefault())));
-	    st.setString(2, reading.getReadingListName());
-	    st.executeUpdate();
-	    
-	    if (st != null)
-		st.close();
-
-	    // insert verses of this reading
-	    int readingId = getThisReadingId(reading);
-
-	    st = dbConnection.prepareStatement("INSERT INTO " + READxCOORDS
-					+ "(" + READxCOORD_COORD + ", " + READxCOORD_READ + ") VALUES ("
-					+ "(SELECT DISTINCT " + COORD_ID_F + " FROM " + COORDS + " WHERE"
-								+ COORD_BOOK_F + " = (SELECT DISTINCT "
-											+ BOOK_ID_F + " FROM " + BOOKS + " WHERE "
-											+ BOOK_NAME_F + " = ?) AND "
-								+ COORD_CHAPT_F + " = ? AND "
-								+ COORD_VERSE_F + " = ?), ?)");
-
-	    for (Position p : reading.getPositions()) {
-		st.setString(1, p.getBook().name());
-		st.setInt(2, p.getChapterNum());
-		st.setInt(3, p.getVerseNum());
-		st.setInt(4, readingId);
-		st.addBatch();
-	    }
-
-	    st.executeBatch();
-	    dbConnection.commit();
-
-	} catch (SQLException e) {
-	    try {
-		dbConnection.rollback();
-	    } catch (SQLException e1) {
-		    logger.error("Exception caught when trying to rollback after inserting daily readings", e1);
-	    }
-	    logger.error("Exception caught when inserting the daily reading: {}", reading, e);
-	    throw new BibleStorageException("DailyReading could not be inserted", e);
-	} finally {
-	    try {
-		dbConnection.setAutoCommit(true);
-		if (st != null)
-		    st.close();
-	    } catch (SQLException e2) {
-		e2.printStackTrace();
-	    }
-	}
-    }
-
-    private int getThisReadingId(DailyReading reading) throws SQLException {
-	ResultSet rs = null;
-	PreparedStatement st = null;
-	int readingId = 0;
-
-	try {
-	    st = dbConnection
-		    .prepareStatement("SELECT " + READ_ID_F + "FROM " + READS
-				      + "WHERE " + READ_DATE_F + " = ? AND "
-				      + READ_LIST_F + " = (SELECT DISTINCT "
-								+ RLIST_ID_F + " FROM " + RLISTS
-								+ " WHERE " + RLIST_NAME_F + " = ?) LIMIT 1");
-	    st.setDate(1, new Date(reading.getDate().getMilliseconds(TimeZone.getTimeZone("GMT"))));
-	    st.setString(2, reading.getReadingListName());
-	    rs = commitQuery(st);
-	    while (rs.next())
-		readingId = rs.getInt(1);
-
-	} finally {
-	    try {
-		if (rs != null)
-		    rs.close();
-		if (st != null)
-		    st.close();
-	    } catch (SQLException e) {
-		logger.debug("Exception caught when closing the resultSet and statement", e);
-	    }
-	}
-	return readingId;
-
-    }
-
-    @Override
-    public List<DailyReading> getDailyReadings(DateTime date) {
-	ResultSet rs = null;
-	PreparedStatement st = null;
-	List<DailyReading> readings = new ArrayList<DailyReading>();
-
-	try {
-	    st = dbConnection
-		    .prepareStatement("SELECT " + RLIST_NAME_F + ", " + READ_DATE_F + ", " + BOOK_NAME_F + ", " + COORD_CHAPT_F + ", "
-					+ COORD_VERSE_F
-				      + " FROM " + RLISTS
-				      + " INNER JOIN " + READS + " ON " + READ_LIST_F + " = " + RLIST_ID_F
-				      + " INNER JOIN " + READxCOORDS + " ON " + READxCOORD_READ_F + " = " + READ_ID_F
-				      + " INNER JOIN " + COORDS + " ON " + COORD_ID_F + " = " + READxCOORD_COORD_F
-				      + " INNER JOIN " + BOOKS + " ON " + BOOK_ID_F + " = " + COORD_BOOK_F
-				      + " WHERE " + READ_DATE_F + " = ? ORDER BY " + RLIST_NAME_F);
-
-	    st.setDate(1, new Date(date.getMilliseconds(TimeZone.getDefault())));
-	    rs = commitQuery(st);
-
-	    String lastReadingListName = "";
-	    DateTime lastRecDate = null;
-	    List<Position> positions = new ArrayList<Position>();
-
-	    while (rs.next()) {
-
-		String readingListName = rs.getString(1);
-		DateTime recDate = DateTime.forInstant(rs.getDate(2).getTime(), TimeZone.getDefault());
-		BibleBook book = BibleBook.getBibleBookByName(rs.getString(3));
-		int chapterNum = rs.getInt(4);
-		int verseNum = rs.getInt(5);
-
-		if (lastReadingListName.equals("") || lastReadingListName.equals(readingListName)) {
-		    positions.add(new Position(book, chapterNum, verseNum));
-		}
-		else {
-		    readings.add(new DailyReading(lastReadingListName, lastRecDate, positions));
-		    positions = new ArrayList<Position>();
-		    positions.add(new Position(book, chapterNum, verseNum));
-		}
-
-		lastReadingListName = readingListName;
-		lastRecDate = recDate;
-
-		if (rs.isLast()) {
-		    readings.add(new DailyReading(lastReadingListName, lastRecDate, positions));
-		}
-
-	    }
-
-	} catch (SQLException e) {
-	    logger.error("Exception caught when retrieving the daily readings for date: {}", date, e);
-	    throw new BibleStorageException("DailyReadings could not be retrieved", e);
-	} finally {
-	    try {
-		if (rs != null)
-		    rs.close();
-		if (st != null)
-		    st.close();
-	    } catch (SQLException e) {
-		logger.debug("Exception caught when closing", e);
-	    }
-	}
-	return readings;
     }
 
     @Override
