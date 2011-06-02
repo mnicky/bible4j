@@ -5,15 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import net.htmlparser.jericho.Source;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,42 +34,6 @@ public final class Utils {
      * This is static library class, therefore it is not possible to instantiate it.
      */
     private Utils() {}
-    
-    /**
-     * Tries to get Source from URL for 'tryTimes' times, sleeping for 'sleepMilis' and then throws an exception.
-     */
-    //Ugly but useful :-)
-    public static Source getSource(URL url, int tryTimes, int sleepMilis) {
-	Source source = null;
-	int tryCountDown = tryTimes;
-	boolean success = false;
-
-	while (!success && tryCountDown > 0) {
-	    try {
-		source = new Source(url);
-		success = true;
-	    } catch (IOException e) {
-		logger.warn("Exception caught whet getting the source from URl", e);
-		tryCountDown--;
-		if (tryCountDown <= 0) {
-		    logger.warn("Number of retries to get source has run out.");
-		    throw new RuntimeException(e);
-		}
-		
-		else {
-		    e.printStackTrace();
-		    
-		    try {
-			Thread.sleep(sleepMilis);
-		    } catch (InterruptedException e1) {
-			logger.error("Exception caught when trying to sleep", e1);
-		    }
-		}
-		
-	    }
-	}
-	return source;
-    }
     
     /**
      * Returns BibleBook confirming the specified abbreviation.

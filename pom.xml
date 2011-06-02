@@ -94,22 +94,6 @@
 		</resources>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>hirondelle</groupId>
-			<artifactId>date4j</artifactId>
-			<version>1.0.0</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${my.date4j.location}</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>net.htmlparser.jericho</groupId>
-			<artifactId>jericho-html</artifactId>
-			<version>3.2</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${my.jericho-html.location}</systemPath>
-		</dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
@@ -136,8 +120,6 @@
 		<my.testng.suite>src/main/config/testng.xml</my.testng.suite>
     <my.manifest>src/main/resources/META-INF/MANIFEST.MF</my.manifest>
 		<my.assembly.descriptor>src/main/config/assembly-descriptor.xml</my.assembly.descriptor>
-		<my.date4j.location>${basedir}/src/main/depends/date4j.jar</my.date4j.location>
-		<my.jericho-html.location>${basedir}/src/main/depends/jericho-html-3.2.jar</my.jericho-html.location>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<developers>
