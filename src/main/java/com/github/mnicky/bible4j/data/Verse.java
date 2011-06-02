@@ -61,41 +61,49 @@ public final class Verse implements Comparable<Verse> {
 	return text + " - " + position.toString() + "; " + bibleVersion.toString();
     }
 
-    /**
-     * Indicates whether the provided object equals to this Verse object.
-     * 
-     * @param obj
-     *            object to compare this Verse object with
-     * @return true if this Verse object equals to provided
-     */
-    @Override
-    public boolean equals(Object obj) {
-	if (obj == this)
-	    return true;
-	if (!(obj instanceof Verse))
-	    return false;
-	Verse verse = (Verse) obj;
-	return verse.text.equals(this.text) && verse.position.equals(this.position)
-		&& verse.bibleVersion.equals(this.bibleVersion);
-    }
-
-    /**
-     * Returns a hash code for this Verse.
-     * 
-     * @return a hash code for this Verse
-     */
-    @Override
-    public int hashCode() {
-	int result = 17;
-	result = 31 * result + (text == null ? 0 : text.hashCode());
-	result = 31 * result + (position == null ? 0 : position.hashCode());
-	result = 31 * result + (bibleVersion == null ? 0 : bibleVersion.hashCode());
-	return result;
-    }
-
     @Override
     public int compareTo(Verse v) {
 	return this.position.compareTo(v.getPosition());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (!(obj instanceof Verse))
+	    return false;
+	Verse other = (Verse) obj;
+	if (this.bibleVersion == null) {
+	    if (other.bibleVersion != null)
+		return false;
+	}
+	else if (!this.bibleVersion.equals(other.bibleVersion))
+	    return false;
+	if (this.position == null) {
+	    if (other.position != null)
+		return false;
+	}
+	else if (!this.position.equals(other.position))
+	    return false;
+	if (this.text == null) {
+	    if (other.text != null)
+		return false;
+	}
+	else if (!this.text.equals(other.text))
+	    return false;
+	return true;
+    }
+
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((this.bibleVersion == null) ? 0 : this.bibleVersion.hashCode());
+	result = prime * result + ((this.position == null) ? 0 : this.position.hashCode());
+	result = prime * result + ((this.text == null) ? 0 : this.text.hashCode());
+	return result;
     }
 
 }

@@ -50,33 +50,32 @@ public final class Position implements Comparable<Position> {
     }
     
     
-    /**
-     * Indicates whether the provided object equals to this Position object.
-     * @param obj object to compare this Position object with     *
-     * @return true if this Position object equals to provided
-     */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (!(obj instanceof Position))
-            return false;
-        Position pos = (Position) obj;
-        return pos.book == this.book 
-         && pos.chapterNum == this.chapterNum && pos.verseNum == this.verseNum;
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (!(obj instanceof Position))
+	    return false;
+	Position other = (Position) obj;
+	if (this.book != other.book)
+	    return false;
+	if (this.chapterNum != other.chapterNum)
+	    return false;
+	if (this.verseNum != other.verseNum)
+	    return false;
+	return true;
     }
     
-    /**
-     * Returns a hash code for this Position.     * 
-     * @return a hash code for this Position
-     */
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 31 * result + (book == null ? 0 : book.hashCode());
-        result = 31 * result + (Integer.valueOf(chapterNum).hashCode());
-        result = 31 * result + (Integer.valueOf(verseNum).hashCode());
-        return result;
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((this.book == null) ? 0 : this.book.hashCode());
+	result = prime * result + this.chapterNum;
+	result = prime * result + this.verseNum;
+	return result;
     }
 
 

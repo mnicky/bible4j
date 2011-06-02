@@ -29,20 +29,35 @@ public final class Bookmark implements Comparable<Bookmark> {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (!(obj instanceof Bookmark))
-            return false;
-        Bookmark b = (Bookmark) obj;
-        return b.name.equals(this.name) && b.verse.equals(this.verse);
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (!(obj instanceof Bookmark))
+	    return false;
+	Bookmark other = (Bookmark) obj;
+	if (this.name == null) {
+	    if (other.name != null)
+		return false;
+	}
+	else if (!this.name.equals(other.name))
+	    return false;
+	if (this.verse == null) {
+	    if (other.verse != null)
+		return false;
+	}
+	else if (!this.verse.equals(other.verse))
+	    return false;
+	return true;
     }
     
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 31 * result + (name == null ? 0 : name.hashCode());
-        result = 31 * result + (verse == null ? 0 : verse.hashCode());
-        return result;
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+	result = prime * result + ((this.verse == null) ? 0 : this.verse.hashCode());
+	return result;
     }
 
     @Override

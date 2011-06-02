@@ -70,21 +70,37 @@ public final class Note implements Comparable<Note> {
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == this)
+	if (this == obj)
 	    return true;
+	if (obj == null)
+	    return false;
 	if (!(obj instanceof Note))
 	    return false;
-	Note note = (Note) obj;
-	return note.text.equals(this.text) && note.position.equals(this.position)
-		&& note.type.equals(this.type);
+	Note other = (Note) obj;
+	if (this.position == null) {
+	    if (other.position != null)
+		return false;
+	}
+	else if (!this.position.equals(other.position))
+	    return false;
+	if (this.text == null) {
+	    if (other.text != null)
+		return false;
+	}
+	else if (!this.text.equals(other.text))
+	    return false;
+	if (this.type != other.type)
+	    return false;
+	return true;
     }
 
     @Override
     public int hashCode() {
-	int result = 17;
-	result = 31 * result + (text == null ? 0 : text.hashCode());
-	result = 31 * result + (position == null ? 0 : position.hashCode());
-	result = 31 * result + (type == null ? 0 : type.hashCode());
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((this.position == null) ? 0 : this.position.hashCode());
+	result = prime * result + ((this.text == null) ? 0 : this.text.hashCode());
+	result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
 	return result;
     }
 
