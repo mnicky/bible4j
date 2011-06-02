@@ -63,7 +63,7 @@ final class ReadCommandRunner extends CommandRunner {
 		lastChapter = 0;
 	    }
 	    if (lastChapter == 0 || lastChapter != chapter) {
-		System.out.println("\n   " + book + ", chapter " + chapter + ", " + bible);
+		System.out.println("\n   " + book + ", chapter " + chapter + " - " + bible);
 		System.out.println("   =============================================================");
 		lastChapter = chapter;
 	    }
