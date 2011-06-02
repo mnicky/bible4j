@@ -31,7 +31,7 @@ public final class Utils {
     
     private static final String BIBLE_BOOK_ABBRS_FILE = File.separatorChar + "bibleBookAbbrs.conf";
     private static final String COMMENT_CHAR = "#";
-    private static final String SPLIT_CHAR = ":";
+    private static final String SPLIT_CHAR = "=";
     
     /**
      * This is static library class, therefore it is not possible to instantiate it.
