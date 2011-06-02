@@ -97,7 +97,5 @@ public final class Verse implements Comparable<Verse> {
     public int compareTo(Verse v) {
 	return this.position.compareTo(v.getPosition());
     }
-    
-    //TODO add Verse unit test
 
 }

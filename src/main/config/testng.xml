@@ -7,6 +7,7 @@
         <class name="com.github.mnicky.bible4j.data.Bookmark_Test"></class>
         <class name="com.github.mnicky.bible4j.data.Note_Test"></class>
         <class name="com.github.mnicky.bible4j.data.Position_Test"></class>
+        <class name="com.github.mnicky.bible4j.data.Verse_Test"></class>
     </classes>
   </test>
   
