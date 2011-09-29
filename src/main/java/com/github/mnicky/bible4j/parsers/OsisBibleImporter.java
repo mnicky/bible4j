@@ -314,15 +314,15 @@ public final class OsisBibleImporter implements BibleImporter {
 	
 	OsisBibleImporter importer = new OsisBibleImporter(storage);
 	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/cs-b21_osis.xml"));	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/cs-bkr_osis.xml"));	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/cs-cep_osis.xml"));	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/en-asv_osis.xml"));	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/en-kjv_osis.xml"));	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/en-rsv_osis.xml"));	
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/en-web_osis.xml"));
-	//importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/en-bbe_osis.xml"));
-	importer.importBible(new FileInputStream("/home/marek/projects/2011-dbs-vppj/misc/osis-bibles/real/en-ylt_osis.xml"));
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/cs-b21_osis.xml"));	
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/cs-bkr_osis.xml"));	
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/cs-cep_osis.xml"));	
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/en-asv_osis.xml"));	
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/en-kjv_osis.xml"));	
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/en-rsv_osis.xml"));	
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/en-web_osis.xml"));
+	//importer.importBible(new FileInputStream("./misc/osis-bibles/real/en-bbe_osis.xml"));
+	importer.importBible(new FileInputStream("./misc/osis-bibles/real/en-ylt_osis.xml"));
 	
 	System.out.println("finished");
     }
